@@ -1,0 +1,1177 @@
+
+
+
+
+
+
+<SCRIPT language="JavaScript">
+var allGrtmd = new Array(19);
+allGrtmd[0] = new Array(2);
+allGrtmd[0][0] = "D1";
+allGrtmd[0][1] = "住房抵押";
+allGrtmd[1] = new Array(2);
+allGrtmd[1][0] = "D2";
+allGrtmd[1][1] = "商业用房抵押";
+allGrtmd[2] = new Array(2);
+allGrtmd[2][0] = "D3";
+allGrtmd[2][1] = "厂房抵押";
+allGrtmd[3] = new Array(2);
+allGrtmd[3][0] = "D4";
+allGrtmd[3][1] = "土地抵押";
+allGrtmd[4] = new Array(2);
+allGrtmd[4][0] = "D5";
+allGrtmd[4][1] = "车辆抵押";
+allGrtmd[5] = new Array(2);
+allGrtmd[5][0] = "B1";
+allGrtmd[5][1] = "自然人保证";
+allGrtmd[6] = new Array(2);
+allGrtmd[6][0] = "B2";
+allGrtmd[6][1] = "法人保证";
+allGrtmd[7] = new Array(2);
+allGrtmd[7][0] = "B3";
+allGrtmd[7][1] = "保证保险";
+allGrtmd[8] = new Array(2);
+allGrtmd[8][0] = "Z1";
+allGrtmd[8][1] = "存单质押";
+allGrtmd[9] = new Array(2);
+allGrtmd[9][0] = "Z2";
+allGrtmd[9][1] = "国债质押";
+allGrtmd[10] = new Array(2);
+allGrtmd[10][0] = "Z3";
+allGrtmd[10][1] = "其他有价单证质押";
+allGrtmd[11] = new Array(2);
+allGrtmd[11][0] = "B4";
+allGrtmd[11][1] = "信用担保";
+allGrtmd[12] = new Array(2);
+allGrtmd[12][0] = "D6";
+allGrtmd[12][1] = "机械设备抵押";
+allGrtmd[13] = new Array(2);
+allGrtmd[13][0] = "QT";
+allGrtmd[13][1] = "其他";
+allGrtmd[14] = new Array(2);
+allGrtmd[14][0] = "NO";
+allGrtmd[14][1] = "无担保";
+allGrtmd[15] = new Array(2);
+allGrtmd[15][0] = "DD";
+allGrtmd[15][1] = "组合抵押";
+allGrtmd[16] = new Array(2);
+allGrtmd[16][0] = "BB";
+allGrtmd[16][1] = "组合保证";
+allGrtmd[17] = new Array(2);
+allGrtmd[17][0] = "ZZ";
+allGrtmd[17][1] = "组合质押";
+allGrtmd[18] = new Array(2);
+allGrtmd[18][0] = "E1";
+allGrtmd[18][1] = "";
+var subGrtmd = new Array(8);
+subGrtmd[0] = new Array(2);
+subGrtmd[0][0] = "D1";
+subGrtmd[0][1] = "住房抵押";
+subGrtmd[1] = new Array(2);
+subGrtmd[1][0] = "D2";
+subGrtmd[1][1] = "商业用房抵押";
+subGrtmd[2] = new Array(2);
+subGrtmd[2][0] = "D3";
+subGrtmd[2][1] = "厂房抵押";
+subGrtmd[3] = new Array(2);
+subGrtmd[3][0] = "D5";
+subGrtmd[3][1] = "车辆抵押";
+subGrtmd[4] = new Array(2);
+subGrtmd[4][0] = "B1";
+subGrtmd[4][1] = "自然人保证";
+subGrtmd[5] = new Array(2);
+subGrtmd[5][0] = "B2";
+subGrtmd[5][1] = "法人保证";
+subGrtmd[6] = new Array(2);
+subGrtmd[6][0] = "B3";
+subGrtmd[6][1] = "保证保险";
+subGrtmd[7] = new Array(2);
+subGrtmd[7][0] = "NO";
+subGrtmd[7][1] = "无担保";
+var subGrtmd1 = new Array(4);
+subGrtmd1[0] = new Array(2);
+subGrtmd1[0][0] = "D5";
+subGrtmd1[0][1] = "车辆抵押";
+subGrtmd1[1] = new Array(2);
+subGrtmd1[1][0] = "B2";
+subGrtmd1[1][1] = "法人保证";
+subGrtmd1[2] = new Array(2);
+subGrtmd1[2][0] = "B3";
+subGrtmd1[2][1] = "保证保险";
+subGrtmd1[3] = new Array(2);
+subGrtmd1[3][0] = "NO";
+subGrtmd1[3][1] = "无担保";
+var subGrtmd2 = new Array(6);
+subGrtmd2[0] = new Array(2);
+subGrtmd2[0][0] = "B1";
+subGrtmd2[0][1] = "自然人保证";
+subGrtmd2[1] = new Array(2);
+subGrtmd2[1][0] = "B2";
+subGrtmd2[1][1] = "法人保证";
+subGrtmd2[2] = new Array(2);
+subGrtmd2[2][0] = "B3";
+subGrtmd2[2][1] = "保证保险";
+subGrtmd2[3] = new Array(2);
+subGrtmd2[3][0] = "B4";
+subGrtmd2[3][1] = "信用担保";
+subGrtmd2[4] = new Array(2);
+subGrtmd2[4][0] = "NO";
+subGrtmd2[4][1] = "无担保";
+subGrtmd2[5] = new Array(2);
+subGrtmd2[5][0] = "BB";
+subGrtmd2[5][1] = "组合保证";
+var subGrtmd4 = new Array(1);
+subGrtmd4[0] = new Array(2);
+subGrtmd4[0][0] = "NO";
+subGrtmd4[0][1] = "无担保";
+
+function goSubmit(){
+if(window.document.form1.PRDCD.value==""){
+alert("请选择产品码");
+return false;
+}
+
+var usd =window.document.getElementById('CCAS_PLAATRN.LAFLNUSE');
+
+if(window.document.form1.PRDCD.value.substring(0,4)=="PLFC" ||window.document.form1.PRDCD.value.substring(0,4)=="PLFA" ){
+if(usd.value == "1"){
+   if(Trim(window.document.form1.PRJ_NO.value)==''){
+       alert("请输入项目号");
+       return false ;
+   }
+}
+}
+
+window.document.form1.command.value="RetailCredit"+window.document.form1.PRDCD.value.substring(5,9);
+window.document.form1.command.value = "RetailCreditPLAA";
+if(window.document.form1.PRDCD.value.substring(5,9)=="PLXX")
+{
+window.document.form1.command.value="RetailCreditPLXX";
+window.document.form1.action.value="CHECK";
+if(window.document.form1.CBICERNO.value==""&&window.document.form1.ACTNO.value==""&&window.document.form1.CUSTNO.value==""){
+alert("请输入加按查询条件!");
+return false;
+}
+}
+
+if(window.document.form1.PRDCD.value.substring(0,4)=="PLAA" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAB" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAC" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAD" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAF" ||window.document.form1.PRDCD.value.substring(0,4)=="PLCB" ||window.document.form1.PRDCD.value.substring(0,4)=="PLHC"){
+   if(Trim(window.document.form1.PRJ_NO.value)==''){
+       alert("请输入项目号");
+       return false ;
+   }
+
+}
+
+window.document.form1.ACTNO.disabled=false;
+window.document.form1.PRJ_NO.disabled=false;
+window.document.form1.GUMOD.disabled=false;
+window.document.form1.GRTMD2.disabled=false;
+window.document.form1.GRTMD3.disabled=false;
+window.document.form1.lastcommand1.value="RetailCreditTRN";
+if(window.document.form1.PRDCD.value.substring(5,9)=="PLAE"){
+
+   window.document.form1.CBICERTY.value=window.document.form1.CBICERTY1.value;
+
+   }else{
+       window.document.form1.CBICERTY.value=window.document.form1.CBICERTY2.value;
+    if( window.document.form1.CBICERTY.value=="0"){
+        var validateObj =window.document.form1.CBICERNO;
+        if(checkformdata(validateObj,"CCASCERTNO|bok")==false)
+        return false;
+
+    }
+
+   }
+     window.document.form1.PRJ_NO.value=window.document.form1.PRJ_NO.value.toUpperCase();
+     if(window.document.form1.GUMOD.value!='B1'){
+        if(window.document.form1.GRTMD2.value != 'NO' && window.document.form1.GRTMD2.value==window.document.form1.GUMOD.value ||
+           window.document.form1.GRTMD3.value != 'NO' && window.document.form1.GRTMD3.value==window.document.form1.GUMOD.value) {
+           alert("除自然人保证外,不能选择相同的担保方式");
+           return false;
+        }
+     }
+     if(window.document.form1.GRTMD2.value!='B1'){
+        if(window.document.form1.GRTMD3.value != 'NO' && window.document.form1.GRTMD2.value==window.document.form1.GRTMD3.value) {
+           alert("除自然人保证外,不能选择相同的担保方式");
+           return false;
+        }
+     }
+
+if(window.document.form1.PRDCD.value.substring(0,4)=="PLAA"||window.document.form1.PRDCD.value.substring(0,4)=="PLAA"||window.document.form1.PRDCD.value.substring(0,4)=="PLAD"||window.document.form1.PRDCD.value.substring(0,4)=="PLAF"){
+     if(window.document.form1.GUMOD.value!='D1'){
+         alert("该产品第一担保方式只能是住房抵押");
+         return false;
+      }
+
+}
+
+if(window.document.form1.PRDCD.value.substring(0,4)=="PLEA"){
+     if(window.document.form1.GUMOD.value.substring(0,1)!='Z'){
+         alert("该产品第一担保方式只能是质押");
+         return false;
+      }
+
+}
+
+if(window.document.form1.PRDCD.value.substring(0,4)=="PLBB"){
+     if(window.document.form1.GUMOD.value!='D5'){
+         alert("该产品第一担保方式只能是车辆抵押");
+         return false;
+      }
+
+}
+if(window.document.form1.PRDCD.value.substring(0,4)=="PLFB"){
+     if(window.document.form1.GUMOD.value =='NO'){
+         alert("该产品第一担保方式不能为无担保");
+         return false;
+      }
+
+}
+if(window.document.form1.PRDCD.value.substring(0,4)=="PLGA"){
+     if(window.document.form1.GUMOD.value.substring(0,1)!='D' && window.document.form1.GUMOD.value.substring(0,1)!='Z'){
+         alert("该产品第一担保方式只能是抵质押");
+         return false;
+      }
+
+}
+var validateObj =window.document.getElementById('CCAS_TASKLOG.REF_TASK_SEQNO') ;
+if(Trim(validateObj.value).length>0){
+var refseqno="00000000"+Trim(validateObj.value);
+window.document.getElementById('CCAS_TASKLOG.REF_TASK_SEQNO').value=refseqno.substring(refseqno.length-8,refseqno.length);
+
+}
+// 未查询控制 by JJ for 验收测试 060406
+if (window.document.form1.CBIRTID1.value=="3")
+{
+	alert("请选择个人征信/法人贷款查询情况");
+	return false;
+	}
+// end 未查询控制 by JJ for 验收测试 060406
+if(window.document.form1.PRDCD.value.substring(0,4)=="PLFA" || window.document.form1.PRDCD.value.substring(0,4)=="PLFC"){
+    var validateObj =window.document.getElementById('CCAS_PLAATRN.CLIPERAN') ;
+    if(Trim(validateObj.value).length<=0){
+        alert("请输入额度帐号");
+        return false;
+    }
+}
+
+return true ;
+
+}
+function goCancel(){
+
+window.document.form1.command.value="mainPage";
+return true ;
+
+}
+function setOptionText(selObj,the_array)
+{
+	selObj.options.length=the_array.length;
+	for (loop=0; loop < the_array.length; loop++) {
+		selObj.options[loop].text=the_array[loop][1];
+		selObj.options[loop].value=the_array[loop][0];
+	}
+	selObj.selectedIndex=0;
+}
+
+function goValid(){
+
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLAB"||window.document.form1.PRDCD.value.substring(0,4)=="PLAF"||window.document.form1.PRDCD.value.substring(0,4)=="PLCA"||window.document.form1.PRDCD.value.substring(0,4)=="PLCB"){
+      window.document.getElementById('CCAS_PLAATRN.CUSOCCPA').disabled = false;
+      ref_task_seqno.style.display = "none";
+   }else{
+      window.document.getElementById('CCAS_PLAATRN.CUSOCCPA').checked  = false;
+      window.document.getElementById('CCAS_PLAATRN.CUSOCCPA').disabled = true;  
+   }
+
+
+   if(window.document.form1.PRDCD.value.substring(5,9)=="PLAE"){
+
+    c2.style.display = "none";
+    c1.style.display = "";
+
+   }else{
+
+    c2.style.display = "";
+    c1.style.display = "none";
+
+   }
+
+   //Added by Shenyuqin 20060321
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLFA" || window.document.form1.PRDCD.value.substring(0,4)=="PLFC"){
+
+    cliperan.style.display = "";
+    laflnuse.style.display = "";
+
+   }else{
+
+    cliperan.style.display = "none";
+    laflnuse.style.display = "none";
+
+   }
+   //End Add 20060321
+  if(window.document.form1.PRDCD.value.substring(5,9)=="PLXX"){
+     window.document.form1.ACTNO.disabled=false;
+     window.document.form1.PRJ_NO.disabled=true;
+     window.document.form1.GUMOD.disabled=true;
+     window.document.form1.GRTMD2.disabled=true;
+     window.document.form1.GRTMD3.disabled=true;
+
+
+ }
+ else{
+  window.document.form1.ACTNO.disabled=true;
+  window.document.form1.PRJ_NO.disabled=false;
+  window.document.form1.GUMOD.disabled=false;
+  window.document.form1.GRTMD2.disabled=false;
+  window.document.form1.GRTMD3.disabled=false;
+
+  }
+   if(window.document.form1.PRDCD.value.substring(5,9)=="PLXX"){
+     adv.style.display = "";
+     custno.style.display = "";
+
+
+     }
+   else{
+     adv.style.display = "none";
+     custno.style.display = "none";
+
+   }
+
+//   if(window.document.form1.PRDCD.value.substring(0,4)=="PLAA" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAB" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAC" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAD" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAF" ||window.document.form1.PRDCD.value.substring(0,4)=="PLCB" ||window.document.form1.PRDCD.value.substring(0,4)=="PLHC"||window.document.form1.PRDCD.value.substring(0,4)=="PLBA"||window.document.form1.PRDCD.value.substring(0,4)=="PLBB"||window.document.form1.PRDCD.value.substring(0,4)=="PLCC"||window.document.form1.PRDCD.value.substring(0,4)=="PLBC"||window.document.form1.PRDCD.value.substring(0,4)=="PLBD"){
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLAA" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAB" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAC" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAD" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAF" ||window.document.form1.PRDCD.value.substring(0,4)=="PLCB" ||window.document.form1.PRDCD.value.substring(0,4)=="PLHC"||window.document.form1.PRDCD.value.substring(0,4)=="PLBA"||window.document.form1.PRDCD.value.substring(0,4)=="PLBB"||window.document.form1.PRDCD.value.substring(0,4)=="PLCC"||window.document.form1.PRDCD.value.substring(0,4)=="PLBC"||window.document.form1.PRDCD.value.substring(0,4)=="PLBD"||window.document.form1.PRDCD.value.substring(0,4)=="PLFA"||window.document.form1.PRDCD.value.substring(0,4)=="PLFC"){
+     prj_no1.style.display = "";
+     }
+   else{
+     prj_no1.style.display = "none";
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLAA" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAB" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAC"){
+     ref_task_seqno.style.display = "";
+     }
+   else{
+     ref_task_seqno.style.display = "none";
+     window.document.getElementById('CCAS_TASKLOG.REF_TASK_SEQNO').value="";
+   }
+
+    //Modified by Shenyuqin 20060320
+    //个人额度循环贷款：PLFB只允许担保，PLGA只允许抵、质押、担保
+    //                  PLFA、PLFC无担保
+   //Added by Shenyuqin 20051130 汽车委托贷款只允许车辆抵押和保证
+   var varPrdcde = window.document.form1.PRDCD.value.substring(0,4);
+   if(varPrdcde=="PLBC"){
+   	setOptionText(window.document.form1.GUMOD,subGrtmd);
+   	setOptionText(window.document.form1.GRTMD2,subGrtmd);
+   	setOptionText(window.document.form1.GRTMD3,subGrtmd);
+   }else if(varPrdcde=="PLBD"){
+   	setOptionText(window.document.form1.GUMOD,subGrtmd1);
+   	setOptionText(window.document.form1.GRTMD2,subGrtmd1);
+   	setOptionText(window.document.form1.GRTMD3,subGrtmd1);
+   }else if(varPrdcde=="PLFB"){
+   	setOptionText(window.document.form1.GUMOD,subGrtmd2);
+   	setOptionText(window.document.form1.GRTMD2,subGrtmd2);
+   	setOptionText(window.document.form1.GRTMD3,subGrtmd2);
+//   }else if(varPrdcde=="PLGA"){
+//   	setOptionText(window.document.form1.GUMOD,subGrtmd3);
+//   	setOptionText(window.document.form1.GRTMD2,subGrtmd3);
+//   	setOptionText(window.document.form1.GRTMD3,subGrtmd3);
+   }else if(varPrdcde=="PLFA" || varPrdcde=="PLFC"){
+   	setOptionText(window.document.form1.GUMOD,subGrtmd4);
+   	setOptionText(window.document.form1.GRTMD2,subGrtmd4);
+   	setOptionText(window.document.form1.GRTMD3,subGrtmd4);
+   }else {
+   	setOptionText(window.document.form1.GUMOD,allGrtmd);
+   	setOptionText(window.document.form1.GRTMD2,allGrtmd);
+   	setOptionText(window.document.form1.GRTMD3,allGrtmd);
+   }
+   //End Add 20051130
+   //End Modify 20060320
+   
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLAA"){
+      window.document.form1.GUMOD.value  = 'D1';
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLAB"){
+      window.document.form1.GUMOD.value  = 'D1';
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLAC"){
+      window.document.form1.GUMOD.value  = 'D1';
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLAD"){
+      window.document.form1.GUMOD.value  = 'D1';
+      window.document.form1.GRTMD2.value = 'NO'; 
+      window.document.form1.GRTMD3.value = 'NO'; 
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLAF"){
+      window.document.form1.GUMOD.value  = 'D1';
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLDA"){
+      window.document.form1.GUMOD.value  = 'D1';
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+//   if(window.document.form1.PRDCD.value.substring(0,4)=="PLFA"){
+//      window.document.form1.GUMOD.value  = 'D1';
+//      window.document.form1.GRTMD2.value = 'NO';
+//      window.document.form1.GRTMD3.value = 'NO';
+//
+//   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLFB"){
+   //Modified by Shenyuqin 20060320
+//      window.document.form1.GUMOD.value  = 'D1';
+      window.document.form1.GUMOD.value  = 'B1';
+      //End 20060320
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLBA"){
+      window.document.form1.GUMOD.value  = 'D5';
+      window.document.form1.GRTMD2.value = 'B1';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLBB"){
+      window.document.form1.GUMOD.value  = 'D5';
+      window.document.form1.GRTMD2.value = 'B1';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLCC"){
+      window.document.form1.GUMOD.value  = 'D5';
+      window.document.form1.GRTMD2.value = 'B1';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+
+    if(window.document.form1.PRDCD.value.substring(0,4)=="PLCA"){
+      window.document.form1.GUMOD.value  = 'D2';
+      window.document.form1.GRTMD2.value = 'B2';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+    if(window.document.form1.PRDCD.value.substring(0,4)=="PLCB"){
+      window.document.form1.GUMOD.value  = 'D2';
+      window.document.form1.GRTMD2.value = 'B2';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLDB"){
+      window.document.form1.GUMOD.value  = 'B4';
+      window.document.form1.GRTMD2.value = 'B1';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLEA"){
+      window.document.form1.GUMOD.value  = 'Z1';
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+//   if(window.document.form1.PRDCD.value.substring(0,4)=="PLFC"){
+//      window.document.form1.GUMOD.value  = 'B4';
+//      window.document.form1.GRTMD2.value = 'NO';
+//      window.document.form1.GRTMD3.value = 'NO';
+//
+//   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLGA"){
+   //Modified by Shenyuqin 20060320
+//      window.document.form1.GUMOD.value  = 'B4';
+      window.document.form1.GUMOD.value  = 'D1';
+      //End 20060320
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+
+     if(window.document.form1.PRDCD.value.substring(0,4)=="PLAE"){
+      window.document.form1.GUMOD.value  = 'D4';
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+
+     if(window.document.form1.PRDCD.value.substring(0,4)=="PLHA"){
+      window.document.form1.GUMOD.value  = 'D2';
+      window.document.form1.GRTMD2.value = 'B2';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+
+     if(window.document.form1.PRDCD.value.substring(0,4)=="PLHC"){
+      window.document.form1.GUMOD.value  = 'D2';
+      window.document.form1.GRTMD2.value = 'B2';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+
+     if(window.document.form1.PRDCD.value.substring(0,4)=="PLHB"){
+      window.document.form1.GUMOD.value  = 'D2';
+      window.document.form1.GRTMD2.value = 'NO';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+
+
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLBC"){
+      window.document.form1.GUMOD.value  = 'D5';
+      window.document.form1.GRTMD2.value = 'B1';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+   if(window.document.form1.PRDCD.value.substring(0,4)=="PLBD"){
+      window.document.form1.GUMOD.value  = 'D5';
+      window.document.form1.GRTMD2.value = 'B2';
+      window.document.form1.GRTMD3.value = 'NO';
+
+   }
+
+}
+</SCRIPT>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<title>新增贷款</title>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+<link href="font.css" rel="stylesheet" type="text/css">
+<script src="fValidate1.js" language="JavaScript" type="text/javascript"></script>
+</head>
+
+<body>
+<table width="780"  border="0" cellspacing="0" cellpadding="0">
+  <tr>
+
+    <td><iframe src="/CCAS/jsp/controls/topFrame.htm" width="775" height="70" scrolling="no" frameborder="0"></iframe></td>
+
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td><table width="100%" height="100%"  border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td valign="top"><table width="100%"  border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                  <!--DWLayoutTable-->
+                  <tr>
+                    <td height="23" colspan="2"><img src="images/position.gif" width="116" height="20"> <span class="NAV">新增贷款 </span></td>
+                    <td width="398" colspan="2"><div align="center"><span class="NAV"><SPAN
+            class=TB1-TD1>柜员号：</SPAN>DBDK05/张冬</span></div></td>
+              </tr>
+                  <tr>
+                    <td height="25" colspan="2" class="H1"><img src="images/top_01.gif" width="306" height="18"></td>
+                    <td colspan="2" class="H1"><div align="left">新增贷款</div></td>
+              </tr>
+                  <tr>
+              </tr>
+                </table>
+                  <table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td><p>&nbsp;</p>
+                      <table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td><table width="100%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td background="images/dian.gif">&nbsp;</td>
+                            </tr>
+                            <tr>
+                              <td background="images/dian.gif"><table width="95%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                                <tr>
+                                  <td><form name="form1" method="post" action="/CCAS/CMain">
+								  <input type="hidden" name="command" value="">
+                                  <input type="hidden" name="lastcommand1" value="RetailCreditTRN">
+	                          <input type="hidden" name="action" value="NEW">
+                                  <input type="hidden" name="LASTACTION" value="">
+                                  <input type="hidden" name="CBICERTY" value="">
+								  
+                                      <table width="100%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                                      
+                                       <tr> 
+                                          <td height="25" class="TB6-td2">业务品种</td>
+                                          <td align="left" class="TB6-td2"><select name="PRDCD" id="PRDCD" onChange="goValid()">
+                                              <option value="" selected>请选择</option>
+                                              
+                                              <option value="PLAA_PLAA"
+
+> 个人住房按揭贷款[PLAA] </option>
+                                              
+                                              <option value="PLAB_PLAB"
+
+> 个人住房散户贷款[PLAB] </option>
+                                              
+                                              <option value="PLAC_PLAC"
+
+> 住房公积金贷款[PLAC] </option>
+                                              
+                                              <option value="PLAD_PLAE"
+
+> 法人住房贷款[PLAD] </option>
+                                              
+                                              <option value="PLAF_PLAA"
+
+> 个人住房（高档房）按揭贷款[PLAF] </option>
+                                              
+                                              <option value="PLBA_PLBA"
+
+> 个人汽车贷款[PLBA] </option>
+                                              
+                                              <option value="PLBB_PLAE"
+
+> 法人汽车贷款[PLBB] </option>
+                                              
+                                              <option value="PLBC_PLBA"
+
+> 汽车金融公司个人委托贷款[PLBC] </option>
+                                              
+                                              <option value="PLBD_PLAE"
+
+> 汽车金融公司法人委托贷款[PLBD] </option>
+                                              
+                                              <option value="PLCA_PLAB"
+
+> 个人投资经营贷款[PLCA] </option>
+                                              
+                                              <option value="PLCB_PLAB"
+
+> 商铺按揭贷款[PLCB] </option>
+                                              
+                                              <option value="PLCC_PLAB"
+
+> 工程运输车辆贷款[PLCC] </option>
+                                              
+                                              <option value="PLDA_PLAB"
+
+> 商业教育助学贷款[PLDA] </option>
+                                              
+                                              <option value="PLDB_PLAB"
+
+> 国家教育助学贷款[PLDB] </option>
+                                              
+                                              <option value="PLEA_PLEA"
+
+> 小额质押贷款[PLEA] </option>
+                                              
+                                              <option value="PLFA_PLAB"
+
+> 个人抵质押循环贷款额度用款[PLFA] </option>
+                                              
+                                              <option value="PLFB_PLIA"
+
+> 个人信用循环贷款额度[PLFB] </option>
+                                              
+                                              <option value="PLFC_PLAB"
+
+> 个人信用循环贷款额度用款[PLFC] </option>
+                                              
+                                              <option value="PLGA_PLIA"
+
+> 个人抵质押循环贷款额度[PLGA] </option>
+                                              
+                                              <option value="PLHA_PLAE"
+
+> 小企业法人[PLHA] </option>
+                                              
+                                              <option value="PLHB_PLAE"
+
+> 汽车经销商贷款[PLHB] </option>
+                                              
+                                              <option value="PLHC_PLAE"
+
+> 法人商铺贷款[PLHC] </option>
+                                              
+                                              <option value="PLXX_PLXX">加按[PLXX]</option>
+                                            </select>
+                                            <input name="CCAS_PLAATRN.CUSOCCPA" type="checkbox" disabled id="CCAS_PLAATRN.CUSOCCPA" value="Y">
+                                            预授信</td>
+                                        </tr>
+  
+                                        <tr id="c1" style="DISPLAY:none"> 
+                                          <td width="30%" height="25" class="TB6-td2">申请人证件类别</td>
+                                          <td width="70%" class="TB6-td2"><select name="CBICERTY1"  id="CBICERTY1"  >
+                                              
+                                              <option value="1"
+
+> 营业执照 </option>
+                                              
+                                              <option value="A"
+
+> 登记证 </option>
+                                              
+                                              <option value="B"
+
+> 主管部门证明文件 </option>
+                                              
+                                            </select></td>
+                                        </tr>
+                                        <tr id='c2' > 
+                                          <td width="30%" height="25" class="TB6-td2">申请人证件类别</td>
+                                          <td width="70%" class="TB6-td2"><select name="CBICERTY2"  id="CBICERTY2"  >
+                                              
+                                              <option value="0"
+
+> 身份证 </option>
+                                              
+                                              <option value="2"
+
+> 护照 </option>
+                                              
+                                              <option value="3"
+
+> 军官证 </option>
+                                              
+                                              <option value="4"
+
+> 士兵证 </option>
+                                              
+                                              <option value="5"
+
+> 港澳居民来往内地通行证 </option>
+                                              
+                                              <option value="6"
+
+> 台湾同胞来往内地通行证 </option>
+                                              
+                                              <option value="7"
+
+> 港澳通行证 </option>
+                                              
+                                              <option value="8"
+
+> 外国人居留证 </option>
+                                              
+                                              <option value="9"
+
+> 警官证 </option>
+                                              
+                                              <option value="C"
+
+> 法人代码 </option>
+                                              
+                                              <option value="D"
+
+> 客户代码 </option>
+                                              
+                                            </select></td>
+                                        </tr>
+                                        <tr  > 
+                                          <td height="25" class="TB6-td2">证件号码 
+                                          </td>
+                                          <td class="TB6-td2"><input name="CBICERNO" type="text" id="CBICERNO" size="18" maxlength="20" value=""></td>
+                                        </tr>
+                                        
+                                        <tr id=prj_no1 style="DISPLAY:none"> 
+                                          <td height="25" class="TB6-td2">项目号</td>
+                                          <td class="TB6-td2"><input name="PRJ_NO" type="text"    disabled id="PRJ_NO" size="6" maxlength="6" value=""></td>
+                                        </tr>
+                                        
+                                        <tr> 
+                                          <td height="25" class="TB6-td2">个人征信/法人贷款查询情况</td>
+                                          <td align="left" class="TB6-td2"><select name="CBIRTID1" >
+                                              
+								<option value="1"
+								
+								> 有查询记录 </option>
+							
+								<option value="2"
+								
+								> 无查询记录 </option>
+							
+								<option value="3"
+								
+								> 未查询 </option>
+							
+                                            </select></td>
+                                        </tr>
+                                        
+										
+                                                                             <tr> 
+                                          <td height="25" class="TB6-td2">第一担保方式</td>
+                                          <td align="left" class="TB6-td2"><select name="GUMOD" disabled>
+                                              
+
+<option value="D1"
+
+> 住房抵押 </option>
+
+
+
+<option value="D2"
+
+> 商业用房抵押 </option>
+
+
+
+<option value="D3"
+
+> 厂房抵押 </option>
+
+
+
+<option value="D4"
+
+> 土地抵押 </option>
+
+
+
+<option value="D5"
+
+> 车辆抵押 </option>
+
+
+
+<option value="B1"
+
+> 自然人保证 </option>
+
+
+
+<option value="B2"
+
+> 法人保证 </option>
+
+
+
+<option value="B3"
+
+> 保证保险 </option>
+
+
+
+<option value="Z1"
+
+> 存单质押 </option>
+
+
+
+<option value="Z2"
+
+> 国债质押 </option>
+
+
+
+<option value="Z3"
+
+> 其他有价单证质押 </option>
+
+
+
+<option value="B4"
+
+> 信用担保 </option>
+
+
+
+<option value="D6"
+
+> 机械设备抵押 </option>
+
+
+
+<option value="QT"
+
+> 其他 </option>
+
+
+
+
+
+<option value="DD"
+
+> 组合抵押 </option>
+
+
+
+<option value="BB"
+
+> 组合保证 </option>
+
+
+
+<option value="ZZ"
+
+> 组合质押 </option>
+
+
+
+<option value="E1"
+
+>  </option>
+
+
+                                            </select></td>
+                                        </tr>
+                                        <tr> 
+                                          <td height="25" class="TB6-td2">第二担保方式</td>
+                                          <td align="left" class="TB6-td2"><select name="GRTMD2" disabled>
+                                              
+                                              <option value="D1"
+
+> 住房抵押 </option>
+                                              
+                                              <option value="D2"
+
+> 商业用房抵押 </option>
+                                              
+                                              <option value="D3"
+
+> 厂房抵押 </option>
+                                              
+                                              <option value="D4"
+
+> 土地抵押 </option>
+                                              
+                                              <option value="D5"
+
+> 车辆抵押 </option>
+                                              
+                                              <option value="B1"
+
+> 自然人保证 </option>
+                                              
+                                              <option value="B2"
+
+> 法人保证 </option>
+                                              
+                                              <option value="B3"
+
+> 保证保险 </option>
+                                              
+                                              <option value="Z1"
+
+> 存单质押 </option>
+                                              
+                                              <option value="Z2"
+
+> 国债质押 </option>
+                                              
+                                              <option value="Z3"
+
+> 其他有价单证质押 </option>
+                                              
+                                              <option value="B4"
+
+> 信用担保 </option>
+                                              
+                                              <option value="D6"
+
+> 机械设备抵押 </option>
+                                              
+                                              <option value="QT"
+
+> 其他 </option>
+                                              
+                                              <option value="NO"
+
+> 无担保 </option>
+                                              
+                                              <option value="DD"
+
+> 组合抵押 </option>
+                                              
+                                              <option value="BB"
+
+> 组合保证 </option>
+                                              
+                                              <option value="ZZ"
+
+> 组合质押 </option>
+                                              
+                                              <option value="E1"
+
+>  </option>
+                                              
+                                            </select></td>
+                                        </tr>
+                                        <tr> 
+                                          <td height="25" class="TB6-td2">第三担保方式</td>
+                                          <td align="left" class="TB6-td2"><select name="GRTMD3" disabled>
+                                              
+                                              <option value="D1"
+
+> 住房抵押 </option>
+                                              
+                                              <option value="D2"
+
+> 商业用房抵押 </option>
+                                              
+                                              <option value="D3"
+
+> 厂房抵押 </option>
+                                              
+                                              <option value="D4"
+
+> 土地抵押 </option>
+                                              
+                                              <option value="D5"
+
+> 车辆抵押 </option>
+                                              
+                                              <option value="B1"
+
+> 自然人保证 </option>
+                                              
+                                              <option value="B2"
+
+> 法人保证 </option>
+                                              
+                                              <option value="B3"
+
+> 保证保险 </option>
+                                              
+                                              <option value="Z1"
+
+> 存单质押 </option>
+                                              
+                                              <option value="Z2"
+
+> 国债质押 </option>
+                                              
+                                              <option value="Z3"
+
+> 其他有价单证质押 </option>
+                                              
+                                              <option value="B4"
+
+> 信用担保 </option>
+                                              
+                                              <option value="D6"
+
+> 机械设备抵押 </option>
+                                              
+                                              <option value="QT"
+
+> 其他 </option>
+                                              
+                                              <option value="NO"
+
+> 无担保 </option>
+                                              
+                                              <option value="DD"
+
+> 组合抵押 </option>
+                                              
+                                              <option value="BB"
+
+> 组合保证 </option>
+                                              
+                                              <option value="ZZ"
+
+> 组合质押 </option>
+                                              
+                                              <option value="E1"
+
+>  </option>
+                                              
+                                            </select></td>
+                                        </tr>
+                                        <tr id=custno style="DISPLAY:none"> 
+                                          <td height="25" class="TB6-td2">客户号</td>
+                                          <td class="TB6-td2"><input type="text" name="CUSTNO" size="8" maxlength="8" value=""></td>
+                                        </tr>
+                                        <tr id=adv style="DISPLAY:none"> 
+                                          <td height="25" class="TB6-td2">贷款帐号</td>
+                                          <td align="left" class="TB6-td2"><input name="ACTNO" type="text"    disabled id="ACTNO" size="18" maxlength="18"></td>
+                                        </tr>
+										<tr id='ref_task_seqno' style="DISPLAY:none"> 
+                                          <td height="25" class="TB6-td2">组合公积金贷款相关流水</td>
+                                          <td class="TB6-td2"><input name="CCAS_TASKLOG.REF_TASK_SEQNO" type="text"     size="8" maxlength="8" value=""></td>
+                                        </tr>
+					<tr id='cliperan' style="DISPLAY:none"> 
+                                          <td height="25" class="TB6-td2">额度帐号</td>
+                                          <td class="TB6-td2"><input name="CCAS_PLAATRN.CLIPERAN" type="text"     size="20" maxlength="20" value=""></td>
+                                        </tr>
+					<tr id='laflnuse' style="DISPLAY:none"> 
+                                          <td height="25" class="TB6-td2">贷款用途</td>
+                                          <td align="left" class="TB6-td2"><select name="CCAS_PLAATRN.LAFLNUSE" >
+                                              
+								<option value="1"
+								
+								> 购房 </option>
+							
+								<option value="2"
+								
+								> 购车 </option>
+							
+								<option value="3"
+								
+								> 装修 </option>
+							
+								<option value="4"
+								
+								> 留学（教育） </option>
+							
+								<option value="5"
+								
+								> 购耐用消费品 </option>
+							
+								<option value="9"
+								
+								> 其他 </option>
+							
+                                            </select></td>
+                                        </tr>
+                                        <tr> 
+                                          <td height="25" colspan="2" class="TB6-td2"><div align="center"> 
+                                              <input name="Submit"  type="submit" class="BTN" value="确认" onClick="return(goSubmit())">
+                                              &nbsp;&nbsp;&nbsp; 
+                                              <input name="Submit2" type="submit" class="BTN" value="取消" onClick="return(goCancel())">
+                                            </div></td>
+                                        </tr>
+                                      </table>
+                                  </form></td>
+                                </tr>
+                              </table></td>
+                            </tr>
+                            <tr>
+                              <td background="images/dian.gif"></td>
+                            </tr>
+                          </table></td>
+                        </tr>
+                      </table></td>
+                    </tr>
+                  </table>
+                <p>&nbsp;</p></td>
+              </tr>
+            </table></td>
+  </tr>
+  <tr>
+    <td><iframe src="/CCAS/jsp/controls/endFrame.htm" width="775" height="16" scrolling="no" frameborder="0"></iframe></td>
+  </tr>
+</table>
+</body>
+<SCRIPT language="JavaScript">
+window.document.form1.GRTMD2.value="NO";
+window.document.form1.GRTMD3.value="NO";
+window.document.form1.PRDCD.value='';
+</SCRIPT>
+</html>

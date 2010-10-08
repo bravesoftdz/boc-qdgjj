@@ -1,0 +1,158 @@
+2009-12-23 21:37:47   [error:update]alter table t_daikuan add jiekuanzhihangfuzeren varchar(50) 
+字段 'jiekuanzhihangfuzeren' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:37:47   [error:update]alter table t_daikuan add jiekuanzhihangdizhi varchar(200) 
+字段 'jiekuanzhihangdizhi' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:37:47   [error:update]alter table t_daikuan add jiekuanzhihangdianhua varchar(100) 
+字段 'jiekuanzhihangdianhua' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:40:37   [error:update]alter table t_daikuan add jiekuanzhihangfuzeren varchar(50) 
+字段 'jiekuanzhihangfuzeren' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:40:37   [error:update]alter table t_daikuan add jiekuanzhihangdizhi varchar(200) 
+字段 'jiekuanzhihangdizhi' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:40:37   [error:update]alter table t_daikuan add jiekuanzhihangdianhua varchar(100) 
+字段 'jiekuanzhihangdianhua' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:41:07   [error:update]alter table t_daikuan add jiekuanzhihangfuzeren varchar(50) 
+字段 'jiekuanzhihangfuzeren' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:41:12   [error:update]alter table t_daikuan add jiekuanzhihangdizhi varchar(200) 
+字段 'jiekuanzhihangdizhi' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:41:14   [error:update]alter table t_daikuan add jiekuanzhihangdianhua varchar(100) 
+字段 'jiekuanzhihangdianhua' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:45:52   [error:update]alter table t_daikuan add jiekuanzhihangfuzeren varchar(50) 
+字段 'jiekuanzhihangfuzeren' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:45:52   [error:update]alter table t_daikuan add jiekuanzhihangdizhi varchar(200) 
+字段 'jiekuanzhihangdizhi' 已经存在于表 't_daikuan' 中。
+2009-12-23 21:45:52   [error:update]alter table t_daikuan add jiekuanzhihangdianhua varchar(100) 
+字段 'jiekuanzhihangdianhua' 已经存在于表 't_daikuan' 中。
+2009-12-29 22:20:35   [error:update]alter table t_fangwu add yingshougongbenfei varchar(50) 
+字段 'yingshougongbenfei' 已经存在于表 't_fangwu' 中。
+2009-12-29 22:20:35   [error:update]alter table t_fangwu add yingshoupinggufei varchar(50) 
+字段 'yingshoupinggufei' 已经存在于表 't_fangwu' 中。
+2009-12-29 22:20:35   [error:update]alter table t_fangwu add yingshoudanbaofei varchar(50) 
+字段 'yingshoudanbaofei' 已经存在于表 't_fangwu' 中。
+2009-12-29 22:20:35   [error:update]create view viewall as SELECT t_main.id, t_main.inputdate, t_main.lastUpdateTime, t_main.state, t_main.proxy, t_daikuan.xiangmubianhao, t_daikuan.jiekuanshijian, t_daikuan.jiekuanzhonglei, t_daikuan.jiekuanyongtu,t_daikuan.daikuanjine, t_daikuan.qixian, t_daikuan.lilv, t_daikuan.huankuanfangshi, t_daikuan.yunhuankuane, t_daikuan.toubaojine,t_daikuan.xianzhong, t_daikuan.shouyiren, t_daikuan.diyawumingcheng, t_daikuan.jiekuanrenxianzhufangquanshu, t_daikuan.jiekuanrencunzhezhanghao,t_daikuan.shoufangrencunzhezhanghao, t_daikuan.yuehuankuanezhanyueshourubili, t_daikuan.gongjijindaikuanjine, t_daikuan.yuejiaogongjijine, t_daikuan.gongjijindiyalv, t_daikuan.yinhangdiyalv, t_daikuan.gongjijinyuehuankuane, t_daikuan.qizhiriqi, t_daikuan.hetonghao, t_daikuan.yewubianhao,t_daikuan.diaocha, t_daikuan.gongjijinyuehuankuanezhanyueshourubili, t_daikuan.yinhangyuehuankuanezhanyueshourubili,CCUR(t_daikuan.daikuanjine)+CCUR(IIf(isNumeric(t_daikuan.gongjijindaikuanjine),t_daikuan.gongjijindaikuanjine,0)) AS daikuanjineall, t_daikuan.jiekuanzhihang, t_daikuan.lilvfudongbeli, CCUR(IIf(isNumeric(t_daikuan.jiekuanrengongjijinjiaocune), t_daikuan.jiekuanrengongjijinjiaocune,0))+CCUR(IIf(isNumeric(t_daikuan.jiekuanrenpeiougongjijinjiaocune), t_daikuan.jiekuanrenpeiougongjijinjiaocune,0)) AS gongjijinjiaocune, t_daikuan.dailiren, t_daikuan.dailirenshenfenzheng,t_daikuan.jiekuanrengongjijinjiaocune, t_daikuan.jiekuanrenpeiougongjijinjiaocune, t_daikuan.diaocha1, t_daikuan.diaocha2, t_daikuan.danbaoren, t_daikuan.print1, t_daikuan.print2, t_daikuan.print3, t_daikuan.print4, t_daikuan.print5, t_daikuan.print6,  t_daikuan.print7, t_daikuan.print8, t_daikuan.fangdichantaxiangquanzhengbianhao, t_daikuan.yapinjieshuori, t_daikuan.fangkuanri, t_daikuan.yijiaori, t_fangwu.shoufangrenxingming, t_fangwu.shoufangrenxingbie, t_fangwu.shoufangrenshenfenzhenghaoma, t_fangwu.hunfou,  t_fangwu.shoufangrenpeiouxingming, t_fangwu.shoufangrenyupeiou, t_fangwu.fangchangongyourenxingming, t_fangwu.shifoutongyi,          t_fangwu.chanquanzhengbianhao, t_fangwu.fangwudiliweizhi, t_fangwu.fangwuhuanjing, t_fangwu.fangwulouyumingcheng, t_fangwu.fangwufanghao, t_fangwu.fangwujianchengniandai, t_fangwu.fangwuxingzhi, t_fangwu.fangwujianzhumianji, t_fangwu.fushufangwujianzhumianji,  t_fangwu.loucong, t_fangwu.peitaosheshi, t_fangwu.tudiquanliqingkuang, t_fangwu.bianxiannenglipingjia,    t_fangwu.pinggujigoumingcheng, t_fangwu.pinggurenzizhi, t_fangwu.shifouzhunru, t_fangwu.gujiafangfa, t_fangwu.pinggujiage, t_fangwu.pinggujiage2, t_fangwu.jiagehelixingpingjia, t_daikuan.diyalv, t_fangwu.shoufukuanbili, t_fangwu.shoufukuanjine, t_fangwu.shoufouqiandinggoufanghetong,    t_fangwu.goufangyongtu, t_fangwu.jiaoyibeijingzhenshixingqueren, t_fangwu.xiangmumingcheng,                               t_fangwu.pinggujiage+'元/㎡ '+t_fangwu.pinggujiage2+'万' AS pinggujiageall, t_fangwu.fangwulouyumingcheng, t_fangwu.fangwufanghao, t_fangwu.shoufangrenzhuzhi, t_fangwu.shoufangrendianhua, t_fangwu.shoufangrenchushenriqi, t_fangwu.fangchangongyourenshenfenzhenghaoma,   t_fangwu.zhongjie, t_fangwu.fangwuleixing, t_jiekuanren.jiekuanrenxingming, t_jiekuanren.jiekuanrenxingbie, t_jiekuanren.jiekuanrennianling,   t_jiekuanren.jiekuanrenchushengnianyue, t_jiekuanren.jiekuanrenshenfenzhenghaoma, t_jiekuanren.jiekuanrenxueli, t_jiekuanren.jiekuanrenhunfou, t_jiekuanren.jiekuanrengongzuonianxian, t_jiekuanren.jiekuanrengongzuogangwei, t_jiekuanren.jiekuanrenrenxianzhinianxian,    t_jiekuanren.jiekuanrenjishuzige, t_jiekuanren.jiekuanrenyuegongzishouru, t_jiekuanren.jiekuanrengongzuodanwei,      t_jiekuanren.jiekuanrendanweijianyaoshuoming, t_jiekuanren.jiekuanrenguoji, t_jiekuanren.jiekuanrenyoubian,       t_jiekuanren.jiekuanrenxianjuzhudizhi, t_jiekuanren.jiekuanrenxianjuzhudizhi2, t_jiekuanren.jiekuanrendanweidianhua,    t_jiekuanren.jiekuanrendanweiyoubian, t_jiekuanren.jiekuanrendanweidizhi, t_jiekuanren.jiekuanrendanweixingzhi,      t_jiekuanren.jiekuanrenjiatingdianhua, t_jiekuanren.jiekuanrenshouji, t_jiekuanren.jiekuanrenchengxinxitongchaxunqingkuang, t_jiekuanren.jiekuanrenyuqijiluqingkuang, t_jiekuanren.jiekuanrenpeiouxingming, t_jiekuanren.jiekuanrenpeiouchushengnianyue,  t_jiekuanren.jiekuanrenpeiounianling, t_jiekuanren.jiekuanrenpeioushenfenzhenghaoma, t_jiekuanren.jiekuanrenpeiougongzuodanwei,    t_jiekuanren.jiekuanrenpeioudanweijianyaoshuoming, t_jiekuanren.jiekuanrenpeioudanweidianhua, t_jiekuanren.jiekuanrenpeioujiatingdianhua, t_jiekuanren.jiekuanrenpeiouxueli, t_jiekuanren.jiekuanrenpeiougongzuonianxian, t_jiekuanren.jiekuanrenpeioudanweidizhi,             t_jiekuanren.jiekuanrenpeioudanweixingzhi, t_jiekuanren.jiekuanrenpeioudanweiyoubian, t_jiekuanren.jiekuanrenpeiouzhicheng,       t_jiekuanren.jiekuanrenpeioushouji, t_jiekuanren.jiekuanrenpeiougongzuogangwei, t_jiekuanren.jiekuanrenpeiourenxianzhinianxian,    t_jiekuanren.jiekuanrenpeiouyuegongzishouru, t_jiekuanren.jiekuanrenpeiouchengxinxitongchaxunqingkuang,                  t_jiekuanren.jiekuanrenpeiouyuqijiluqingkuang, t_jiekuanren.jiatingyuezongshouru, t_jiekuanren.jiatingqitashourulaiyuan,   t_jiekuanren.jiatingqitafuzhaijizhichu, t_jiekuanren.jiatingyuezhichu, t_jiekuanren.jiatingshouruzhenshixingjihelipingjia,    t_jiekuanren.yinghangcunkuan, t_jiekuanren.jiekuanrengongzuodanwei+IIf(isnull(t_jiekuanren.jiekuanrendanweijianyaoshuoming),'','，'+t_jiekuanren.jiekuanrendanweijianyaoshuoming) AS jiekuanrendanweiall,  t_jiekuanren.jiekuanrenxianjuzhudizhi+IIf(isnull(t_jiekuanren.jiekuanrenxianjuzhudizhi2),'','，'+t_jiekuanren.jiekuanrenxianjuzhudizhi2) AS jiekuanrenxianjuzhudizhiall,          t_jiekuanren.jiekuanrenpeiougongzuodanwei+IIf(isnull(t_jiekuanren.jiekuanrenpeioudanweijianyaoshuoming),'','，'+t_jiekuanren.jiekuanrenpeioudanweijianyaoshuoming) AS jiekuanrenpeioudanweiall,  t_jiekuanren.gongyangrenqingkuang, t_jiekuanren.gongyangrenrenshu, t_jiekuanren.jiatingrenkou, t_jiekuanren.jiatingrenkehuliushuihao,t_fangwu.pinggubianhao, t_fangwu.louconggong, t_fangwu.fangwujiegou, t_fangwu.chaoxiang, t_fangwu.pingmianbuju, t_fangwu.fangwujiegou+t_fangwu.chaoxiang as fangwujiegoujichaoxiang,    t_daikuan.jiekuanzhihangfuzeren, t_daikuan.jiekuanzhihangdizhi, t_daikuan.jiekuanzhihangdianhua, t_daikuan.dailirendianhua, t_fangwu.yingshougongbenfei, t_fangwu.yingshoupinggufei, t_fangwu.yingshoudanbaofei FROM t_jiekuanren INNER JOIN (t_fangwu INNER JOIN (t_daikuan INNER JOIN t_main ON t_daikuan.mainid=t_main.id) ON t_fangwu.mainid=t_main.id) ON t_jiekuanren.mainid=t_main.id
+VIEW 不能包含参数。
+2009-12-29 22:21:27   [error:update]alter table t_fangwu add yingshougongbenfei varchar(50) 
+字段 'yingshougongbenfei' 已经存在于表 't_fangwu' 中。
+2009-12-29 22:21:27   [error:update]alter table t_fangwu add yingshoupinggufei varchar(50) 
+字段 'yingshoupinggufei' 已经存在于表 't_fangwu' 中。
+2009-12-29 22:21:27   [error:update]alter table t_fangwu add yingshoudanbaofei varchar(50) 
+字段 'yingshoudanbaofei' 已经存在于表 't_fangwu' 中。
+2009-12-29 22:21:27   [error:update]drop view viewall
+找不到表或约束条件。
+2009-12-29 22:26:10   [error:update]alter table t_daikuan add jiekuanzhihangfuzeren varchar(50) 
+字段 'jiekuanzhihangfuzeren' 已经存在于表 't_daikuan' 中。
+2009-12-29 22:26:10   [error:update]alter table t_daikuan add jiekuanzhihangdizhi varchar(200) 
+字段 'jiekuanzhihangdizhi' 已经存在于表 't_daikuan' 中。
+2009-12-29 22:26:10   [error:update]alter table t_daikuan add jiekuanzhihangdianhua varchar(100) 
+字段 'jiekuanzhihangdianhua' 已经存在于表 't_daikuan' 中。
+2009-12-29 22:26:10   [error:update]drop view viewall
+找不到表或约束条件。
+2010-03-16 20:07:51   [error:update]create table t_ver(v varchar(8))
+表 't_ver' 已存在。
+2010-03-16 20:07:51   [error:update]alter table t_dict add remark varchar(200)
+字段 'remark' 已经存在于表 't_dict' 中。
+2010-03-16 20:07:51   [error:update]alter table t_fangwu add pinggubianhao varchar(50) 
+字段 'pinggubianhao' 已经存在于表 't_fangwu' 中。
+2010-03-16 20:07:51   [error:update]alter table t_fangwu add louconggong varchar(50) 
+字段 'louconggong' 已经存在于表 't_fangwu' 中。
+2010-03-16 20:07:51   [error:update]update t_fangwu set fangwujiegou = fangwujiegoujichaoxiang 
+参数 fangwujiegoujichaoxiang 没有默认值。
+2010-03-16 20:07:51   [error:update]alter table t_fangwu drop fangwujiegoujichaoxiang 
+在表 't_fangwu' 中没有字段 'fangwujiegoujichaoxiang'。
+2010-03-16 20:07:51   [error:update]alter table t_fangwu add chaoxiang varchar(50) 
+字段 'chaoxiang' 已经存在于表 't_fangwu' 中。
+2010-03-16 20:07:51   [error:update]alter table t_fangwu add pingmianbuju varchar(50) 
+字段 'pingmianbuju' 已经存在于表 't_fangwu' 中。
+2010-03-16 20:07:51   [error:update]alter table t_main add lastUpdateTime varchar(50) 
+字段 'lastUpdateTime' 已经存在于表 't_main' 中。
+2010-03-16 20:07:51   [error:update]alter table t_main add state varchar(100) 
+字段 'state' 已经存在于表 't_main' 中。
+2010-03-16 20:07:51   [error:update]alter table t_main add proxy varchar(100) 
+字段 'proxy' 已经存在于表 't_main' 中。
+2010-03-16 20:07:51   [error:update]alter table t_ver add lastExportTime varchar(50) 
+字段 'lastExportTime' 已经存在于表 't_ver' 中。
+2010-05-08 00:35:48   [error:update]create table t_ver(v varchar(8))
+表 't_ver' 已存在。
+2010-05-08 00:35:48   [error:update]alter table t_dict add remark varchar(200)
+字段 'remark' 已经存在于表 't_dict' 中。
+2010-05-08 00:35:48   [error:update]alter table t_fangwu add pinggubianhao varchar(50) 
+字段 'pinggubianhao' 已经存在于表 't_fangwu' 中。
+2010-05-08 00:35:48   [error:update]alter table t_fangwu add louconggong varchar(50) 
+字段 'louconggong' 已经存在于表 't_fangwu' 中。
+2010-05-08 00:35:48   [error:update]update t_fangwu set fangwujiegou = fangwujiegoujichaoxiang 
+参数 fangwujiegoujichaoxiang 没有默认值。
+2010-05-08 00:35:48   [error:update]alter table t_fangwu drop fangwujiegoujichaoxiang 
+在表 't_fangwu' 中没有字段 'fangwujiegoujichaoxiang'。
+2010-05-08 00:35:48   [error:update]alter table t_fangwu add chaoxiang varchar(50) 
+字段 'chaoxiang' 已经存在于表 't_fangwu' 中。
+2010-05-08 00:35:48   [error:update]alter table t_fangwu add pingmianbuju varchar(50) 
+字段 'pingmianbuju' 已经存在于表 't_fangwu' 中。
+2010-05-08 00:35:48   [error:update]alter table t_main add lastUpdateTime varchar(50) 
+字段 'lastUpdateTime' 已经存在于表 't_main' 中。
+2010-05-08 00:35:48   [error:update]alter table t_main add state varchar(100) 
+字段 'state' 已经存在于表 't_main' 中。
+2010-05-08 00:35:48   [error:update]alter table t_main add proxy varchar(100) 
+字段 'proxy' 已经存在于表 't_main' 中。
+2010-05-08 00:35:48   [error:update]alter table t_ver add lastExportTime varchar(50) 
+字段 'lastExportTime' 已经存在于表 't_ver' 中。
+2010-05-09 20:19:57   [error:update]insert into t_user (user, pass, admin) values('陈磊', 'd41d8cd98f00b204e9800998ecf8427e', 0)
+INSERT INTO 语句的语法错误。
+2010-05-09 20:21:16   [error:update]insert into t_user (user, pass, admin) values('陈磊', 'd41d8cd98f00b204e9800998ecf8427e', 0)
+INSERT INTO 语句的语法错误。
+2010-05-09 20:53:31   [error:update]insert into t_main (inputdate, createUser) values('2010-05-09 20:53:31', 'cc')
+INSERT INTO 语句包含下列未知的字段名： 'createUser'。确定键入的名称是正确的， 然后重试。
+2010-05-09 21:04:51   [error:update]create table t_user (id  Counter, [user] varchar(50), [pass] varchar(50), [admin] int )
+表 't_user' 已存在。
+2010-05-09 21:09:18   [error:update]alter table t_main add createUser1 varchar(50) 
+字段 'createUser1' 已经存在于表 't_main' 中。
+2010-05-10 21:12:39   [error:update]alter table t_main add createUser varchar(50)
+字段 'createUser' 已经存在于表 't_main' 中。
+2010-05-10 21:12:39   [error:update]create table t_user (id COUNTER CONSTRAINT PrimaryKey PRIMARY KEY, [user] varchar(50), [pass] varchar(50), [admin] int default 0 )
+表 't_user' 已存在。
+2010-05-10 21:43:55   [error:update]create table t_ver(v varchar(8))
+表 't_ver' 已存在。
+2010-05-10 21:43:55   [error:update]alter table t_dict add remark varchar(200)
+字段 'remark' 已经存在于表 't_dict' 中。
+2010-05-10 21:43:55   [error:update]alter table t_fangwu add pinggubianhao varchar(50) 
+字段 'pinggubianhao' 已经存在于表 't_fangwu' 中。
+2010-05-10 21:43:55   [error:update]alter table t_fangwu add louconggong varchar(50) 
+字段 'louconggong' 已经存在于表 't_fangwu' 中。
+2010-05-10 21:43:55   [error:update]update t_fangwu set fangwujiegou = fangwujiegoujichaoxiang 
+参数 fangwujiegoujichaoxiang 没有默认值。
+2010-05-10 21:43:55   [error:update]alter table t_fangwu drop fangwujiegoujichaoxiang 
+在表 't_fangwu' 中没有字段 'fangwujiegoujichaoxiang'。
+2010-05-10 21:43:55   [error:update]alter table t_fangwu add chaoxiang varchar(50) 
+字段 'chaoxiang' 已经存在于表 't_fangwu' 中。
+2010-05-10 21:43:55   [error:update]alter table t_fangwu add pingmianbuju varchar(50) 
+字段 'pingmianbuju' 已经存在于表 't_fangwu' 中。
+2010-05-10 21:43:55   [error:update]alter table t_main add lastUpdateTime varchar(50) 
+字段 'lastUpdateTime' 已经存在于表 't_main' 中。
+2010-05-10 21:43:55   [error:update]alter table t_main add state varchar(100) 
+字段 'state' 已经存在于表 't_main' 中。
+2010-05-10 21:43:55   [error:update]alter table t_main add proxy varchar(100) 
+字段 'proxy' 已经存在于表 't_main' 中。
+2010-05-10 21:43:55   [error:update]alter table t_ver add lastExportTime varchar(50) 
+字段 'lastExportTime' 已经存在于表 't_ver' 中。
+2010-05-11 20:58:56   [error:update]create table t_ver(v varchar(8))
+表 't_ver' 已存在。
+2010-05-11 20:58:56   [error:update]alter table t_dict add remark varchar(200)
+字段 'remark' 已经存在于表 't_dict' 中。
+2010-05-11 20:58:56   [error:update]alter table t_fangwu add pinggubianhao varchar(50) 
+字段 'pinggubianhao' 已经存在于表 't_fangwu' 中。
+2010-05-11 20:58:56   [error:update]alter table t_fangwu add louconggong varchar(50) 
+字段 'louconggong' 已经存在于表 't_fangwu' 中。
+2010-05-11 20:58:56   [error:update]update t_fangwu set fangwujiegou = fangwujiegoujichaoxiang 
+参数 fangwujiegoujichaoxiang 没有默认值。
+2010-05-11 20:58:56   [error:update]alter table t_fangwu drop fangwujiegoujichaoxiang 
+在表 't_fangwu' 中没有字段 'fangwujiegoujichaoxiang'。
+2010-05-11 20:58:57   [error:update]alter table t_fangwu add chaoxiang varchar(50) 
+字段 'chaoxiang' 已经存在于表 't_fangwu' 中。
+2010-05-11 20:58:57   [error:update]alter table t_fangwu add pingmianbuju varchar(50) 
+字段 'pingmianbuju' 已经存在于表 't_fangwu' 中。
+2010-05-11 20:58:57   [error:update]alter table t_main add lastUpdateTime varchar(50) 
+字段 'lastUpdateTime' 已经存在于表 't_main' 中。
+2010-05-11 20:58:57   [error:update]alter table t_main add state varchar(100) 
+字段 'state' 已经存在于表 't_main' 中。
+2010-05-11 20:58:57   [error:update]alter table t_main add proxy varchar(100) 
+字段 'proxy' 已经存在于表 't_main' 中。
+2010-05-11 20:58:57   [error:update]alter table t_ver add lastExportTime varchar(50) 
+字段 'lastExportTime' 已经存在于表 't_ver' 中。

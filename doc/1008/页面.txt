@@ -1,0 +1,5021 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+<SCRIPT language="JavaScript">
+var fkcounter=1; //做全局变量使用，在Fkjhxx.jsp中亦用到该变量
+var hkcounter=1; //做全局变量使用，在Hkjhxx.jsp中亦用到该变量
+var nodelcount = 0;//做全局变量使用，在Hkjhxx.jsp中亦用到该变量,在贷款过机，放款后修改还款计划
+
+var oldamt = 0.00;
+
+
+
+
+
+//身份证检查函数
+function validateNo(val) {
+
+var id = val;
+if(id == "")
+	return false;
+if(id.length!=15 && id.length!=18)
+	return false;
+
+if(id.length==18){
+	var szVerCode= ['1','0','X','9','8','7','6','5','4','3','2'];
+	var  iW = ['7', '9', '10', '5', '8', '4', '2', '1', '6', '3', '7', '9', '10', '5', '8', '4', '2'];
+	var  identidyCard=id;
+	var iS = 0;
+	var i;
+	for(i=0;i<17;i++)
+	{
+          
+    	 iS += parseInt(identidyCard.charAt(i)) * parseInt(iW[i]);
+     
+	}
+	var iY = iS%11;
+	if(id.charAt(17)!=szVerCode[iY]){
+		return false;	
+ 	}	
+   }		
+	return true;
+}
+
+//计算栏位取值长度
+function cacuLength(str){
+  var	i=0,len=0;
+  	len=str.length;
+    	for (i=0;i<str.length;i++) {
+      	u=str.charCodeAt(i);
+      	if ((u>0)&&(u<128))  continue; 
+      	else len=len+1;  
+    	}  	
+  return	len;
+ }
+ 
+function  openwin()
+{
+var noticeme ='null';
+if (noticeme==null||noticeme==""||noticeme=='null') return true;
+
+OpenWindow=window.open("",  "newwin",  "height=250,  width=250,toolbar=no,scrollbars="+scroll+",menubar=no" );
+//写成一行
+OpenWindow.document.write("<TITLE>JOHN 的提示</TITLE>"  );
+OpenWindow.document.write("<BODY  BGCOLOR=#ffffff>"  );
+OpenWindow.document.write("<h1>请注意</h1>"  );
+OpenWindow.document.write("该用户有拒绝贷款，原因是:"+ noticeme );
+OpenWindow.document.write("</BODY>"  );
+OpenWindow.document.write("</HTML>"  );
+OpenWindow.document.close();
+}
+
+
+
+function findAct(str){
+var url = "/CCAS/CMain?action=QRYACTNO&command=ACTQuery&ACTNO="+str;
+window.open(url,"account","width=400,height=200",true);
+}
+
+
+</SCRIPT>
+
+<SCRIPT language="JavaScript">
+	document.onkeydown = function() {
+	if(event.keyCode==13) {
+		event.keyCode=0;
+		event.returnValue=false;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+var lmcounter=1;
+
+function getOptionVal(selObj,the_array,selVal)
+{
+	selObj.options.length=the_array.length;
+	for (loop=0; loop < the_array.length; loop++) {
+		selObj.options[loop].text=the_array[loop];
+		selObj.options[loop].value=the_array[loop];
+		if (the_array[loop] == selVal)
+			selObj.options[loop].selected = true;
+	}
+}
+
+function getEntincod()
+{
+	var objIncod = window.document.getElementById('CCAS_PLAATRN.ENTINCOD');
+	if (objIncod.value == '') {
+		var sel = window.document.getElementById('CCAS_PLAATRN.SPONSTDCD').selectedIndex;
+		objIncod.value = incodArray[sel];
+	}
+	var objCusno = window.document.getElementById('CCAS_RETAILTRAN.WCISALECMP');
+	if (objCusno.value == '') {
+		var sel = window.document.getElementById('CCAS_PLAATRN.SPONSTDCD').selectedIndex;
+		objCusno.value = cusnoArray[sel];
+	}
+}
+
+function getEntsadd1(selVal)
+{
+	var sel = window.document.getElementById('CCAS_PLAATRN.SPONSTDCD').selectedIndex;
+	getOptionVal(window.document.getElementById('CCAS_PLAATRN.ENTSAAD1'),sadd1Array[sel],selVal);
+}
+
+function getEnttincod()
+{
+	var sel = window.document.getElementById('CCAS_PLAATRN.SPONSTDCD').selectedIndex;
+	window.document.getElementById('CCAS_RETAILTRAN.WCISALECMP').value = cusnoArray[sel];
+	window.document.getElementById('CCAS_PLAATRN.ENTINCOD').value = incodArray[sel];
+	setOptionText(window.document.getElementById('CCAS_PLAATRN.ENTSAAD1'),sadd1Array[sel]);
+}
+
+function setOptionText(selObj,the_array)
+{
+	selObj.options.length=the_array.length;
+	for (loop=0; loop < the_array.length; loop++) {
+		selObj.options[loop].text=the_array[loop];
+		selObj.options[loop].value=the_array[loop];
+	}
+	selObj.selectedIndex=0;
+}
+
+function getOptionManuf(selmanuf,selVal)
+{
+
+ 	getOptionVal(selmanuf,carmanufArray,selVal);
+}
+function getOptionBrand(selmanuf,selbrand,selVal)
+{
+	var sel = selmanuf.selectedIndex;
+	getOptionVal(selbrand,carbrandArray[sel],selVal);
+}
+function getOptionVechtp(selmanuf,selbrand,selvechtp,selVal)
+{
+	var sel1 = selmanuf.selectedIndex;
+	var sel2 = selbrand.selectedIndex;
+	getOptionVal(selvechtp,carvechtpArray[sel1][sel2],selVal);
+}
+function OnSelectManuf(selmanuf,selbrand,selvechtp)
+{
+	var sel = selmanuf.selectedIndex;
+	setOptionText(selbrand,carbrandArray[sel]);
+	setOptionText(selvechtp,carvechtpArray[sel][0]);
+}
+function OnSelectBrand(selmanuf,selbrand,selvechtp)
+{
+	var sel1 = selmanuf.selectedIndex;
+	var sel2 = selbrand.selectedIndex;
+	setOptionText(selvechtp,carvechtpArray[sel1][sel2]);
+}
+
+
+
+//对分次放款中的利率相关字段的检查
+
+
+function goCancel(){
+	window.document.form1.command.value="RetailCreditTRN";
+	//added by chenrong,20090408。使取消键发挥作用。
+	window.document.form1.submit();
+	return true ;
+
+}
+
+
+function chkValid()
+{
+	
+		if(checkgrjkr()==false){ //验证贷款人详细信息录入是否合法，包括借款人家庭信息
+		   return false ;
+		}
+
+		
+				
+		
+				
+
+	
+	
+	if(checkdksq()==false){  //验证贷款申请信息录入是否合法
+	   return false ;
+	}
+	
+	//个人抵质押循环贷款额度申请PLGA；
+	//个人信用循环贷款额度申请PLFB；	
+	
+		if(checkjyxx()==false){ //验证贷款交易信息录入是否合法
+ 	  		return false ;
+		}
+	
+
+	
+
+	
+	
+
+		if(window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="5"){
+			if(checkhkjh()==false){ //验证放款计划信息录入是否合法
+			  return false ;
+			}
+		 }  
+
+	
+	
+
+	return true;
+}
+
+function goSubmit(str,str2,str3){
+
+	window.document.form1.action.value=str;
+	window.document.form1.BUILDRPT.value=str2;
+	window.document.form1.REFUSE.value=str3;
+	
+	//added by liuxg on 20090505 增加对客户名的控制
+	var nameObj = window.document.getElementById('CCAS_CCTPERTRN.PERCUSNM');
+	if(checkCusName(nameObj,"jkrxx")==false)
+            return false;
+	//added end
+	
+	//added by jiangy  20091110 增加对客户其他名称的控制
+	var OthNameObj = window.document.getElementById('CCAS_CCTPERTRN.OTHERTEL');
+	if(OthNameObj!=null&&Trim(OthNameObj.value)!='')
+	{
+		if(checkCusName(OthNameObj,"jkrxx")==false)
+            return false;
+   }
+	//added end
+
+	
+	//还款日，在下面判断 20090725 hanying
+	//add by jiangy 20090504 begin 对所有产品都必须输入"每期固定还款日"
+	
+	var v_firret1 = window.document.getElementById('CCAS_PLAATRN.FIRRET');
+	if(v_firret1!=null)
+	{
+	  if(v_firret1.value.length == 0 )
+	  {
+	  	/*
+			alert("请输入[每期固定还款日]");
+			showDivByName(window,"dksqxx");
+			v_firret1.focus();
+			return false;
+		*/
+	   }
+	   else
+	   {
+	   
+	     //if(!(v_firret1.value >= 1 && v_firret1.value <= 18) && !(v_firret1.value > 20 && v_firret1.value <= 30))
+	     if(!(v_firret1.value >= 1 && v_firret1.value <= 31) )
+	     {
+				 alert("[每期固定还款日]应为1--31，请重新输入[每期固定还款日]");
+				 showDivByName(window,"dksqxx");
+				 v_firret1.focus();
+				 return false;
+			  
+	      }
+	    }
+	 }
+	 
+	 //add by jiangy 20090504 end
+	//end hanying 20090725
+	
+	if (str3 == 'Y') {
+	
+		var refuseObj = window.document.getElementById('CCAS_TASKLOG.TSKREFRS');
+		if (refuseObj.value=="") {
+			alert("请输入拒绝原因");
+       		showDivByName(window,"qttj");
+			refuseObj.focus();
+			return false;
+		}
+	
+		window.document.getElementById('CCAS_TASKLOG.TASK_STATUS').value = '0148';
+	}
+
+	//检查界面栏位输入类型的正确性：必输项是否有输入；字符、数字、日期、身份证类型的检查
+	if (validateForm(form1,1,1,1,0)==false){ //验证所有显示的录入项是否合法
+	  return false;
+	}
+	
+	
+	
+	//检查界面栏位中的输入逻辑是否正确
+	var actionstr = str;
+	if(chkValid()==false) {  //对跟具体贷款产品有关的录入项进行验证
+		return false;
+	}	
+
+	//额度贷款时，贷款申请金额 < 额度金额
+	var jkamt = 0;
+	if (Trim(window.document.getElementById('CCAS_PLAATRN.LAFDRAMT').value)!='') {
+		jkamt = window.document.getElementById('CCAS_PLAATRN.LAFDRAMT').value;
+	}
+	
+	//add by jiangy 20090525 begin
+	var moninObj =window.document.getElementById('CCAS_CCTPERTRN.WKIMONIN') ;
+	if(moninObj.value.length  >0&&moninObj.value<0)
+	{
+        alert("[月收入]应大于等于0");
+        showDivByName(window,"jkrxx");
+        moninObj.focus();
+        return false;
+   }
+	//add by jiangy 20090525 end
+		
+	
+
+//modify by hanying 20091105
+//还款日不再是必输项，也不对还款日的输入进行限制
+/*
+
+	  var firret1  = window.document.getElementById('CCAS_PLAATRN.FIRRET');
+	  if(firret1.value =="" || firret1.value.length == 0){
+			alert("请输入[每期固定还款日]");
+			showDivByName(window,"dksqxx");
+			firret1.focus();
+			return false;
+	   }else {
+			
+			if((firret1.value >=1 && firret1.value <=18) || (firret1.value >= 22 && firret1.value <= 28)){
+
+			}else{
+				alert("[每期固定还款日]只允许输入1-18，22-28");
+				showDivByName(window,"dksqxx");
+				return false;
+			}
+		}
+
+*/
+//end 20091105
+
+	
+
+	
+		window.document.form1.LASTACTION.value ="NEW";
+	
+
+	window.document.form1.command.value="RetailCreditPLAA";
+	window.document.form1.lastcommand.value=window.document.form1.command.value;
+	window.document.form1.lastcommand1.value="RetailCreditPLAA";
+
+
+	window.document.getElementById('CCAS_PLAATRN.LAFPRDCD').disabled = false ;
+
+	window.document.form1.hkcounter.value = hkcounter;
+	window.document.form1.fkcounter.value = fkcounter;
+	window.document.form1.lmcounter.value = lmcounter;
+
+	
+		window.document.getElementById('CCAS_PLAATRN.PRJ_NO').value =window.document.getElementById('CCAS_RETAILTRAN.HAFHOUID').value;
+	
+	
+		
+
+
+	
+		var totamt='0';
+		var validateObj =window.document.getElementById('CCAS_CCTPERTRN.WKIMONIN') ;
+		if(Trim(validateObj.value)!=''){
+		  totamt=totamt+'+'+validateObj.value*1.0;
+		}
+
+		var validateObj =window.document.getElementById('CCAS_CCTPERTRN.FAMILYOTSALARY') ;
+		if(Trim(validateObj.value)!=''){
+		  totamt=totamt+'+'+validateObj.value*1.0;
+		}
+
+		window.document.getElementById('CCAS_CCTPERTRN.PERMTOTIN').value=eval(totamt);
+	
+
+ 
+
+
+	
+	if(window.document.getElementById('CCAS_PLAATRN.RETDTTYPE').value=="N" && Trim(window.document.getElementById('CCAS_PLAATRN.FIRRET').value)!=''){
+	   alert("[不变更还款日]时不能输入首期还款日");
+	   return false;
+	 }
+	var validateObj =window.document.getElementById('CCAS_PLAATRN.LAFRATVL');
+	var validateObj1 =window.document.getElementById('CCAS_PLAATRN.LAFRATVL');
+
+
+
+	
+	//将界面中disabled放开，servlet能读取其中的内容
+	for (var i=0; i<form1.elements.length; i++) {
+	  var validateObj = form1.elements[i];
+	  validateObj.disabled = false ;
+	}
+	
+	//将界面中的提交按钮屏蔽。
+	if(actionstr=='SAVE'){
+		try {
+	   window.document.getElementById('Submit2').style.display = 'none';
+	   	window.document.getElementById('Submit4').style.display = 'none';
+
+		}catch(e) {
+
+		}
+	}
+
+	
+
+	window.document.form1.submit();
+	return true ;
+
+
+}
+
+
+//Added by liuxg on 20090505 BANCS对客户姓名做了限制，不能全为数字，
+//且不能含以下字符："?" "!" "$" "%" "*" "^" "！", "？","^"
+function checkCusName(formObj,strWindow){
+   var valid = "?？!！$%*^";//客户姓名不能包含这些符号
+   var temp;
+   var objIsNum = false;
+   var objName = formObj;
+   
+   if(objName.value != null){
+	for (var i=0; i<objName.value.length; i++){
+	    temp = "" + objName.value.substring(i, i+1);
+	    if (valid.indexOf(temp) != "-1"){ 
+	    	alert("姓名中不能包含\""+temp+"\"");
+	    	showDivByName(window,strWindow);
+	        objName.focus();
+	    	return false;
+	    }
+	}
+	
+	objIsNum = isNaN(objName.value);
+	
+	if(!objIsNum){
+	    alert("姓名不能全为数字");
+	    showDivByName(window,strWindow);
+    	    objName.focus();
+    	    return false;
+	}
+    }
+}
+//added end
+
+
+function closewin(){
+	window.opener=null
+	window.close();
+}
+//借款人信息
+function checkgrjkr(){
+   //对于录入项合法性检查大部分放入Jkrxxx.jsp中每个HTML标签中的alt属性，使用公共的验证方法进行统一验证，对于其它跟产品有关的验证放在下面
+   
+          calwk();
+          calres();
+   
+
+    //证件到期日
+	var validateObj =window.document.getElementById('CCAS_CCTPERTRN.PERCERDT') ;
+	if(Trim(validateObj.value) <= 20100824){
+        alert("证件到期日应大于当天");
+        showDivByName(window,"jkrxx");
+        validateObj.focus();
+        return false;
+     }
+
+	//出生日期
+	var validateObj_bir =window.document.getElementById('CCAS_CCTPERTRN.CBIBTHDA') ;
+	if(Trim(validateObj_bir.value) > 20100824){
+        alert("[出生日期]应小于当天");
+        showDivByName(window,"jkrxx");
+        validateObj_bir.focus();
+        return false;
+     }
+
+	//参加工作日期/入学时间
+	var v_firwk =window.document.getElementById('CCAS_CCTPERTRN.PERWOKDA') ;
+     var v_posnm="参加工作日期";
+     //modify by jiangy 20090509 begin 不管是参加工作日期还是入学时间都要判断应小于当天，如果是助学贷款，则v_posnm="入学日期"
+     
+     
+
+	if(v_firwk.value.length == 0){
+        alert("请输入[" + v_posnm + "]");
+        showDivByName(window,"jkrxx");
+        v_firwk.focus();
+        return false;
+	}
+
+	if(Trim(v_firwk.value) > 20100824){
+        alert(v_posnm + "应小于等于当天");
+        showDivByName(window,"jkrxx");
+        v_firwk.focus();
+        return false;
+     }
+     
+	if(Trim(validateObj_bir.value) >= Trim(v_firwk.value) ){
+        alert(v_posnm + "应大于[出生日期]");
+        showDivByName(window,"jkrxx");
+        v_firwk.focus();
+        return false;
+     }     
+     //modify by jiangy 20090509 end
+
+
+	//现工作日期
+	var v_wk =window.document.getElementById('CCAS_CCTPERTRN.WKIBEDAT') ;
+
+	
+		if(v_wk.value.length == 0){
+        	alert("请输入[现工作日期]");
+        	showDivByName(window,"jkrxx");
+        	v_wk.focus();
+        	return false;
+		}
+
+		if(Trim(v_wk.value) > 20100824)
+    	{
+        	alert("[现工作日期]应小于等于当天");
+        	showDivByName(window,"jkrxx");
+        	v_wk.focus();
+        	return false;
+     	}
+
+		if(Trim(v_wk.value) < v_firwk.value)
+    	{
+        	alert("[现工作日期]应大于等于[参加工作日期]");
+        	showDivByName(window,"jkrxx");
+        	v_wk.focus();
+        	return false;
+    	}
+	
+
+/*
+	//现职工作年数
+	var validateObj =window.document.getElementById('CCAS_CCTPERTRN.PERNWKDA') ;
+	
+           if(validateObj.value.length >2  || validateObj.value < 0){
+                  alert("输入的现工作日期不合法");
+                  showDivByName(window,"jkrxx");
+                  v_wk.focus();
+                  return false;
+           }
+    
+
+	if(validateObj.value.length == 0){
+	 	
+        		alert("请录入合法的现工作日期");
+        		showDivByName(window,"jkrxx");
+        		v_wk.focus();
+     	
+
+        return false;
+	}
+
+*/
+
+	//现住址时间
+	var v_resid =window.document.getElementById('CCAS_CCTPERTRN.PERNLVDA') ;
+	
+		if(v_resid.value.length == 0){
+        	alert("请输入[现住址时间]");
+        	showDivByName(window,"jkrxx");
+        	v_resid.focus();
+        	return false;
+		}
+	
+
+	if(v_resid.value.length > 0 && Trim(v_resid.value) > 20100824){
+        alert("[现住址时间]应小于等于当天");
+        showDivByName(window,"jkrxx");
+        v_resid.focus();
+        return false;
+    }
+    
+	if(Trim(validateObj_bir.value) > Trim(v_resid.value) ){
+        alert("[现住址时间]应大于等于[出生日期]");
+        showDivByName(window,"jkrxx");
+        v_firwk.focus();
+        return false;
+     }       
+
+ 	//现住址居住年限/学制
+ 	var validateObj =window.document.getElementById('CCAS_CCTPERTRN.LCLIVEYRLMT') ;
+	
+           if(validateObj.value.length >2  || validateObj.value < 0){
+                  alert("输入的住现址时间不合法");
+                  showDivByName(window,"jkrxx");
+                  v_resid.focus();
+                  return false;
+           }
+    
+
+   //个人客户信用等级
+   var validateObj =window.document.getElementById('CCAS_CCTPERTRN.PERCRCLS') ;
+   if(validateObj.value.length == 0){
+       alert("请选择个人客户信用等级");
+       showDivByName(window,"jkrxx");
+       validateObj.focus();
+       return false;
+   }
+
+	if(Trim(window.document.getElementById('CCAS_CCTPERTRN.CBIBTHDA').value)!=''){
+		if(window.document.getElementById('CCAS_CCTPERTRN.CBICERTY').value =="01"){
+		  	if(validatecertid(window.document.getElementById('CCAS_CCTPERTRN.CBICERNO'),window.document.getElementById('CCAS_CCTPERTRN.CBIBTHDA'),'jkrxx')==false)
+		  	     return false;
+		}
+	}
+
+	if(Trim(window.document.getElementById('action').value)=='SAVE'){
+		if(Trim(window.document.getElementById('CCAS_CCTPERTRN.PEREDUBK').value)==''){
+		  alert("请选择文化程度");
+		  showDivByName(window,"jkrxx");
+		  window.document.getElementById('CCAS_CCTPERTRN.PEREDUBK').focus();
+		  return false ;
+		}
+		if(Trim(window.document.getElementById('CCAS_CCTPERTRN.PERHOMSO').value)==''){
+		  alert("请选择现住房来源及居住状况");
+		  showDivByName(window,"jkrxx");
+		  window.document.getElementById('CCAS_CCTPERTRN.PERHOMSO').focus();
+		  return false ;
+		}
+		if(Trim(window.document.getElementById('CCAS_CCTPERTRN.WKIBUSTY').value)==''){
+		  alert("请选择本单位行业");
+		  showDivByName(window,"jkrxx");
+		  window.document.getElementById('CCAS_CCTPERTRN.WKIBUSTY').focus();
+		  return false ;
+		}
+		if(Trim(window.document.getElementById('CCAS_CCTPERTRN.PEROCCPA').value)==''){
+		  alert("请选择职业");
+		  showDivByName(window,"jkrxx");
+		  window.document.getElementById('CCAS_CCTPERTRN.PEROCCPA').focus();
+		  return false ;
+		}
+		if(Trim(window.document.getElementById('CCAS_CCTPERTRN.PERTITLE').value)==''){
+		  alert("请选择职称");
+		  showDivByName(window,"jkrxx");
+		  window.document.getElementById('CCAS_CCTPERTRN.PERTITLE').focus();
+		  return false ;
+		}
+	}
+//del by hai 20100224 FOR V3.1河北投产无法保存旧流水综合录入信息
+	//if (window.document.getElementById('CCAS_PLAATRN.CBIRTID1').value == '1') {
+	//	window.document.getElementById('CCAS_PERCREDIT.TASK_SEQNO_1').value = window.document.getElementById('CCAS_TASKLOG.TASK_SEQNO').value;
+	//	window.document.getElementById('CCAS_PERCREDIT.CBICERTY').value = window.document.getElementById('CCAS_CCTPERTRN.CBICERTY').value;
+	//	window.document.getElementById('CCAS_PERCREDIT.CBICERNO').value = window.document.getElementById('CCAS_CCTPERTRN.CBICERNO').value;
+	//}
+//end del 20100224
+	return true ;
+}
+
+
+//法人借款信息
+function checkfrjkr(){
+
+	
+
+    return true ;
+}
+
+function checkfrdbr(){
+	if(window.document.form1.CCAS_PLAATRN_RELCERTY.value =="0"){
+	        var validateObj =window.document.form1.CCAS_PLAATRN_RELCERNO ;
+	        if(checkformdata(validateObj,"CCASCERTNO|frdb|bok")==false)
+	        	return false;
+	}
+	return true ;
+}
+
+
+//单位公积金信息
+function checkdwgjj(){
+    //对于录入项合法性检查均放入每个HTML标签中的alt属性，使用公共的验证方法进行统一验证
+    return true ;
+}
+
+//个人公积金信息
+function checkgrgjj(){
+    //对于录入项合法性检查均放入每个HTML标签中的alt属性，使用公共的验证方法进行统一验证
+     return true ;
+}
+//个人征信信息
+function checkgrzxxx(iNum,iCol,str)
+{
+    //对于录入项合法性检查均放入Grzxxx.jsp中每个HTML标签中的alt属性，使用公共的验证方法进行统一验证
+    return true;
+}
+
+//法人贷款卡信息
+function checkfrdkk()
+{
+    //对于录入项合法性检查均放入Frdkkxxx.jsp中每个HTML标签中的alt属性，使用公共的验证方法进行统一验证
+    return true;
+}
+
+
+
+
+//added by jinagy 20091130 begin
+function adv_format2(value,num) //保留小数点后面num位，如果num位以后出现非0，则小数点后第num位加1
+{
+var a_str = formatnumber(value,num);
+var a_int = parseFloat(a_str);
+if (value.toString().length>a_str.length)
+{
+var b_str = value.toString().substring(a_str.length)
+var b_int = parseFloat(b_str);
+if (b_int>0)
+{
+var bonus_str,bonus_int;
+if (num==0)
+{
+return a_str;
+}
+else
+{
+bonus_str = "0."
+for (var i=1; i<num; i++)
+bonus_str+="0";
+bonus_str+="1";
+bonus_int = parseFloat(bonus_str);
+}
+a_str = formatnumber(a_int + bonus_int, num)
+}
+}
+else
+{
+return a_str
+}
+return a_str
+}
+//added by jinagy 20091130 end
+
+
+function calloanrate(){
+	var objRate = window.document.getElementById('CCAS_PLAATRN.LOANRATE');
+	if (objRate == null) {
+		return;
+	}
+	var procd  = window.document.getElementById('CCAS_PLAATRN.LAFPRDCD').value;
+	var jkamt = 0;
+	if (Trim(window.document.getElementById('CCAS_PLAATRN.LAFDRAMT').value)!='') {
+		jkamt = window.document.getElementById('CCAS_PLAATRN.LAFDRAMT').value;
+	}
+	jkamt = jkamt*1.0 + oldamt*1.0;
+	var totamt = 0;
+	if (Trim(window.document.getElementById('CCAS_RETAILTRAN.PRICE').value)!='') {
+		totamt = window.document.getElementById('CCAS_RETAILTRAN.PRICE').value;
+	}
+
+	
+		var tmpamt = 0;
+		if (Trim(window.document.getElementById('CCAS_RETAILTRAN.TOTPRICE').value)!='') {
+			tmpamt = window.document.getElementById('CCAS_RETAILTRAN.TOTPRICE').value;
+		}
+		if (tmpamt*1.0 > 0 && totamt*1.0 > tmpamt*1.0) {
+			totamt = tmpamt;
+		}
+
+	
+
+	var rate = 0.00;
+	if (totamt != 0 ) {
+		rate = adv_format2(jkamt/totamt*100,4);
+	}
+	objRate.value = rate;
+}
+	
+function retTypeValid(){
+	var procd  = window.document.getElementById('CCAS_PLAATRN.LAFPRDCD').value;
+	var rettype= window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value;
+	if(procd!='PLAB' && procd!='PLAE' && procd!='PLBA' && procd!='PLCA' && procd!='PLCB' && procd!='PLCC' && procd!='PLDA' && procd!='PLDB' && procd!='PLFA'&& procd!='PLFB'&& procd!='PLFC' && procd!='PLGA'){
+	          if(rettype=='7' || rettype=='8'){
+	             alert("不能选择该种还款方式");
+	             window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value ='3';
+	          }
+
+	}
+	if(procd!='PLDB' && procd!='PLAD' && procd!='PLBB' && procd!='PLCA' && procd!='PLAE' && procd!='PLHA' && procd!='PLHC' && procd!='PLHB' ){
+	          if(rettype=='7' || rettype=='8'){
+	             alert("不能选择该种还款方式");
+	             window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value ='3';
+	          }
+
+	}
+
+}
+
+function pgjg(){
+	//window.document.getElementById('CCAS_RETAILTRAN.PRICE').value = window.document.getElementById('CCAS_RETAILTRAN.TOTPRICE').value;
+}
+
+
+function findprj(){
+	var url = "/CCAS/CMain?action=QUERY1&command=ProjectManager&CCAS_PROJECTTRN.PRJ_NO="+window.document.getElementById('CCAS_RETAILTRAN.HAFHOUID').value+"&CCAS_PROJECTTRN.BNKNO="+window.document.getElementById('CCAS_PLAATRN.BNKNO').value;
+	window.open(url,"changepassword1","");
+}
+
+function findldpj(){
+	var url = "/CCAS/CMain?action=QUERY1&command=ProjectManager&CCAS_PROJECTTRN.PRJ_NO="+window.document.getElementById('CCAS_RETAILTRAN.WCIINSNO').value+"&CCAS_PROJECTTRN.BNKNO="+window.document.getElementById('CCAS_PLAATRN.BNKNO').value;
+	window.open(url,"changepassword1","");
+}
+
+
+function findbxgstrn(){
+	
+   var v_other = window.document.getElementById('CCAS_RETAILTRAN.OTHERDESC').value;
+
+   if(v_other.length > 0 && v_other.length < 10)
+   {
+       var v_eng = "0000000000" + v_other;
+
+       v_other = v_eng.substring(v_eng.length - 10);
+       window.document.getElementById('CCAS_RETAILTRAN.OTHERDESC').value = v_other;
+
+   }
+
+   var url = "/CCAS/CMain?action=QUERY1&command=CorpCustomerManager&CUSTP=ENT&CBICUSNO="+window.document.getElementById('CCAS_RETAILTRAN.OTHERDESC').value;
+	window.open(url,"changepassword1","");
+}
+
+function findbxgs(){
+	var url = "/CCAS/CMain?action=QUERY1&command=CorpCustomerManager&CBICUSNO="+window.document.getElementById('CCAS_CCTCTI.CMPNO_1').value;
+	window.open(url,"changepassword1","");
+}
+
+function findqc(){
+	var v_other = window.document.getElementById('CCAS_RETAILTRAN.WCISALECMP').value;
+
+   if(v_other.length > 0 && v_other.length < 10)
+   {
+       var v_eng = "0000000000" + v_other;
+
+       v_other = v_eng.substring(v_eng.length - 10);
+       window.document.getElementById('CCAS_RETAILTRAN.WCISALECMP').value = v_other;
+
+   }
+
+	var url = "/CCAS/CMain?action=QUERY1&command=CorpCustomerManager&CUSTP=ENT&CBICUSNO="+window.document.getElementById('CCAS_RETAILTRAN.WCISALECMP').value;
+	window.open(url,"changepassword1","");
+}
+
+function goQuery(){
+	var url = "/CCAS/CMain?action=QUERY&command=RetailCreditPLAA&CCAS_TASKLOG.TASK_SEQNO="+window.document.getElementById('CCAS_TASKLOG.REF_TASK_SEQNO').value;
+	window.open(url,"changepassword1","");
+}
+
+function rcquery(){
+	var url = "/CCAS/CMain?action=QUERY&command=RCApproveQuery&CBICERTY="+window.document.getElementById('CCAS_CCTPERTRN.CBICERTY').value+"&CBICERNO="+window.document.getElementById('CCAS_CCTPERTRN.CBICERNO').value;
+	window.open(url,"changepassword1","menubar=no,scrollbars=yes,resizable=yes,status=yes");
+}
+
+
+function caculate21(ll,qs,je)
+{
+   return ((ll * Math.pow((1+ll),qs)) / (Math.pow(1+ll,qs)-1) * je);
+}
+
+function caculate22( ll, qs, je, bj)
+{
+        //每月供款额=贷款金额/供款总期数+（贷款金额－已还本金）×月利率
+        return (je/qs+(je-bj)*ll);
+}
+
+function calgfdj(){
+   var pjj = window.document.getElementById('CCAS_RETAILTRAN.TOTPRICE').value/window.document.getElementById('CCAS_RETAILTRAN.LCTBLDAR').value;
+   window.document.getElementById('tempgfdj').value = adv_format(pjj,2);
+}
+
+
+//交易信息
+function checkjyxx(){
+
+	
+    //检查贷款助学贷款中的证件合法性
+    
+
+	
+
+	
+
+	
+	 return true ;
+}
+
+
+//
+/*
+  获取日期函数--唐枫
+  功能: 设置需要的日期,基准日期为当前系统日期
+  参数: days 需要设置的日期天数;flag 标志位
+        如:当前日期为20050915,若需要设置日期20050905,则days=10,flag=0;
+           若需要设置日期20050925,则days=10,flag=1或非0的整数
+  返回值：需要得到的日期
+*/
+function setTheDate(basedata,month)
+{		
+      if( month<=0)
+	       return null;
+       
+	alert("length = " + basedata.length);
+	var beginYear = basedata.substr(0, 4);
+	var beginMonth = basedata.substr(4, 2);
+	var beginDay = basedata.substr(6, 2);
+	
+   beginMonth = parseInt(beginMonth);
+    month = parseInt(month);
+    
+    if(isNaN(beginMonth)){
+    	beginMonth = 0;
+    }
+    
+    if(isNaN(month)){
+    	month = 0;
+    }    	
+
+	beginMonth += month
+
+
+	var output_Date = new Date(beginYear, beginMonth,beginDay);	       
+		
+	  	var theYear=output_Date.getYear().toString();
+		  var theMonth=output_Date.getMonth().toString();
+		  theMonth = (output_Date.getMonth() + 1 < 10 ? "0" + theMonth : theMonth);
+	    var theDate = output_Date.getDate().toString();
+	      theDate = (output_Date.getDate() < 10 ? "0" + theDate : theDate);
+    	alert("result is " + theYear+theMonth+theDate);
+    	
+    	return  theYear+theMonth+theDate;
+    	
+}
+
+
+//放款计划信息
+function checkfkjh(){
+	
+	
+	var validateObj_LAFDRAMT = window.document.getElementById('CCAS_PLAATRN.LAFDRAMT') ;
+	var validateObj_FLRATE = window.document.getElementById('CCAS_PLAATRN.FLRATE') ;
+	var validateObj_LAFTERM = window.document.getElementById('CCAS_PLAATRN.LAFTERM');
+	var aptamt_sum = 0;
+	var todat_value = "20100824";
+	var validateObj_ratexpdt = window.document.getElementById('CCAS_PLAATRN.RATEXPDT');
+	var yc_date = "";
+
+
+ for(var i =1;i<= fkcounter;i++){
+
+	var validateObj_PRDMD = window.document.getElementById('CCAS_PLAATRN.APTPRDMD.'+ i) ;
+	var validateObj_PRDSD = window.document.getElementById('CCAS_PLAATRN.APTPRDSD.'+ i) ;
+	var validateObj_RATTP = window.document.getElementById('CCAS_PLAATRN.APTRATTP.'+ i) ;
+	
+	
+	if(validateObj_PRDMD.value == "" || validateObj_PRDMD.value.length == 0 ||
+	   validateObj_PRDSD.value == "" || validateObj_PRDSD.value.length == 0){
+	   	alert("不存在此类型的贷款，请重新选择[贷款利率类型]+[贷款利率基准]+[贷款期限]");
+		showDivByName(window,"fkjh");
+		validateObj_RATTP.focus();
+   	 	return false;  	   
+	}
+	
+	//贷款利率类型	
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRATTP.'+ i) ;
+    if(validateObj.value == ""){
+		//alert("请输入贷款利率类型");
+		//showDivByName(window,"fkjh");
+		//validateObj.focus();
+   	 	return false;    
+    }
+  
+	//贷款利率基准
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTIRTBS.'+ i) ;
+    if(validateObj_RATTP.value == "B" && validateObj.value == ""){
+		alert("请输入贷款利率基准");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+   	 	return false;    
+    }
+    
+    
+    
+
+	//放款日的检查
+	var validateObj_dsdat = window.document.getElementById('CCAS_PLAATRN.APTDSDAT.'+ i) ;
+	if(validateObj_dsdat.value == "" || validateObj_dsdat.value.length == 0){
+		alert("请输入放款日");
+		showDivByName(window,"fkjh");
+		validateObj_dsdat.focus();
+   	 	return false;    
+ 	
+	}	
+    if(checkformdata(validateObj_dsdat,"CCASDATE|fkjh|bok")==false)
+   	 return false;
+   	 
+	if(!compare(todat_value,validateObj_dsdat.value)){
+		alert("[放款日期]应大于当前日期！");
+		showDivByName(window,"fkjh");
+		validateObj_dsdat.focus();
+   	 	return false;	
+	}
+	
+	//计算合同到期日
+	//合同到期日等于第一次放款日期＋合同期限	
+	if(i == 1){
+		//计算合同到期日：第一次放款日期＋合同期限		
+		if(validateObj_LAFTERM.value != "" && validateObj_ratexpdt.value == "" ){
+		
+			validateObj_ratexpdt.value = setTheDate_M(validateObj_dsdat.value,validateObj_LAFTERM.value);
+		}
+		
+	}else{
+		//保证下一期的还款日期小于上一期的还款日期
+		var l = i-1
+		var validateObj_lsdat = window.document.getElementById('CCAS_PLAATRN.APTDSDAT.'+ j) ;
+		if(parseFloat(validateObj_dsdat) <= parseFloat(validateObj_lsdat)){
+			alert("第" + i + "期的[放款日期]应大于" + l + "期的[放款日期]！");
+			showDivByName(window,"fkjh");
+			validateObj_dsdat.focus();
+   	 		return false;		
+		}
+		
+	}	
+   	 
+   	
+	//贷款期限
+	var validateObj_term = window.document.getElementById('CCAS_PLAATRN.APTTERM.'+ i) ;
+    if(checkformdata(validateObj_term,"CCASNUMBER|fkjh|bok")==false)
+   	 return false;
+
+   	
+   	//判断放款日+贷款期限，应小于合同层的到期日
+	
+	var validateObj_aptexpdt = setTheDate_M(validateObj_dsdat.value,validateObj_term.value);
+	if(!compare(validateObj_aptexpdt,validateObj_ratexpdt.value)){
+		alert("[放款日期]+[贷款期限]应该小于或等于[合同到期日]");
+		showDivByName(window,"fkjh");
+		validateObj_term.focus();
+   	 	return false;	
+	}	
+  	
+   	   	 
+	//贷款金额
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTDSAMT.'+ i) ;	
+    if(checkformdata(validateObj,"CCASDEC15_2|fkjh|bok")==false)
+   	 return false;
+  	 
+   	if(parseFloat(validateObj.value) > parseFloat(validateObj_LAFDRAMT.value)){
+   		alert("分次放款金额不能大于贷款总额");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+   	 	return false;    		
+   	} 
+ 	
+   	aptamt_sum += parseFloat(validateObj.value);
+   	 
+	//利率值
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTARTVL.'+ i) ;
+    if(validateObj_RATTP.value == "A"){
+    	if(validateObj.value == "" || validateObj.value.length == 0 || parseFloat(validateObj.value) == 0.0){
+    		alert("请输入[利率值]");
+			showDivByName(window,"fkjh");
+			validateObj.focus();
+			return false; 
+    	
+    	}
+    	if(checkformdata(validateObj,"CCASDEC8_4|fkjh|bok")==false)
+   	 		return false;    
+    }
+    
+    if(parseFloat(validateObj_FLRATE.value) + parseFloat(validateObj.value) < 0){
+            alert("[利率值]与[利率浮动值]之和不能小于零");
+            showDivByName(window,"fkjh");
+            validateObj.focus();
+            return false;
+    }
+    
+   
+	if(validateObj_RATTP.value == "B"){
+	//利率浮动周期基期
+	window.document.getElementById('CCAS_PLAATRN.APTRATFG.'+ i).value = "M" ;    
+    
+	//利率浮动周期
+	/*
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRATVD.'+ i) ;
+    if(validateObj.value == "" || validateObj.value.length == 0 ||parseFloat(validateObj.value) == 0.0){
+    	alert("贷款利率类型为周期浮动，请输入[利率浮动周期]");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+   	 	return false;    		
+    }else{	
+    	if(checkformdata(validateObj,"CCASNUMBER|fkjh|bok")==false)
+   	 		return false;    
+    } 
+    */
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRATVD.'+ i) ;
+    if(validateObj.value == "" ){
+    	alert("贷款利率类型为周期浮动，请输入[利率浮动周期]");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+   	 	return false;    		
+    }	
+   
+	
+	//贴息截至日
+	var validateObj = 	window.document.getElementById('CCAS_PLAATRN.APTFFDAT.'+ i) ;
+	
+	//modify by hanying 20090820
+	//只有第一期能输入〔贴息截至日〕
+	if(i == 1){
+		if(checkformdata(validateObj,"CCASDATE|fkjh|boc")==false)
+   	 		return false;  	
+	}
+	//end 20090820
+   	 		
+    if(validateObj.value != "" && validateObj.value.length != 0 ){
+   	 	
+    	 
+   	 	if(!compare(validateObj_dsdat.value,validateObj.value)){
+    		alert("[贴息截至日]应该大于或等于[放款日期]，请输入[放款日期]");
+			showDivByName(window,"fkjh");
+			validateObj_dsdat.focus();
+			return false;
+   	 		
+   	 	} 
+   	 	
+   	 	if(!compare(validateObj.value,validateObj_aptexpdt)){
+    		alert("[贴息截至日]应该小于等于'[放款日期]+[贷款期限]'，请输入[放款日期]");
+			showDivByName(window,"fkjh");
+			validateObj_dsdat.focus();
+			return false;
+   	 		
+   	 	} 
+   	 	 		
+    }
+
+ 	
+	}else if(validateObj_RATTP.value == "A"){
+	
+	window.document.getElementById('CCAS_PLAATRN.APTRATFG.'+ i).value = "" ;    
+    
+	//利率浮动周期
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRATVD.'+ i) ;
+    if(validateObj.value != "" && parseFloat(validateObj.value) != 0.0){
+    	alert("[贷款利率类型]为'固定利率'，不能输入[利率浮动周期]");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+   	 	return false;    		
+    } 
+    
+   
+    
+	//首次浮动日期
+
+        
+	}
+ 
+    
+	//还款方式
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRETMD.'+ i) ;
+    if(validateObj.value == "" || validateObj.value.length == 0){
+		alert("请输入还款方式");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+   	 	return false;    
+    }else{
+		//与贷款组联系,合同成放款,还款方式只能是"F"、“G”
+		//“F”、“G”对应CCAS的还款方式是：“等额本息”、“等额本金”、“滞后等额本息”、“滞后等额本金”、"等额本金递增"、“等额本金递减”、“气球还款”
+		//但是62925建立合同层放款交易中，没有“本金递减额”、“尾款”的栏位，所以只允许“等额本息”、“等额本金”、“滞后等额本息”、“滞后等额本金”
+		if(validateObj.value !="3" && validateObj.value !="4" && validateObj.value !="7" && validateObj.value !="8"){
+			alert("有分次放款计划的贷款，只支持“等额本息”、“等额本金”、“滞后等额本息”、“滞后等额本金”还款方式，请修改还款方式");
+		    showDivByName(window,"fkjh");
+		    validateObj.focus();
+		    return false;
+		}  
+    
+    } 
+    
+	//还款周期
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTCYCLE.'+ i) ;
+    if(validateObj.value == "" || validateObj.value.length == 0){
+		alert("请输入还款周期");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+   	 	return false;    
+    }              
+   	    	    	 
+	//延迟还本期数
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRETPER.'+ i) ;
+    if(validateObj.value != "" && validateObj.value.length != 0){
+    	if(checkformdata(validateObj,"CCASNUMBER|fkjh|bok")==false)
+   	 		return false;    
+    }
+
+    
+	var lafrtmodObj = window.document.getElementById('CCAS_PLAATRN.APTRETMD.'+ i);
+	if ((validateObj.value == '0' || validateObj.value.length == 0) && (lafrtmodObj.value == '7' || lafrtmodObj.value == '8')) {
+       	alert("还款方式选择'滞后等额本息'或'滞后等额本金'时,[延迟还本期数]不能为0或空");
+       	showDivByName(window,"fkjh");
+       	validateObj.focus();
+       	return false;
+       	
+		     	
+       	
+	} else if (validateObj.value != '0' && validateObj.value.length != 0 ) {
+	
+		if(lafrtmodObj.value != '7' && lafrtmodObj.value != '8') {
+       		alert("还款方式不是'滞后等额本息'或'滞后等额本金'时,[延迟还本期数]必须为0");
+       		showDivByName(window,"fkjh");
+       		validateObj.focus();
+       		return false;
+       	}
+       	else {
+	       	if(parseFloat(validateObj.value) >= parseFloat(validateObj_term.value)){
+				alert("[延迟还本期数]要小于'贷款期限'");
+				
+				showDivByName(window,"fkjh");
+				validateObj.focus();
+				return false;
+		  	}  
+       	
+       	}
+	}
+	
+	
+	//对延迟还本期数的判断
+	if(validateObj.value != "" && validateObj.value.length != 0 && validateObj.value != "0"){
+	
+		//计算每一期的[放款日期]+[延迟还本期数]
+		var ycdate_value = setTheDate_M(validateObj_dsdat.value,validateObj.value);
+		
+		if(yc_date == ""){
+		
+			yc_date = ycdate_value;
+			
+		}else{
+			
+			if(parseFloat(ycdate_value.substr(0,6)) != parseFloat(yc_date.substr(0,6))){
+	       		alert("分次放款计划，每一期的([放款日期]+[延迟还本期数])的年、月应该相同");
+    	   		showDivByName(window,"fkjh");
+       			validateObj.focus();
+       			return false;			
+			}
+			
+		}
+	}
+
+	
+    
+	//每期固定还款日
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRETDT.'+ i) ;
+    if(validateObj.value == "" || validateObj.value.length == 0){
+       	alert("请输入[每期固定还款日]");
+       	showDivByName(window,"fkjh");
+       	validateObj.focus();
+       	return false;	
+    }else{
+    	if(checkformdata(validateObj,"CCASNUMBER|fkjh|bok")==false)
+   	 		return false; 
+   	 		
+		if((validateObj.value >=1 && validateObj.value <=18) || (validateObj.value >= 22 && validateObj.value <= 28)){
+
+		}else{
+			alert("[每期固定还款日]只允许输入1-18，22-28");
+			showDivByName(window,"fkjh");
+			validateObj.focus();
+			return false;
+		}
+		   	 		   
+    }
+
+	//收款账户
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRACTN.'+ i) ;
+    if(validateObj.value == "" || validateObj.value.length == 0){
+    	alert("请输入收款账户");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+		return false; 
+    }	
+    if(checkformdata(validateObj,"CCASNUMBER|fkjh|bok")==false)
+   	 return false;
+   
+   if(validateObj.value == '0'){
+    	alert("收款账户不能为0，请输入正确的收款账户");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+		return false; 
+    } 
+    
+   //begin add by hanying 20080125	 
+	//收款账户类型
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRETTP.'+ i) ;
+    if(validateObj.value != "" && validateObj.value.length != 0){    	
+    	if(checkformdata(validateObj,"CCASNUMBER|fkjh|bok")==false)
+   	 	return false;
+   	 }
+   	 
+   	
+   	 
+	//收款子账户类型
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRTSTP.'+ i) ;
+    if(validateObj.value != "" && validateObj.value.length != 0){
+   		if(checkformdata(validateObj,"ALLCHAR|fkjh|bok")==false)
+   	 	return false; 
+	}
+	//end by hanying 20080125
+	   	 
+	//还款账户
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRACAC.'+ i) ;
+    if(validateObj.value == "" || validateObj.value.length == 0){
+    	alert("请输入还款账户");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+		return false; 
+    }
+    if(checkformdata(validateObj,"CCASNUMBER|fkjh|bok")==false)
+   	 return false;
+   	 
+   	 if(validateObj.value == '0'){
+    	alert("还款账户不能为0，请输入正确的还款账户");
+		showDivByName(window,"fkjh");
+		validateObj.focus();
+		return false; 
+    } 
+   	
+   	//begin add by hanying 20080125 
+	//还款子账户标识
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.APTRETFG.'+ i) ;
+    if(validateObj.value != "" && validateObj.value.length != 0){
+    	if(checkformdata(validateObj,"ALLCHAR|fkjh|bok")==false)
+   	 	return false;    	   	    
+   	 }
+    
+    //end by hanying 20080125
+    
+    //放款日不能相同
+    for(var j=1;j < i ;j++) {
+       var v_date_1="";
+       var v_date_2="";
+      
+       v_date_1=window.document.getElementById('CCAS_PLAATRN.APTDSDAT.'+ i);
+       v_date_2=window.document.getElementById('CCAS_PLAATRN.APTDSDAT.'+ j);
+       
+       if(v_date_1.value == v_date_2.value){
+       
+           alert("请合并放款日期相同的放款计划");
+			showDivByName(window,"fkjh");
+			v_date_1.focus();
+   	 		return false;  
+       }
+	}
+	
+	
+  }
+
+ if(parseFloat(validateObj_LAFDRAMT.value) != parseFloat(aptamt_sum)){
+    alert("分次放款金额应该等于贷款总额");
+	showDivByName(window,"fkjh");
+	window.document.getElementById('CCAS_PLAATRN.APTDSAMT.'+ fkcounter).focus();
+   	return false; 
+ }
+
+ return true ;
+}
+
+
+//还款计划信息
+function checkhkjh(){
+		    
+		    
+	var value_LAFTERM = window.document.getElementById('CCAS_PLAATRN.LAFTERM').value ;
+	var value_RATEXPDT = window.document.getElementById('CCAS_PLAATRN.RATEXPDT').value ;
+	var value_LAFDRAMT = window.document.getElementById('CCAS_PLAATRN.LAFDRAMT').value ;	
+	var aptamt_sum = 0;
+	var todat_value = "20100824";
+	var expdat;
+	
+	if(value_RATEXPDT =="" || value_RATEXPDT.length==0){
+		expdat = setTheDate_M(todat_value,value_LAFTERM);
+	}else{
+		expdat = value_RATEXPDT
+	}
+	
+	
+
+ 	for(var i =1;i<= hkcounter;i++){
+   	
+   		//还款日期和贷款到期日的判断
+		var validateObj_hrtretda = window.document.getElementById('CCAS_PLAATRN.HRTRETDA.'+ i) ;
+		/*如果是过机后，放款后的修改，则允许存在小于当前日期的还款计划。
+		if(!compare(todat_value,validateObj_hrtretda.value)){
+			alert("还款计划的[起始日期]应该大于当前日期");
+			showDivByName(window,"hkjh");
+			validateObj_hrtretda.focus();
+   	 		return false;	
+		}	
+		*/
+		if(validateObj_hrtretda.value == "" || validateObj_hrtretda.value.length == 0){
+			alert("请输入[起始日期]");
+			showDivByName(window,"hkjh");
+			validateObj_hrtretda.focus();
+   	 		return false;	
+		
+		}
+		
+		var validateObj_retnum = window.document.getElementById('CCAS_PLAATRN.RETNUM.'+ i) ;	
+		if(validateObj_retnum.value == "" || validateObj_retnum.value.length == 0 || parseInt(validateObj_retnum.value) <=0 ){
+			alert("请输入[还款次数]");
+			showDivByName(window,"hkjh");
+			validateObj_retnum.focus();
+   	 		return false;	
+		
+		}
+		
+			
+			
+		if(!compare(todat_value,validateObj_hrtretda.value) || todat_value==validateObj_hrtretda.value){
+		
+			alert("还款计划的[起始日期]应该大于当前日期");
+			showDivByName(window,"hkjh");
+			validateObj_hrtretda.focus();
+   	 		return false;	
+		}
+		
+			
+       
+
+				
+		if(i > 1){
+		
+			var j = i-1;
+			var last_retda = window.document.getElementById('CCAS_PLAATRN.HRTRETDA.'+ j) ;	
+			var last_retnum = window.document.getElementById('CCAS_PLAATRN.RETNUM.'+ j).value - 1 ;			
+			var last_date = setTheDate_M(last_retda.value,last_retnum);
+			if(!compare(last_date,validateObj_hrtretda.value) || last_date==validateObj_hrtretda.value){
+				
+				alert("第" + i + "笔还款计划的[起始日期]应大于第" + j + "笔还款计划的'[起始日期]+[还款次数]'，请重新输入[起始日期]");
+				showDivByName(window,"hkjh");
+				validateObj_hrtretda.focus();
+   	 			return false;			
+			
+			
+			}	
+		
+		}
+		
+		if(!compare(validateObj_hrtretda.value,expdat)){
+			alert("还款计划的[起始日期]应该小于[贷款到期日]");
+			showDivByName(window,"hkjh");
+			validateObj_hrtretda.focus();
+   	 		return false;	
+		}	
+		
+		var cur_retnum = validateObj_retnum.value - 1 ;	
+		var cur_date = setTheDate_M(validateObj_hrtretda.value,cur_retnum);		
+		if(!compare(cur_date,expdat)){
+		
+			alert("还款计划的'[起始日期]+[还款次数]'应该小于或等于[贷款到期日]");
+			showDivByName(window,"hkjh");
+			validateObj_hrtretda.focus();
+   	 		return false;			
+		
+		}
+  	
+   	   	 
+		//还款本金应该等于贷款总额
+		var validateObj = window.document.getElementById('CCAS_PLAATRN.RETAMT.'+ i) ;	
+		var validateObj_num = window.document.getElementById('CCAS_PLAATRN.RETNUM.'+ i) ;
+		
+		
+	    if(checkformdata(validateObj,"CCASDEC15_2|hkjh|bok")==false){
+   			alert("[还款本金]输入格式不正确，请重新输入");
+			showDivByName(window,"hkjh");
+			validateObj.focus();
+   	 		return false;    		
+   		} 
+  	 
+   		if(parseFloat(validateObj.value) > parseFloat(value_LAFDRAMT)){
+   			alert("[还款本金]不能大于[贷款总额]");
+			showDivByName(window,"hkjh");
+			validateObj.focus();
+   	 		return false;    		
+   		} 
+ 	
+   		var sum = 0;
+   		sum = parseFloat(validateObj_num.value) * parseFloat(validateObj.value);
+   		aptamt_sum += sum; 
+	}
+
+	if(parseFloat(aptamt_sum) != parseFloat(value_LAFDRAMT)){
+   			alert("[还款本金]总和不等于[贷款总额]");
+			showDivByName(window,"hkjh");
+			window.document.getElementById('CCAS_PLAATRN.RETAMT.'+ 1).focus();
+   	 		return false;  
+	}		    
+		
+ return true ;
+}
+
+//贷款申请信息
+function checkdksq(){
+
+var todat_value = "20100824";
+
+//对于非 [个人抵质押循环贷款额度(PLGA)、个人信用循环贷款额度(PLFB)] 的贷款
+
+
+	//已交首期款/自有资金的判断
+   var validateObj =window.document.getElementById('CCAS_PLAATRN.LAFAPYAM');
+   if(checkformdata(validateObj,"CCASDEC15_2|dksqxx|bok")==false)
+        return false;
+
+   var strLAFAPYAM = "已交首期款";
+   
+
+	//20090820 MODIFY BY HANYING
+	//质押贷款（PLEA）、国家教育助学贷款（PLDB），首付款可以为0
+	
+
+		if (Trim(validateObj.value)=='') {
+			alert(strLAFAPYAM+"不能为空");
+			showDivByName(window,"dksqxx");
+			validateObj.focus();
+			return false;
+		}
+
+		if (validateObj.value*1==0) {
+			alert(strLAFAPYAM + "不能为0");
+			showDivByName(window,"dksqxx");
+			validateObj.focus();
+			return false;
+		}	
+	
+	//end 20090820
+	
+	//申请金额的判断
+   var validateObj =window.document.getElementById('CCAS_PLAATRN.LAFDRAMT');
+   if(checkformdata(validateObj,"CCASDEC15_2|dksqxx|bok")==false)
+        return false;
+
+   var strLAFDRAMT = "贷款申请金额";
+	if (Trim(validateObj.value)=='') {
+		alert(strLAFDRAMT+"不能为空");
+		showDivByName(window,"dksqxx");
+		validateObj.focus();
+		return false;
+	}
+
+	if (validateObj.value*1==0) {
+		alert(strLAFDRAMT + "不能为0");
+		showDivByName(window,"dksqxx");
+		validateObj.focus();
+		return false;
+	}
+
+	
+	//申请期限的判断
+   	var strLAFTERM = "申请借款期限";
+   	var lafrtmod = window.document.getElementById('CCAS_PLAATRN.LAFRTMOD')
+   	
+	var term_max = 360;
+ 	var term_min = 60;
+ 	
+   	var validateObj =window.document.getElementById('CCAS_PLAATRN.LAFTERM');
+		
+	if (Trim(validateObj.value)=='') {
+		alert(strLAFTERM+"不能为空");
+		showDivByName(window,"dksqxx");
+		validateObj.focus();
+		return false;
+	}
+    
+    if(checkformdata(validateObj,"CCASNUMBER|dksqxx|bok")==false)
+        return false;
+
+	if (validateObj.value*1==0) {
+		alert(strLAFTERM + "不能为0");
+		showDivByName(window,"dksqxx");
+		validateObj.focus();
+		return false;
+	}
+
+	if(Trim(validateObj.value) > term_max || Trim(validateObj.value) <= term_min )
+	{
+		alert(strLAFTERM + '应该大于['+ term_min + ']月并且小于等于[' + term_max + ']月');
+		showDivByName(window,"dksqxx");
+		validateObj.focus();
+		return false;
+	}     	
+   	
+	
+		
+   //贷款利率的格式判断
+	var v_lafratvl =window.document.getElementById('CCAS_PLAATRN.LAFRATVL');
+	if(v_lafratvl.value == "" || v_lafratvl.value.length == 0 || parseFloat(v_lafratvl.value) == 0.0){
+		alert("请输入[利率值]");
+		showDivByName(window,"dksqxx");
+		v_lafratvl.focus();
+		return false;	
+	}
+	if(checkformdata(v_lafratvl,"CCASDEC7_4|dksqxx|bok")==false)
+		return false;
+		
+	if(parseFloat(v_lafratvl) > 100 ){
+		alert("[利率值]输入太大，请输入小于100的数值!");
+		showDivByName(window,"dksqxx");
+		v_lafratvl.focus();
+		return false;	
+		
+	}		
+	
+
+
+	//浮动利率比
+	var v_ratsca = window.document.getElementById('CCAS_PLAATRN.FLRATESCA');
+	if(v_ratsca.value.length != 0){
+
+	
+		var moneySyntax1;
+		moneySyntax1="XX(2位)[.XX](2位)";
+
+		var moneySyntax2;
+		moneySyntax2="-XX(2位)[.XX](2位)";
+
+		value_temp = Trim(v_ratsca.value);
+
+		moneyReg1="^[0-9]{1,2}(\\.[0-9]{1,2})?$";
+		var regex1 = new RegExp(moneyReg1);
+
+		moneyReg2="^[\-]{1}[0-9]{1,2}(\\.[0-9]{1,2})?$";
+		var regex2 = new RegExp(moneyReg2);
+	
+	/*
+		var moneySyntax;
+		moneySyntax="XX(2位)[.XX](2位)";
+
+
+		value_temp = Trim(v_ratsca.value);
+
+		moneyReg="^[0-9]{1,2}(\\.[0-9]{1,2})?$";
+		var regex = new RegExp(moneyReg);	
+	*/		
+		if(!regex1.test(value_temp) && !regex2.test(value_temp)) {
+			alert("请按" + moneySyntax1 + "或者" + moneySyntax2 +  "格式输入[利率浮动比例]");
+			return false;
+		}	
+	}
+
+	//浮动利率值
+	var v_flrate = window.document.getElementById('CCAS_PLAATRN.FLRATE');
+	if(v_flrate.value.length != 0)
+	{
+		
+		var moneySyntax1;
+		moneySyntax1="XX(2位)[.XX](5位)";
+
+		var moneySyntax2;
+		moneySyntax2="-XX(2位)[.XX](5位)";
+
+		value_temp = Trim(v_flrate.value);
+
+		moneyReg1="^[0-9]{1,2}(\\.[0-9]{1,5})?$";
+		var regex1 = new RegExp(moneyReg1);
+
+		moneyReg2="^[\-]{1}[0-9]{1,2}(\\.[0-9]{1,5})?$";
+		var regex2 = new RegExp(moneyReg2);
+
+	
+	/*
+		var moneySyntax;
+		moneySyntax="XX(2位)[.XX](5位)";
+
+
+		value_temp = Trim(v_flrate.value);
+
+		moneyReg="^[0-9]{1,2}(\\.[0-9]{1,5})?$";
+		var regex = new RegExp(moneyReg);	
+	*/	
+		if(!regex1.test(value_temp) && !regex2.test(value_temp)) {
+			alert("请按" + moneySyntax1 + "或者" + moneySyntax2 + "格式输入[利率浮动值]");
+			return false;
+		}	
+		
+		//added by jiangy 20100107 begin
+		
+		
+		//added by jiangy 20100107 end
+			
+	
+        if(parseFloat(v_lafratvl.value) + parseFloat(v_flrate.value) < 0)
+        {
+            alert("[利率值]与[利率浮动值]之和不能小于零");
+            showDivByName(window,"dksqxx");
+            v_flrate.focus();
+            return false;
+        }
+	
+	}
+
+	//浮动利率比、浮动利率值只能选其一
+	if(v_ratsca.value != 0 && v_flrate.value != 0){
+		alert("贷款申请信息中浮动利率比,利率浮动值不能同时输入");
+		showDivByName(window,"dksqxx");
+		v_flrate.focus();
+		return false;
+	}
+	
+	//modify by hanying 20080313
+	//利率类型
+	var v_rattype = window.document.getElementById('CCAS_PLAATRN.RATTYPE');
+	
+	//当贷款利率是浮动利率时，需要输入浮动利率基期、浮动利率周期、首次浮动日、浮动利率生效标识=“0”
+	if(v_rattype.value == "B"){
+		
+		//利率浮动周期基期
+		window.document.getElementById('CCAS_PLAATRN.LAFRATFG').value="M";
+
+		//浮动利率周期改成下拉列表款，并且允许选择0，表示次年一月一日调整，由后台转化成浮动周期=12，首次浮动日=次年一月一日
+		//浮动利率周期
+		var v_lafratvd = window.document.getElementById('CCAS_PLAATRN.LAFRATVD');
+		if(v_lafratvd.value == ""){
+			alert("[利率类型]是'周期浮动'，请输入[浮动利率周期]");
+			showDivByName(window,"dksqxx");
+			v_lafratvd.focus();
+			return false;	
+		}		
+         
+        
+		//浮动利率生效标识
+		window.document.getElementById('CCAS_PLAATRN.LAFCRTFG').value = "0";		//浮动利率生效标识
+		
+				
+		/*
+		//浮动利率周期
+		var v_lafratvd = window.document.getElementById('CCAS_PLAATRN.LAFRATVD');
+		if(v_lafratvd.value == "" || v_lafratvd.value.length == 0  || parseFloat(v_lafratvd.value) == 0.0){
+			alert("[利率类型]是'周期浮动'，请输入[浮动利率周期]");
+			showDivByName(window,"dksqxx");
+			v_lafratvd.focus();
+			return false;	
+		}		
+    	if(checkformdata(v_lafratvd,"CCASNUMBER|dksqxx|bok")==false)
+    		return false;
+
+		//首次浮动日
+		var v_laffrtdt = window.document.getElementById('CCAS_PLAATRN.LAFFRTDT');
+		if(v_laffrtdt.value != "" && v_laffrtdt.value.length != 0){	
+			
+    		if(checkformdata(v_laffrtdt,"CCASDATE|dksqxx|bok")==false)
+    			return false;
+    		
+			if(!compare(todat_value,v_laffrtdt.value)){
+				alert("[首次浮动日]应大于当前日期，请输入[首次浮动日]");
+				showDivByName(window,"dksqxx");
+				v_laffrtdt.focus();
+				return false;	
+			}
+		
+			//增加首次浮动日小于到期日的关联判断			
+			if (Trim(window.document.getElementById('CCAS_PLAATRN.RATEXPDT').value)!='') {
+				rateexpdt=Trim(window.document.getElementById('CCAS_PLAATRN.RATEXPDT').value);
+				if(!compare(v_laffrtdt.value,rateexpdt)){					
+					alert("[首次浮动日]应小于'当前日期+[申请借款期限]'，请输入[首次浮动日]");
+					showDivByName(window,"dksqxx");
+					v_laffrtdt.focus();
+					return false;	
+				}			
+			}			
+				
+		}
+
+		*/
+    		
+    	/*	
+    	//前端界面不再上送浮动日
+		//浮动日
+		var v_lafrtdt = window.document.getElementById('CCAS_PLAATRN.SIGNCON');
+		if(v_lafrtdt.value == "" || v_lafrtdt.value.length == 0){
+			alert("[利率类型]是'周期浮动'，请输入[浮动日]");
+			showDivByName(window,"dksqxx");
+			v_lafrtdt.focus();
+			return false;	
+		}
+    	
+    	if(checkformdata(v_lafrtdt,"CCASNUMBER|dksqxx|bok")==false)
+    		return false;
+         		    		
+        if(v_lafrtdt.value <= 0 || v_lafrtdt.value > 31){
+			alert("[浮动日]的取值在[1--31]之间");
+			showDivByName(window,"dksqxx");
+			v_lafrtdt.focus();
+			return false;
+        	
+        }  
+        */  
+        
+
+		
+	
+	}else if(v_rattype.value == "A"){
+		
+		window.document.getElementById('CCAS_PLAATRN.LAFRATFG').value = "";		//浮动利率周期基数
+		window.document.getElementById('CCAS_PLAATRN.LAFRATVD').value = "";		//浮动利利周期
+		window.document.getElementById('CCAS_PLAATRN.LAFFRTDT').value = "";		//首次浮动日
+		//window.document.getElementById('CCAS_PLAATRN.SIGNCON').value = "";		//浮动日
+		window.document.getElementById('CCAS_PLAATRN.LAFCRTFG').value = "";		//浮动利率生效标识
+	}
+	
+	
+	
+    //还款方式与还款周期的关系
+    //利随本清的还款方式，还款周期=‘98’；同时，还款周期=‘98’时，还款方式只能是利随本清；
+    //双周供款的还款方式，还款周期=‘14’；但是，还款周期=‘14’时，还款方式可能是双周供款、滞后等额本息还款；(系统中支持双周供款仅从还款周期实现，因此支持等额本金??)
+    //除了上述其他类型的还款方式外，还款周期除了‘98’、‘14’外，其他的还款频率都可以选择。
+    var v_retper=window.document.getElementById('CCAS_PLAATRN.RETPER');
+    var fstreqfg = window.document.getElementById('CCAS_PLAATRN.FSTREQFG');
+    
+    if(lafrtmod.value == '1'){
+    	if(v_retper.value !='98'){
+			alert("[还款方式]为利随本清时,[还款周期]应该为'到期时'");
+			showDivByName(window,"dksqxx");
+			v_retper.focus();
+			return false;    	
+    	}
+    }
+    
+    /*
+    if(lafrtmod.value == '13'){
+    	if(v_retper.value !='14'){
+			alert("[还款方式]为双周供时,[还款频率]应该为每月两次还款");
+			showDivByName(window,"dksqxx");
+			v_retper.focus();
+			return false;    	
+    	}
+    }
+    */
+    //如果还款周期='98'，则：
+    //1、[还款方式]必须是'利随本清'
+    //2、首次还款日标识不能等于‘3’
+    if(v_retper.value == '98'){
+    	if(lafrtmod.value !='1'){
+			alert("[还款周期]应该为'到期时'，[还款方式]应为'利随本清'");
+			showDivByName(window,"dksqxx");
+			v_retper.focus();
+			return false;    	
+    	}
+    	
+    	
+    	
+    	if(fstreqfg.value =='3'){
+			alert("[还款周期]应该为'到期时'，[首次还款日标识]不能选择'固定月\(3,6,9,12\)还款'");
+			showDivByName(window,"dksqxx");
+			fstreqfg.focus();
+			return false;    	
+    	}    	
+    	
+    }
+    
+    //如果还款周期="双周"，则[还款方式]不能选择'气球还款'
+    if(v_retper.value == '14'){
+    	if(lafrtmod.value =='6'){
+			alert("[还款周期]应该为'双周'，[还款方式]不能选择'利随本清'");
+			showDivByName(window,"dksqxx");
+			v_retper.focus();
+			return false;    	
+    	}
+    }    
+    
+    
+    /*
+    if(v_retper.value == '14'){
+    	if(lafrtmod.value !='7' && lafrtmod.value != '13'){
+			alert("[还款频率]为每月两次还款,[还款频率]应该为双周供、滞后等额本息");
+			showDivByName(window,"dksqxx");
+			v_retper.focus();
+			return false;    	
+    	}
+    } 
+		
+	*/
+	
+	//“还款周期”与“首次还款日标识”的关联判断 20090721 hanying
+	if(v_retper.value !='03' && v_retper.value !='06' && v_retper.value !='12'){
+	
+		if(fstreqfg.value =='3'){
+			alert("[还款周期]不等于\('每季度','每半年','每年'\)时，[首次还款日标识]不能选择'固定月\(3,6,9,12\)还款'");
+			showDivByName(window,"dksqxx");
+			fstreqfg.focus();
+			return false; 		
+		}
+	
+	}
+	//end 20090721
+	
+	
+	
+	
+	//最低还款额百分比
+	var v_minrepap = window.document.getElementById('CCAS_PLAATRN.MINREPAP');
+	if(v_minrepap.value.length != 0)
+	{
+		if(checkformdata(v_minrepap,"CCASDEC5_2|dksqxx|bok")==false)
+		return false;
+       
+        if(parseFloat(v_minrepap.value) > 100){
+			alert("[最低还款额百分比]应小于等于100%");
+			showDivByName(window,"dksqxx");
+			v_minrepap.focus();
+			return false;    	
+
+        }
+       
+       
+	}
+	//begin add by hanying 20080125
+	//本金还款提前提示天
+	var v_actcorrg = window.document.getElementById('CCAS_PLAATRN.ACTCORRG');
+	if(v_actcorrg.value.length != 0)
+	{
+		if(checkformdata(v_actcorrg,"NUMBER|dksqxx|bok")==false)
+		return false;
+	}
+	
+	//利息还款提前提示天
+	var v_actccrrg = window.document.getElementById('CCAS_PLAATRN.ACTACRRG');
+	if(v_actccrrg.value.length != 0)
+	{
+		if(checkformdata(v_actccrrg,"NUMBER|dksqxx|bok")==false)
+		return false;
+	}	
+	
+	//end by hanying 20080125	
+	
+	
+   //还款频率
+   var v_retper=window.document.getElementById('CCAS_PLAATRN.RETPER').value;
+   var v_percount=0;
+
+   if(v_retper=="01")
+     v_percount=1;
+
+   if(v_retper=="03")
+     v_percount=3;
+
+   if(v_retper=="06")
+     v_percount=6;
+
+   if(v_retper=="12")
+     v_percount=12;
+
+   if(v_retper=="14")
+     v_percount=0.5;
+
+   if(v_retper=="98")
+     v_percount=window.document.getElementById('CCAS_PLAATRN.LAFTERM').value;
+
+   if(parseFloat(v_percount) > parseFloat(window.document.getElementById('CCAS_PLAATRN.LAFTERM').value) )
+   {
+       alert("[还款周期]不能大于[申请借款期限]");
+       showDivByName(window,"dksqxx");
+       v_retper.focus();
+       return false;
+   }
+
+	//本金递变金额
+	var v_lafchamt = window.document.getElementById('CCAS_PLAATRN.LAFCHAMT');
+	if(v_lafchamt.value.length != 0)
+	{
+		if(checkformdata(v_lafchamt,"CCASDEC15_4|dksqxx|bok")==false)
+			return false;
+	}
+	
+	var lafrtmodObj = window.document.getElementById('CCAS_PLAATRN.LAFRTMOD');
+	//modify by hanying 20080229
+	if (lafrtmodObj.value == '11' || lafrtmodObj.value == '12') {
+       	
+       	if(v_lafchamt.value.length == 0 || parseFloat(v_lafchamt.value) == 0.0){
+       	
+	       	alert("[还款方式]选择'等额本金递增还款'或'等额本金递减还款'时，[每期还本增减额]不能为0或空");
+    	   	showDivByName(window,"dksqxx");
+       		v_lafchamt.focus();
+	       	return false;
+       	}       	
+       	
+		//后台上送Bancs时,根据还款方式是递增还是递减,加上符号位,所以前端控制你能输入大于0的数字.	20090528
+		if(parseFloat(v_lafchamt) < 0){		
+	       	alert("[还款方式]选择'等额本金递增还款'或'等额本金递减还款'时,'[每期还本增减额]应输入大于0的值");
+    	   	showDivByName(window,"dksqxx");
+       		v_lafchamt.focus();
+	       	return false;
+		}
+       	
+       	
+	} else if (v_lafchamt.value.length != 0 && parseFloat(v_lafchamt.value) !=0.0 && (lafrtmodObj.value != '11' && lafrtmodObj.value != '12')) {
+       	alert("还款方式不是'等额本金递增还款'或'等额本金递减还款'时'每期还本增减额'必须为0");
+       	showDivByName(window,"dksqxx");
+       	v_lafchamt.focus();
+       	return false;
+	}
+	//end by hanying 20080229
+	
+
+
+	//滞后还本期数
+	var validateObj = window.document.getElementById('CCAS_PLAATRN.DELAYRETPER');
+    if(checkformdata(validateObj,"CCASNUMBER|dksqxx|bok")==false)
+    	return false;
+
+
+	var lafrtmodObj = window.document.getElementById('CCAS_PLAATRN.LAFRTMOD');
+	if ((validateObj.value == '0' || validateObj.value.length == 0) && (lafrtmodObj.value == '7' || lafrtmodObj.value == '8')) {
+       	alert("还款方式选择'滞后等额本息'或'滞后等额本金'时,[延迟还本期]不能为0或空");
+       	showDivByName(window,"dksqxx");
+       	validateObj.focus();
+       	return false;
+	} else if (validateObj.value != '0' && validateObj.value.length != 0 && (lafrtmodObj.value != '7' && lafrtmodObj.value != '8')) {
+       	alert("还款方式不是'滞后等额本息'或'滞后等额本金'时,[延迟还本期]必须为0");
+       	showDivByName(window,"dksqxx");
+       	validateObj.focus();
+       	return false;
+	}
+
+	var v_lafreqtm =window.document.getElementById('CCAS_PLAATRN.LAFREQTM');
+	if(validateObj.value !=0 && parseFloat(validateObj.value) > parseFloat(v_lafreqtm.value))
+	{
+		alert("[延迟还本期]不能大于[还款期数]");
+		showDivByName(window,"dksqxx");
+		validateObj.focus();
+		return false;
+  	}
+  	
+  	//尾款、尾款标志
+  	var lafendamt = window.document.getElementById('CCAS_PLAATRN.LAFENDAMT');
+  	var resdind = window.document.getElementById('CCAS_PLAATRN.RESDIND');
+  	if(lafrtmodObj.value == "6"){
+		  	
+  		if(resdind.value == ""){
+       		alert("[还款方式]是'气球还款',请选择[尾款标志]！");
+	       	showDivByName(window,"dksqxx");
+    	   	resdind.focus();
+       		return false;  		
+  		}  		
+  		
+   		if(lafendamt.value.length == 0 ){
+       		alert("[还款方式]是'气球还款',请输入[尾款]！");
+	       	showDivByName(window,"dksqxx");
+    	   	resdind.focus();
+       		return false;  		
+  		}
+  	
+  		if(checkformdata(lafendamt,"CCASDEC15_2|dksqxx")==false){
+			return false;
+  		}
+  		
+  		if(lafendamt.value.length == 0 || parseFloat(lafendamt.value) <= 0){
+       		alert("[还款方式]是'气球还款',[尾款]应大于0！");
+	       	showDivByName(window,"dksqxx");
+    	   	resdind.focus();
+       		return false;  		
+  		}
+  		
+  		if(lafendamt.value.length > 0){
+  		
+	  		if(resdind.value != "2"){
+    	   		alert("[还款方式]是'气球还款'并且输入[尾款]时，[尾款标志]应选择'仅包含本金'！");
+	    	   	showDivByName(window,"dksqxx");
+    	   		resdind.focus();
+	       		return false;  		
+  			}  	
+  			
+			var endamt    = "0.00";
+			if (lafendamt.value != '')
+				endamt = lafendamt.value*1.0;
+			
+			var dramtObj  = window.document.getElementById('CCAS_PLAATRN.LAFDRAMT');
+			var dramt     = 0.00;
+			if (dramtObj.value != '')
+				dramt = dramtObj.value*1.0;
+			
+			if (endamt > dramt*0.25) {
+				alert("尾款不能大于借款金额的25%");
+				showDivByName(window,"dksqxx");
+				lafendamt.focus();
+				return false;
+			}  				
+  		
+  		} 
+
+  	}else{
+  		
+  		if(lafendamt.value.length != 0 && parseFloat(lafendamt.value) != 0 ){
+       		alert("[还款方式]不是'气球还款'时，[尾款]为空，或者等于'0'！");
+	       	showDivByName(window,"dksqxx");
+    	   	lafendamt.focus();
+       		return false;  		
+  		}
+  		
+  		if(resdind.value != ""){
+       		alert("[还款方式]不是'气球还款'时，[尾款标志]不能选择！");
+	       	showDivByName(window,"dksqxx");
+    	   	resdind.focus();
+       		return false;  		
+  		}  		
+  	
+  	}
+  	
+  	
+  	
+  	
+
+	
+	
+	//还款方式与提前还款后的重算方式的相互关联关系
+	var bns_rtmod = convertCode(lafrtmod.value);
+	var lafgbrty =  window.document.getElementById('CCAS_PLAATRN.LAFGBRTY');
+	if(bns_rtmod == "F" || bns_rtmod == "G"){
+		if(lafgbrty.value == "N"){
+			alert("[还款方式]为规则还款，[提前还款后的重算方式]不能选择‘不重算’");
+			showDivByName(window,"dksqxx");
+			lafgbrty.focus();
+			return false;		
+		}
+	}else{
+	
+		if(lafgbrty.value != "N"){
+			alert("[还款方式]为不规则还款，[提前还款后的重算方式]应该选择‘不重算’");
+			showDivByName(window,"dksqxx");
+			lafgbrty.focus();
+			return false;		
+		}
+	
+	
+	}
+	
+	//还款频率与罚息结息周期的关系：
+	//1、罚息结息周期应与正常利息结息周期一致，或者是每日计息；
+	//2、对于还款频率为“到期日”的，罚息结息周期则不作限制
+	//罚息结息周期默认为“99” 20090721
+	/*
+	if(v_retper != "98"){
+		var intfreq =  window.document.getElementById('CCAS_PLAATRN.INTFREQ'); 
+		
+		if((parseInt(v_retper) != parseInt(intfreq.value)) && intfreq.value !="99" ){
+
+			alert("[罚息结息周期]应与[还款周期]一致，或者选择'每天'。");
+			showDivByName(window,"dksqxx");
+			intfreq.focus();
+			return false;		
+
+		 
+		}
+		
+	}
+	*/
+	//20090721 end
+	
+	
+		
+
+
+
+	//收款人/收款人帐号
+	
+		//还款日日期
+		var v_firret = window.document.getElementById('CCAS_PLAATRN.FIRRET');
+    	if(checkformdata(v_firret,"CCASNUMBER|dksqxx|bok")==false)
+    		return false;
+    	//modify by hanying 20091105
+    	//还款日不再是必输项，可以将放款日回写还款日
+    	/*
+    	var v_dttype = window.document.getElementById('CCAS_PLAATRN.RETDTTYPE');
+    	if(v_dttype.value == 'Y'){
+    		if(v_firret.value.length == 0 ){
+				alert("变更还款日,请输入[每期固定还款日]");
+				showDivByName(window,"dksqxx");
+				v_firret.focus();
+				return false;
+    		}else{
+    			if(!(v_firret.value >= 1 && v_firret.value <= 18) && !(v_firret.value >= 22 && v_firret.value <= 28)){
+					alert("[每期固定还款日]应为1--18和22--28，请重新输入[每期固定还款日]");
+					showDivByName(window,"dksqxx");
+					v_firret.focus();
+					return false;
+				}
+    		}
+    	}
+    	*/
+    	//end 20091105
+	
+		//收款人
+		var validateObj =window.document.getElementById('CCAS_PLAATRN.RECEIVEPER') ;
+		if(validateObj.value.length == 0){
+			alert("请输入收款人信息");
+			showDivByName(window,"dksqxx");
+			validateObj.focus();
+			return false;
+		}
+		if(getStrLen(validateObj.value) > 40){
+			alert("输入长度超过限制");
+			showDivByName(window,"dksqxx");
+			validateObj.focus();
+			return false;
+		}
+
+		//收款人帐号
+		var v_receiveaccno = window.document.getElementById('CCAS_PLAATRN.RECEIVEACCNO');
+    	if(checkformdata(v_receiveaccno,"CCASNUMBER|dksqxx|bok")==false)
+    		return false;
+
+		if(v_receiveaccno.value.length == 0){
+			alert("[收款人帐号]请输入收款人帐号");
+			showDivByName(window,"dksqxx");
+			v_receiveaccno.focus();
+			return false;
+
+		}
+		
+		var v_aptrettp = window.document.getElementById('CCAS_PLAATRN.APTRETTP');
+		if(v_aptrettp.value.length != 0 && v_aptrettp.value != ""){
+			if(checkformdata(v_aptrettp,"CCASNUMBER|dksqxx|bok")==false)
+    			return false;
+    	}
+    		
+		//收款子账户类型
+		var v_aptrtstp = window.document.getElementById('CCAS_PLAATRN.APTRTSTP');
+		if(v_aptrtstp.value.length != 0 && v_aptrtstp.value != ""){
+			if(checkformdata(v_aptrtstp,"CCASNUMBER|dksqxx|bok")==false)
+    			return false;    		
+    	}
+	
+		//end add by haning 20080125
+			
+		//还款帐号
+		var v_lafpact = window.document.getElementById('CCAS_PLAATRN.LAFPACT');
+		if(v_lafpact.value.length == 0){
+			alert("请输入还款帐号");
+			showDivByName(window,"dksqxx");
+			v_lafpact.focus();
+			return false;
+		}
+		
+    	if(checkformdata(v_lafpact,"CCASNUMBER|dksqxx|bok")==false)
+    		return false;
+
+		//还款子账户类型
+		var v_aptretfg = window.document.getElementById('CCAS_PLAATRN.APTRETFG');
+
+		if(v_aptretfg.value.length != 0 && v_aptretfg.value != ""){
+			if(checkformdata(v_aptretfg,"ALLCHAR|dksqxx|bok")==false)
+    			return false; 
+    	}
+    		
+	
+	
+
+
+	//贷款成数
+	
+		calloanrate();
+		var validateObj =window.document.getElementById('CCAS_PLAATRN.LOANRATE') ;
+		if(checkformdata(validateObj,"CCASDEC8_4|dksqxx|bok")==false)
+		return false;
+
+		if(parseFloat(validateObj.value) > 100)
+		{
+	    	alert("贷款成数应该小于100%");
+	    	return false;
+		}
+
+	
+	
+	//委托类贷款，需要输入委托资金协议号
+	//PLAC：公积金贷款
+	//PLBC：汽车委托贷款
+	//PLCA：个人委托贷款
+	var bnsnewcd = 10380007;
+	
+		var v_facno = window.document.getElementById('CCAS_PLAATRN.FAGNO');
+
+		if(v_facno.value != "" || v_facno.value.length != 0){
+			alert("不是委托类贷款，请不要输入[委托资金协议号]。");
+			showDivByName(window,"dksqxx");
+			v_facno.focus();
+			return false;
+		}
+		
+		var v_persn = window.document.getElementById('CCAS_PLAATRN.CLIPERSN');
+
+		if(v_persn.value != "" || v_persn.value.length != 0){
+			alert("不是委托类贷款，请不要输入[委托贷款BGL帐号]。");
+			showDivByName(window,"dksqxx");
+			v_persn.focus();
+			return false;
+		}	
+		
+		
+			
+	
+			
+
+
+	//对汽车金融公司个人委托贷款[PLBC]、汽车金融公司法人委托贷款[PLBD]的特殊判断
+	
+
+
+
+
+
+
+var statreq = window.document.getElementById('CCAS_PLAATRN.STATREQ');
+var dplcycle = window.document.getElementById('CCAS_PLAATRN.DPLCYCLE');
+var dpldate = window.document.getElementById('CCAS_PLAATRN.DPLDATE');
+
+
+	//对帐单产生的次数
+	var v_dplcycle = window.document.getElementById('CCAS_PLAATRN.DPLCYCLE');
+    if(checkformdata(v_dplcycle,"CCASNUMBER|dksqxx|bok")==false)
+    	return false;
+ 
+	//对帐单产生的日期
+	var v_dpldate = window.document.getElementById('CCAS_PLAATRN.DPLDATE');
+    if(checkformdata(v_dpldate,"CCASNUMBER|dksqxx|bok")==false)
+    	return false;
+    if(v_dpldate.value < 0 || v_dpldate.value > 30){
+		alert("对帐单产生的日期应为0--30，请重新输入对帐单产生的日期");
+		showDivByName(window,"dksqxx");
+		v_dpldate.focus();
+		return false;
+    }
+
+if(statreq.value == "D"){
+
+	if(dplcycle.value !="0"){
+		alert("[对帐单周期]为日，[对帐单次数]应为0！");
+		showDivByName(window,"dksqxx");
+		dplcycle.focus();
+		return false;	
+	}
+
+	if(dpldate.value !="0"){
+		alert("[对帐单周期]为日，[对帐单发送日]应为0！");
+		showDivByName(window,"dksqxx");
+		dpldate.focus();
+		return false;	
+	}
+
+}else if(statreq.value == "M"){
+
+	if(dplcycle.value !="0"){
+		alert("[对帐单周期]为月，[对帐单次数]应为0！");
+		showDivByName(window,"dksqxx");
+		dplcycle.focus();
+		return false;	
+	}
+
+
+	if(dpldate.value =="" || dpldate.value.length == 0 ||dpldate.value=="0"){
+		alert("[对帐单周期]为月，应输入[对帐单发送日]应为！");
+		showDivByName(window,"dksqxx");
+		dpldate.focus();
+		return false;	
+	}
+}else if(statreq.value == "Y"){
+	if(v_dplcycle.value =="" || v_dplcycle.value.length == 0 ||v_dplcycle.value=="0" ){
+		alert("[对帐单周期]为年，需要输入[对帐单次数]！");
+		showDivByName(window,"dksqxx");
+		v_dplcycle.focus();
+		return false;	
+	}else{
+		if(v_dplcycle.value < 1 || v_dplcycle.value > 12){
+			alert("[对帐单周期]为年，[对帐单次数]取值为[1-12]！");
+			showDivByName(window,"dksqxx");
+			v_dplcycle.focus();
+			return false;	
+		
+		}
+	}
+
+	if(dpldate.value =="" || dpldate.value.length == 0 ||dpldate.value=="0" ){
+		alert("[对帐单周期]为年，需要输入[对帐单发送日]！");
+		showDivByName(window,"dksqxx");
+		dpldate.focus();
+		return false;	
+	}
+}
+    
+
+
+
+	//对利率类型为周期浮动利率进行数据校验
+	
+		calpay();
+		var v_ratty =  window.document.getElementById('CCAS_PLAATRN.RATTYPE').value;
+		if(v_ratty == '3')
+		{
+			var v_lafdt =  window.document.getElementById('CCAS_PLAATRN.LAFFRTDT');
+			if(checkformdata(v_lafdt,"CCASDATE|dksqxx|bok")==false)
+				return false;
+		}
+			
+	
+	//modify by jiangy 20090326 begin 
+	
+
+
+
+
+
+//对有合同层的贷款进行数据校验
+
+return true ;
+}
+
+
+
+
+</SCRIPT>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+
+<title>贷款资料</title>
+
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+.grayeditbak {
+	background-color: #CCCCCC;
+}
+-->
+</style>
+<link href="css/font1.css" rel="stylesheet" type="text/css">
+<script src="js/checkdate.js" language="JavaScript" type="text/javascript"></script>
+<script src="js/fValidate3_001.js" language="JavaScript" type="text/javascript"></script>
+<script src="js/div2.js" language="JavaScript" type="text/javascript"></script>
+<style type="text/css">
+<!--
+.style4 {color: #A23043}
+-->
+</style>
+</head>
+
+<body onload="openwin()">
+
+<table width="780"  border="0" cellspacing="0" cellpadding="0">
+  <tr>
+
+
+    <td><iframe src="/CCAS/jsp/controls/topFrame.htm" width="775" height="70" scrolling="no" frameborder="0"></iframe></td>
+
+
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td><table width="100%"  border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td><table width="97%"  border="0" align="center" cellpadding="0" cellspacing="0">
+  <tr>
+    
+    
+    
+     <td width="55%"><img src="images/position.gif" width="116" height="20"><span class="NAV">前台新建贷款 &gt; 个人二手住房贷款（非循环）</span></td>
+     
+
+    <td width="23%" valign="bottom"><span class="NAV"><SPAN
+            class=TB1-TD1>柜员号：</SPAN>D3BS02/张冬 </span></td>
+
+     
+  </tr>
+  <tr>
+    <td colspan="3"><img src="images/top_01.gif" width="306" height="18"><span class="H1">个人二手住房贷款（非循环）</span></td>
+  </tr>
+</table></td>
+      </tr>
+
+      <tr>
+        <td>
+   <form name="form1" method="post" action="/CCAS/CMain">
+    
+    <input type="hidden" name="command" value="">
+
+
+    <input type="hidden" name="AMTSIGN" value="">
+    <input type="hidden" name="CCAS_PLAATRN.PLXXACK" value="">
+
+
+    <input type="hidden" name="CCAS_PLAATRN.LAFNEWCD" value="10380007">
+
+    <input type="hidden" name="BUILDRPT" value="">
+
+    <input type="hidden" name="noticeme1" value="null">
+    <input type="hidden" name="action" value="NEW">
+    <input type="hidden" name="lastcommand" value="">
+    <input type="hidden" name="lastcommand1" value="">
+    <input type="hidden" name="diff" value="Y">
+    
+    <input type="hidden" name="NEWERROR" value="Y">
+    <input type="hidden" name="LASTACTION" value="">
+    <input type="hidden" name="mod" value="">
+    <input type="hidden" name="rettype" value="">
+    <input type="hidden" name="PLXX" value="">
+    
+    <input type="hidden" name="CCAS_PLAATRN.IMPTOTAMT" value="">
+    <input type="hidden" name="CCAS_PLAATRN.CUSOCCPA" value="">
+
+    <input type="hidden" name="CCAS_TASKLOG.TASK_SEQNO" value=""  >
+    <input type="hidden" name="CCAS_TASKLOG.TASK_STATUS" value=""  >
+    <input type="hidden" name="CCAS_PLAATRN.ACTNO" value=""  >
+    <input type="hidden" name="CCAS_PLAATRN.TASK_SEQNO" value="">
+    <input type="hidden" name="CCAS_TASKLOG.REF_TASK_SEQNO" value="">
+
+    
+    <input type="hidden" name="CCAS_PLAATRN.BNKNO" value="10774">
+    <input type="hidden" name="CCAS_PLAATRN.PRJ_NO" value="D3B00006">
+    
+
+
+    <input type="hidden" name="CCAS_PLAATRN.CREATEDT" value="">
+    <input type="hidden" name="fkcounter" value="">
+    <input type="hidden" name="hkcounter" value="">
+
+    
+    
+    <input type="hidden" name="lmcounter" value="">
+    
+    
+	
+	 
+
+	
+	<input type="hidden" name="CCAS_CCTPERTRN.PERCONTY" value="0">
+	
+
+
+	
+		<input type="hidden" name="CCAS_PLAATRN.CLICERTY" value="01">
+		<input type="hidden" name="CCAS_PLAATRN.CLIREL" value="1">
+	
+    
+
+	
+
+    <input type="hidden" name="CCAS_PLAATRN.CBIRTID1" value="">
+    <input type="hidden" name="REFUSE" value="">
+    <input type="hidden" name="CCAS_PLAATRN.TOTALGUAR" value="">
+
+	<script language="JavaScript">
+		if(navigator.userAgent.substring(navigator.userAgent.indexOf('MSIE')+5,navigator.userAgent.indexOf('MSIE')+6) == '6')
+			beginTabs(window, '个人住房贷款',4,6);
+		else
+			beginTabs(window, '个人住房贷款',4,2);
+	</script>
+	
+	
+
+		<script language="JavaScript">
+			beginDiv(window, "jkrxx", 'jkrxx', true, "check()");
+		</script>
+
+
+
+
+
+
+
+
+
+<SCRIPT language="JavaScript">  
+
+function goName()
+{
+   var v_firn = document.getElementById("CCAS_CCTPERTRN.PERLSTNM").value;
+   var v_secn = document.getElementById("CCAS_CCTPERTRN.PERFSTNM").value;
+   
+    document.getElementById("CCAS_CCTPERTRN.PERCUSNM").value=v_firn + v_secn;
+      
+}
+
+function calmtotin()
+{
+    var v_wkimonin = document.getElementById("CCAS_CCTPERTRN.WKIMONIN").value;
+    var v_familyotsalary = document.getElementById("CCAS_CCTPERTRN.FAMILYOTSALARY").value;
+   
+    v_wkimonin = parseFloat(v_wkimonin);
+    v_familyotsalary = parseFloat(v_familyotsalary);
+    
+    if(isNaN(v_wkimonin)){
+    	v_wkimonin = 0.00;
+    }    
+    if(isNaN(v_familyotsalary)){
+		v_familyotsalary  = 0.00;
+   	}
+   	  
+    document.getElementById("CCAS_CCTPERTRN.PERMTOTIN").value=(v_wkimonin + v_familyotsalary).toFixed(2);    
+}
+
+//根据现工作时间，计算现工作年限
+function calwk()
+{
+    var v_wk = document.getElementById("CCAS_CCTPERTRN.WKIBEDAT").value;
+    var v_year ;
+    
+    var curyear = parseFloat("2010");
+    var curdate = parseFloat("0824");
+    
+    var wk_year = parseFloat(v_wk.substring(0,4));
+    if(isNaN(wk_year)){
+    	return;
+    }
+    
+    var wk_date = parseFloat(v_wk.substring(4));
+    if(isNaN(wk_date)){
+    	return;
+    }    
+    	
+	if(v_wk.length ==8 && curyear >= wk_year)
+	{ 
+	  
+	  if(curdate >= wk_date)
+	       v_year = curyear - wk_year;
+	  else
+	       v_year = curyear - wk_year - 1;
+	  
+	  if(v_year < 0)v_year = 0;
+
+	  document.getElementById("CCAS_CCTPERTRN.PERNWKDA").value=v_year;
+	}
+	else
+	  document.getElementById("CCAS_CCTPERTRN.PERNWKDA").value='';
+	 
+    
+}
+
+function calres()
+{
+
+   var v_wk = document.getElementById("CCAS_CCTPERTRN.PERNLVDA").value;
+   var v_year ;
+    
+    var curyear = parseFloat("2010");
+    var curdate = parseFloat("0824");
+    
+    var wk_year = parseFloat(v_wk.substring(0,4));
+    if(isNaN(wk_year)){
+    	return;
+    }
+    
+    var wk_date = parseFloat(v_wk.substring(4));
+    if(isNaN(wk_date)){
+    	return;
+    }    
+    	
+	if(v_wk.length ==8 && curyear >= wk_year)
+	{ 
+	  
+	  if(curdate >= wk_date)
+	       v_year = curyear - wk_year;
+	  else
+	       v_year = curyear - wk_year - 1;
+	  
+	  if(v_year < 0)v_year = 0;
+
+	  document.getElementById("CCAS_CCTPERTRN.LCLIVEYRLMT").value=v_year;
+	}
+	else
+	  document.getElementById("CCAS_CCTPERTRN.LCLIVEYRLMT").value='';
+	  
+
+}
+</SCRIPT>  
+
+	<input type="hidden" name="CCAS_CCTPERTRN.PERLNKTP" value="0000">
+	<input type="hidden" name="CCAS_CCTPERTRN.PERRELTY" value="0000">
+        <input type="hidden" name="CCAS_CCTPERTRN.PERCUSNO" value="0079764671">
+        <input type="hidden" name="CCAS_TASKLOG.BUSTY" value="01">
+
+        <input type="hidden" name="CCAS_CCTPERTRN.PERLNBK1" value="">
+        <input type="hidden" name="CCAS_CCTPERTRN.PERLNBLT" value="">
+        <input type="hidden" name="CCAS_CCTPERTRN.PERCMNBK" value="">
+        
+        <input type="hidden" name="CCAS_CCTPERTRN.PERHMACF" value="">
+        <input type="hidden" name="CCAS_CCTPERTRN.PERSUBTY" value="101">
+        <input type="hidden" name="CCAS_PLAATRN.LAFPRDCD" value="PLAB">
+        <input type="hidden" name="PRDCD" value="PLAB060004">
+        <input type="hidden" name="CCAS_CCTPERTRN.PERHIBNK"  value="00016">
+  
+
+        
+         <input type="hidden" name="CCAS_CCTPERTRN.PERBLKFG" value="0">
+        
+        
+<!-- 新的表结构开始 -->
+	<table width="96%" height="720" border="1" align="center" cellpadding="0" cellspacing="0"  class="TB6-td2" bordercolor="#99A8C8">
+		<tr><td height="10">&nbsp;
+		<table width="98%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#D6D2BE">
+<!-- table1: 基本信息 -->
+		<tr><td><TABLE width="100%" border="0" align="center" cellpadding="0" cellspacing="0" >
+			<TBODY>                  
+ 
+			<TR>
+				<TD height="25" valign="middle" class="TB6-td2">客户名称</TD>
+				<TD class="TB6-td2">
+					<!--modify by jiangy 20090517 begin 个人客户名称最大长度改为80-->
+					<INPUT name="CCAS_CCTPERTRN.PERCUSNM" class='grayeditbak' type="text" value='李明' readonly 
+						 alt="CCASLESS2|bok" size="20" maxlength="80">
+					<!--modify by jiangy 20090517 begin-->
+					<INPUT name="rcquery1" type="button" class="BTN" value="查看在途贷款" onclick="rcquery()"></TD>
+				<TD class="TB6-td2">性 别</TD>
+                <TD class="TB6-td2"> 
+                	<SELECT name="CCAS_CCTPERTRN.CBISEXID" > 
+                    	<OPTION value="1"  selected >男</OPTION>
+                    	<OPTION value="0" >女</OPTION>                                             
+                    </SELECT></TD>             
+			</TR>
+			<TR>       
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">客户姓</TD>
+            	<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERLSTNM" type="text" value='李' onkeypress="goName()" onBlur="goName()" 
+            		 size="20" maxlength="40" alt="CCASLESS2|jkrxx|boc"></TD>
+            	<TD width="18%" height="25" valign="middle" class="TB6-td2">客户名</TD>				
+               	<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERFSTNM" type="text" value='明' onkeypress="goName()" onBlur="goName()" 
+               		 size="20" maxlength="40" alt="CCASLESS2|jkrxx|boc"></TD>	
+            </TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">证件类别</TD>
+				<TD class="TB6-td2"><SELECT style="width: 90%" name="CCAS_CCTPERTRN.CBICERTY" disabled >
+					<option value="01"   selected   >个人 居民身份证</option><option value="02">个人 临时身份证</option><option value="03">个人 护照</option><option value="04">个人 户口簿</option><option value="05">个人 军人身份证</option><option value="06">个人 武装警察身份证</option><option value="07">个人 港澳台居民往来内地通行证</option><option value="08">个人 外交人员身份证</option><option value="09">个人 外国人居留许可证</option><option value="10">个人 边民出入境通行证</option><option value="11">个人 其他</option>
+				</SELECT></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">证件号码</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.CBICERNO" type="text" class='grayeditbak' value='370202198105165412' readonly alt="CCASLESS1|jkrxx|bok" size="25" maxlength="32">&nbsp; 
+
+                	</TD>
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">发证机关</TD>
+				<TD class="TB6-td2"><INPUT
+					name="CCAS_CCTPERTRN.PERCEROP" type="text"
+					value=''
+					 alt="CCASLESS2|jkrxx|bok" size="10"
+					maxlength="20">*</TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">证件到期日</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERCERDT"
+						type="text" alt="CCASDATE|jkrxx|boc"
+						value=''
+						 size="8" maxlength="8"></TD>
+			</TR>
+			<TR>
+				<!--liuxg 20100518 修改“国籍”为“国家/地区”-->
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">国家/地区</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERNTTNO" >
+					<option value="CN"   selected   >中国</option><option value="ZZ">其他</option>
+				</SELECT></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">通讯语言</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERLANGE" >
+                	<OPTION value="12"  selected >中文</OPTION>
+                	<OPTION value="01" >英文</OPTION>
+                	</SELECT>     
+                </TD>
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">是否为居民</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERISDEN" >
+					<!--modify by jiangy 20090504 begin 1对应是，0对应否-->
+					<OPTION value="1"  selected >是</OPTION>
+					<OPTION value="0" >否</OPTION>
+					<!--modify by jiangy 20090504 end-->
+				</SELECT></TD>
+				<TD height="25" valign="middle" class="TB6-td2">婚姻状况</TD> 
+                <TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERMRTST"  >
+                	<option value="0">未婚</option><option value="1">已婚</option><option value="2">初婚</option><option value="3">再婚</option><option value="4">复婚</option><option value="5">丧偶</option><option value="6">离婚</option><option value="7">其它</option>
+                    </SELECT>
+                </TD>
+			</TR>
+			
+
+                      <tr>
+                      <td height="25" valign="middle" class="TB6-td2">KYC风险等级</td>
+                      <td height="25" valign="middle" class="TB6-td2"><select name="CCAS_CCTPERTRN.PERKYC"   >
+                            
+                             <option value="1"
+
+> 高风险 </option>
+                            
+                             <option value="2"
+
+selected
+
+> 中风险 </option>
+                            
+                             <option value="3"
+
+> 低风险 </option>
+                            
+                          </select></td>
+                          
+                                                	
+                      	
+                      	
+                     </tr>   
+			
+			
+			<!-- Added By Michael 在借款人信息中加入客户号显示，客户看起来更方便 -->
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">客户号</TD>
+                <TD class="TB6-td2" width="32%">
+                <input type=text disabled value="0079764671">
+                </TD>
+        <TD width="18%" height="25" valign="middle" class="TB6-td2">客户其他名称</TD>
+         <TD width="32%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.OTHERTEL" type="text" value='' 
+					 alt="CCASLESS2|jkrxx|bok" size="20" maxlength="20">*</TD>
+
+			</TR>
+			<!-- End -->
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2"></TD>
+				<TD class="TB6-td2"></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2"></TD>
+				<TD class="TB6-td2"></TD>
+			</TR>
+			</TBODY>
+		</TABLE></td></tr>
+<!-- table2: 地址信息 -->
+		<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0"  >
+			<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0" >
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">住宅电话</TD>
+				<TD width="32%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMTEL" type="text" value='' 
+					 alt="ALLCHAR|jkrxx|bok" size="20" maxlength="22">*</TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">移动电话</TD>
+				<TD width="32%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERMBLNO" type="text" value='13964862820' 
+					 alt="ALLCHAR|jkrxx|bok" size="16" maxlength="16">*</TD>
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">单位电话</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERCMTEL" type="text" value='' 
+					 alt="ALLCHAR|jkrxx|boc" size="20" maxlength="22"></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">EMAIL地址</TD>
+				<TD width="82%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PEREMAIL" type="text"
+					value=''
+					 size="25" maxlength="30" alt="CCASEMAIL|jkrxx|bok">*</TD>
+					
+			</TR>
+			</table></td></tr>
+			<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0" >
+
+			<tr>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭住址1 (详细)</TD>
+				<TD width="82%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMAD1" type="text"
+					value='汕头路7号8号楼1单元'
+					 size="60" maxlength="120" alt="CCASLESS2|jkrxx|boc"></TD>
+			</tr>
+			</table></td></tr>
+			<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0" >
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭住址2(区/县)</TD>
+				<TD width="32%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMAD2"
+					type="text"
+					value='青岛'
+					 alt="CCASLESS2|jkrxx|boc" size="10"
+					maxlength="20"></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭住址3 (省/市)</TD>
+				<TD width="32%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMAD3"
+					type="text"
+					value='山东'
+					 size="10" maxlength="20" alt="CCASLESS2|jkrxx|boc"></TD>
+			</TR>
+			<TR>
+				<!--liuxg 20100518 修改“（国家）”为“（国家/地区）”-->
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭住址4 (国家/地区)</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMAD4"
+					type="text"
+					value='中国'
+					 size="10" maxlength="20" alt="CCASLESS2|jkrxx|boc"></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭住址邮编</TD>
+			        <!--Modified by liuxg on 20090507 邮编由数字型改为字符型-->
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHOMZP" type="text" 
+					value="2666000" 
+					 size="8" maxlength="8" alt="CCASLESS2|jkrxx|boc"></TD>
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2"></TD>
+				<TD class="TB6-td2"></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2"></TD>
+				<TD class="TB6-td2"></TD>
+			</TR>
+			</table></td></tr>
+		</table></td></tr>
+<!-- table3: 附加信息 -->
+		<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0"  >
+			<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0"  >
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">出生日期</TD>
+					<TD width="32%" class="TB6-td2" colspan=3><INPUT
+						name="CCAS_CCTPERTRN.CBIBTHDA" type="text"
+						value='19810516'
+						 alt="CCASDATE|jkrxx|boc" size="8"
+						maxlength="8"></TD>
+
+				</TR>
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">
+						客户户籍</TD>
+					<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.DOMICILE"
+						>
+						<option value="3">本省</option><option value="1">港澳台</option><option value="2">外省</option><option value="0">外籍</option><option value="4">本地</option>
+					</SELECT></TD>                  
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">户籍所在地</TD>
+					<TD class="TB6-td2"><INPUT
+						type="text" name="CCAS_CCTPERTRN.CUSDMCLR"
+						value=''
+						 size="20" maxlength="40" alt="CCASLESS2|jkrxx|boc"></TD>
+				</TR>
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">职 业</TD>
+					<TD width="32%" class="TB6-td2"><SELECT style="width: 90%"
+						name="CCAS_CCTPERTRN.PEROCCPA" >
+						<OPTION value="">请选择</OPTION>
+						<option value="01">中国共产党中央委员会和地方各级组织负责人</option><option value="02">国家机关及其工作机构负责人</option><option value="03">民主党派、社会团体及工作机构负责人</option><option value="04">事业单位负责人</option><option value="05">企业负责人</option><option value="11">科学研究人员</option><option value="13">工程技术（计算机）人员</option><option value="17">农业技术人员</option><option value="18">飞行和船舶技术等人员</option><option value="19">卫生专业技术人员</option><option value="21">经济业务人员</option><option value="22">金融业务人员</option><option value="23">法律专业人员</option><option value="24">教学人员</option><option value="25">文学艺术工作人员</option><option value="26">体育工作人员</option><option value="27">新闻出版、文化工作人员</option><option value="29">其他专业技术人员</option><option value="31">行政办公人员</option><option value="32">安全保卫和消防工作人员</option><option value="33">邮政和电信业务人员</option><option value="39"   selected   >其他办事人员和有关人员</option><option value="40">商业、服务业人员</option><option value="50">农、林、牧、渔、水利业生产人员</option><option value="60">生产、运输设备操作人员及有关人员</option><option value="X0">军人</option><option value="Y1">学生</option><option value="Y9">不便分类的其他从业人员</option><option value="Z0">无职业活动人员</option>
+					</SELECT></TD>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">民 族</TD>
+					<TD width="32%" class="TB6-td2"><SELECT
+						name="CCAS_CCTPERTRN.PERNTLNO" >
+						<option value="01">汉族</option><option value="02">阿昌族</option><option value="03">白族</option><option value="04">保安族</option><option value="05">布朗族</option><option value="06">布依族</option><option value="07">朝鲜族</option><option value="08">达斡尔族</option><option value="09">傣族</option><option value="10">德昂族</option><option value="11">东乡族</option><option value="12">独龙族</option><option value="13">俄罗斯族</option><option value="14">鄂伦春族</option><option value="15">鄂温克族</option><option value="16">高山族</option><option value="17">哈尼族</option><option value="18">哈萨克族</option><option value="19">赫哲族</option><option value="20">回族</option><option value="21">基诺族</option><option value="22">京族</option><option value="23">景波族</option><option value="24">柯尔克孜族</option><option value="25">拉祜族</option><option value="26">黎族</option><option value="27">傈僳族</option><option value="28">珞巴族</option><option value="29">满族</option><option value="30">毛南族</option><option value="31">门巴族</option><option value="32">蒙古族</option><option value="33">苗族</option><option value="34">仫佬族</option><option value="35">纳西族</option><option value="36">怒族</option><option value="37">普米族</option><option value="38">羌族</option><option value="39">撒拉族</option><option value="40">畲族</option><option value="41">水族</option><option value="42">塔吉克族</option><option value="43">塔塔尔族</option><option value="44">侗族</option><option value="45">土族</option><option value="46">土家族</option><option value="47">佤族</option><option value="48">维吾尔族</option><option value="49">乌兹别克族</option><option value="50">锡伯族</option><option value="51">瑶族</option><option value="52">彝族</option><option value="53">仡佬族</option><option value="54">裕固族</option><option value="55">藏族</option><option value="56">壮族</option>
+					</SELECT></TD>
+				</TR>
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">职 称</TD>
+					<TD width="32%" class="TB6-td2"><SELECT style="width: 90%"
+						name="CCAS_CCTPERTRN.PERTITLE" >
+						<OPTION value="">请选择</OPTION>
+						<option value="0">无</option><option value="1">高级</option><option value="2">中级</option><option value="3">初级</option><option value="4">未知</option>
+					</SELECT></TD>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">职务</TD>
+					<TD width="32%" class="TB6-td2"><SELECT style="width: 90%"
+						name="CCAS_CCTPERTRN.WKIPOSIT" >
+						<option value="0">无</option><option value="1">高级领导（行政级别局级及局级以上领导或大公司高级管理人员）</option><option value="2">中级领导（行政级别局级以下领导或大公司中级管理人员）</option><option value="3">一般员工</option>
+					</SELECT></TD>
+				</TR>
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">文化程度</TD>
+					<TD width="32%" class="TB6-td2"><SELECT style="width: 90%"
+						name="CCAS_CCTPERTRN.PEREDUBK" >
+						<OPTION value="">请选择</OPTION>
+						<option value="1">研究生</option><option value="2">大学本科（简称“大学”）</option><option value="3">大学专科和专科学校（简称“大专”）</option><option value="4">中等专业学校或中等技术学校</option><option value="5">技术学校</option><option value="6">高中</option><option value="7">初中</option><option value="8">小学</option><option value="9">文盲或半文盲</option>
+					</SELECT></TD>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">最高学位</TD>
+					<TD width="32%" class="TB6-td2"><SELECT
+						name="CCAS_CCTPERTRN.PEREDULV" >
+						<option value="3">学士</option><option value="1">博士</option><option value="2">硕士</option><option value="0">名誉博士</option><option value="4">其他</option>
+					</SELECT> </TD>
+				</TR>
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">毕业院校</TD>
+					<TD width="32%" class="TB6-td2" ><INPUT
+						name="CCAS_CCTPERTRN.PERSCLNM" type="text"
+						value=''
+						 size="20" maxlength="40" alt="CCASLESS2|jkrxx|bok">*</TD>
+					
+						
+						
+				</TR>
+				<TR>
+					 
+	                <td height="25" class="TB6-td2">现工作单位</td>
+	                <td class="TB6-td2"><input name="CCAS_CCTPERTRN.PERCMPNM" type="text"    value="" 
+	                 alt="CCASLESS2|jkrxx|boc" size="20" maxlength="60"></td>
+	                
+	                <td class="TB6-td2">本单位行业</td>
+	                <td class="TB6-td2"><select style="width: 90%" name="CCAS_CCTPERTRN.WKIBUSTY"     >
+	                <option value="">请选择</option>
+					<option value="01">医院</option><option value="02">教育</option><option value="03">金融/保险</option><option value="04">公共管理与社会组织</option><option value="05">科学研究，技术服务业和地质勘察业</option><option value="06">信息传输、计算机服务、软件和技术服务业</option><option value="07">国际性组织</option><option value="08">工商服务业</option><option value="09">水利、环境与公共设施管理行业</option><option value="10">电力，燃气及水的生产及供应业</option><option value="11">制造业</option><option value="12">建筑业</option><option value="13">交通运输，仓储和邮政业</option><option value="14">批发和零售业</option><option value="15">房地产业</option><option value="16">租赁及商业</option><option value="17">文化，体育和娱乐业</option><option value="18">采掘业</option><option value="19">住宿和餐饮业</option><option value="20">农业、林业、牧业、渔业</option><option value="21">居民服务以及其他服务行业</option><option value="22">临时工</option><option value="23">退休</option><option value="24">家庭妇女</option><option value="25">学生</option><option value="26">待业</option><option value="27">其他</option>
+	                </select></td>
+				</TR>
+				 
+	           <TR>
+					<td height="25" class="TB6-td2">参加工作日期</td>
+	                <td class="TB6-td2" colspan=3><input name="CCAS_CCTPERTRN.PERWOKDA" type="text"    value="" 
+	                 alt="CCASDATE|jkrxx|boc" size="8" maxlength="8" >
+	                </td> 
+				</TR>	            
+				<TR>
+     
+	               <TD width="18%" height="25" valign="middle" class="TB6-td2">现工作日期</TD>
+					<TD width="32%" class="TB6-td2"><INPUT
+						name="CCAS_CCTPERTRN.WKIBEDAT" type="text"
+						value=''
+						 size="8" maxlength="8"  onBlur="calwk()"  onChange="calwk()" alt="CCASDATE|jkrxx|boc"></TD> 
+	                 		
+	            
+	                
+	                <td class="TB6-td2">现职工作年数</td>
+	                <td class="TB6-td2"><input name="CCAS_CCTPERTRN.PERNWKDA" type="text" value="" 
+	                readonly alt="CCASLESS|bok" size="2" maxlength="2" class='grayeditbak' >年</td>
+	                
+	                
+				</TR>
+	             
+	              
+	    	<TR>					
+				
+				<td class="TB6-td2" width="183">单位注册资本</td>
+				<td class="TB6-td2" width="206"><select name="CCAS_CCTPERTRN.PERRGCPT"
+					>
+					<option value="2">1000万元以上</option><option value="3">100-1000万元之间</option><option value="4">100万元以下</option><option value="9">无</option>
+					</select></td>
+			
+			 	<TD width="18%" height="25" valign="middle" class="TB6-td2">现住房来源及居住状况</TD>
+				<TD width="32%" class="TB6-td2"><SELECT
+						name="CCAS_CCTPERTRN.PERHOMSO" >
+						<OPTION value="">请选择</OPTION>
+						<option value="1">自置</option><option value="2">按揭</option><option value="3">亲属楼宇</option><option value="4">集体宿舍</option><option value="5">租房</option><option value="6">共有住宅</option><option value="7">其他</option><option value="9">未知</option>
+						</SELECT></TD>
+			</TR>
+			
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">现住址时间</TD>
+					<TD width="32%" class="TB6-td2"><INPUT
+						name="CCAS_CCTPERTRN.PERNLVDA" type="text"
+						value=''
+						 size="8" maxlength="8"  onBlur="calres()"  onChange="calres()" alt="CCASDATE|jkrxx|boc"></TD>
+						
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">现住址居住年限</TD>
+					<TD width="32%" class="TB6-td2">
+						
+							<INPUT name="CCAS_CCTPERTRN.LCLIVEYRLMT" type="text"
+							value=''
+							class='grayeditbak' readonly alt="CCASLESS|jkrxx|bok" size="3"	maxlength="3">年
+						</TD>
+				</TR>
+			</table></td></tr>
+			<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0"  >
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">
+					工作单位地址1(详细)</TD>
+					<TD colspan=3 width="82%" class="TB6-td2"><INPUT
+						name="CCAS_CCTPERTRN.PERCMPAD" type="text"
+						value='BLANK'
+						 alt="CCASLESS2|jkrxx|boc" size="50"
+						maxlength="120"></TD>
+				</TR>
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">
+					工作单位地址2(区/县)</TD>
+					<TD width="32%" class="TB6-td2"><INPUT
+						name="CCAS_CCTPERTRN.PERCMPAD2" type="text"
+						value='BLANK'
+						 alt="CCASLESS2|jkrxx|boc" size="30"
+						maxlength="20"></TD>
+						
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">
+					工作单位地址3(省/市)</TD>
+					<TD width="32%" class="TB6-td2"><INPUT
+						name="CCAS_CCTPERTRN.PERCMPAD3" type="text"
+						value='BLANK'
+						 alt="CCASLESS2|jkrxx|boc" size="30"
+						maxlength="20"></TD>						
+				</TR>	
+				<TR>
+					<!--liuxg 20100518 修改“（国家）”为“（国家/地区）”-->
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">
+					工作单位地址4(国家/地区)</TD>
+					<TD width="32%" class="TB6-td2"><INPUT
+						name="CCAS_CCTPERTRN.PERCMPAD4" type="text"
+						value='BLANK'
+						 alt="CCASLESS2|jkrxx|boc" size="30"
+						maxlength="20"></TD>
+						
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">工作单位邮编</TD>
+					<!--Modified by liuxg on 20090507 邮编由数字型改为字符型，且回复为8位-->
+					<TD width="32%" class="TB6-td2"><INPUT
+						name="CCAS_CCTPERTRN.PERCMPZP" type="text"
+						value=''
+						 size="8" maxlength="8" alt="CCASLESS2|jkrxx|boc"></TD>
+
+				</TR>								
+			</table></td></tr>
+			<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0"  >
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">银行往来情况</TD>
+					<TD width="32%" class="TB6-td2"><SELECT
+						name="CCAS_CCTPERTRN.BANKACCINF"
+						>
+						<option value="0">未知</option><option value="1">工资卡和定期存款</option><option value="2">仅有工资卡</option><option value="3">仅有定期存款</option>
+					</SELECT></TD>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">成为中行客户时间</TD>
+					<TD width="32%" class="TB6-td2"><SELECT
+						name="CCAS_CCTPERTRN.BOCCLIENT" >
+						<option value="0">3-4年</option><option value="1">1-2年</option><option value="2">1年以下</option><option value="3">新客户</option><option value="4">未知</option><option value="5">5年或以上</option>
+					</SELECT></TD>
+				</TR>
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">开户银行</TD>
+					<TD width="32%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.OPENBK"
+						type="text" alt="CCASLESS2|jkrxx|bok"
+						value=''
+						 size="20" maxlength="40"> 
+	                          <SPAN class="Start">*</SPAN></TD>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">工资帐号</TD>
+					<TD width="32%" class="TB6-td2"><INPUT
+						name="CCAS_CCTPERTRN.SALARYACC" type="text" alt="ALLCHAR|jkrxx|bok"
+						value=''
+						 size="20" maxlength="30"> 
+	                          <SPAN class="Start">*</SPAN></TD>
+				</TR>
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2"></TD>
+					<TD class="TB6-td2"></TD>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2"></TD>
+					<TD class="TB6-td2"></TD>
+				</TR>
+			</table></td></tr>
+		</table></td></tr>
+<!-- table4: 财务信息 -->
+		<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0"  >
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">主借款人月收入</TD>
+				<!--modify by jiangy 20090520 begin-->
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.WKIMONIN"
+					type="text"  alt="CCASNUMBER|jkrxx|boc"
+					value='4000'
+					 size="13" maxlength="13"  onChange="calmtotin()" onBlur="calmtotin()">元 </TD>
+				<!--modify by jiangy 20090520 end-->
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭其他成员月收入</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.FAMILYOTSALARY"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16" onBlur="calmtotin()"  onChange="calmtotin()">元*</TD>
+			</TR>
+			<TR>
+				<TD colspan=1 width="18%" height="25" valign="middle" class="TB6-td2">家庭月总收入</TD>
+				<TD colspan=3 class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERMTOTIN"
+					class='grayeditbak' type="text"  alt="CCASDEC15_2|jkrxx|bok" 
+					value=''
+					readonly size="16" maxlength="16">元*</TD>
+
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭股票额</TD>
+				<TD width="32%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMSTK"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭债券额</TD>
+				<TD width="32%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMBND"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭存款总额</TD>
+				<TD class="TB6-td2" colspan=3><INPUT name="CCAS_CCTPERTRN.PERHMDPS"
+					type="text"
+					value=''
+					 alt="CCASDEC15_2|jkrxx|bok"
+					size="16" maxlength="16">元*</TD>
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭现有住房价格</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMHOU"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭现有汽车价格</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMCAR"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+			</TR>
+			
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">主借款人月支出合计</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERMTHTOUT"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭月支出合计</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMNCS"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭月债务支出</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMDCS"
+					type="text"
+					value=''
+					 alt="CCASDEC15_2|jkrxx|bok"
+					size="16" maxlength="16">元*</TD>
+					
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭月养老金额</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERSFOAM"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+					
+										
+			</TR>
+			<TR>
+			
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭人寿保险单价值</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERINSAM"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">为他人担保额</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.SPONAMOUNT"
+					type="text"
+					value=''
+					 alt="CCASDEC15_2|jkrxx|bok"
+					size="16" maxlength="16">元*</TD>
+
+
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭总资产</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMAST"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+					
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭总负债</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMDBT"
+					type="text" alt="CCASDEC15_2|jkrxx|bok"
+					value=''
+					 size="16" maxlength="16">元*</TD>
+			</TR>
+			
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">现住房种类</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERHOMKD"
+					>
+					<option value="1">商品房</option><option value="2">房改房</option><option value="3">安居房</option><option value="4">集资房</option><option value="5">宅基房</option><option value="6">其它</option>
+				</SELECT>
+                        </TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">现住房面积</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHOMAR"
+					type="text" alt="CCASDEC8_2|jkrxx|bok"
+					value=''
+					 size="9" maxlength="9">（平方米）*</TD>
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">客户特征</TD>
+				<TD class="TB6-td2"><SELECT style="width: 90%" name="CCAS_CCTPERTRN.CLIENTCHR"
+					>
+					<option value="4">理财客户</option><option value="1">中行授信单位中层以上领导</option><option value="2">员工或员工担保</option><option value="3">存款大户</option><option value="0">政府各级领导</option><option value="5">其他</option>
+				</SELECT></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">持卡情况</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERHMCAD"
+					>
+					<option value="0">未知</option><option value="1">4张以上</option><option value="2">2-3张</option><option value="3">1张</option><option value="4">0张</option>
+				</SELECT></TD>
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">VIP卡号</TD>
+				<TD class="TB6-td2" colspan=3><INPUT name="CCAS_CCTPERTRN.PERVIPNO" 
+					type="text" 
+					value=''
+					 size="24" maxlength="24" alt="NUMBER|jkrxx|bok">*</TD>
+			</TR>			
+			<TR>
+			
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">客户级别</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERCRDPT"
+					>
+					<option value="00+">00</option><option value="01+">01</option><option value="01-">01-</option><option value="02+">02</option><option value="02-">02-</option><option value="03+">03</option><option value="03-">03-</option><option value="04+">04</option><option value="04-">04-</option><option value="05+">05</option><option value="05-">05-</option><option value="06+">06</option><option value="06-">06-</option><option value="07+">07</option><option value="07-">07-</option><option value="08+">08</option><option value="08-">08-</option><option value="09+">09</option><option value="09-">09-</option><option value="10+">10</option><option value="10-">10-</option><option value="99+"   selected   >99</option>
+				</SELECT></TD>
+					
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">个人客户信用等级</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERCRCLS"
+					>
+					<OPTION value="">请选择</OPTION>
+					<option value="00">AAA</option><option value="01">AA</option><option value="02">A</option><option value="03">BBB+</option><option value="04">BBB</option><option value="05">BBB-</option><option value="06">BB+</option><option value="07">BB</option><option value="08">BB-</option><option value="09">B+</option><option value="10">B</option><option value="11">B-</option><option value="12">CCC</option><option value="13">CC</option><option value="14">C</option><option value="15">D</option><option value="16">不评级</option><option value="17">未评级</option>
+				</SELECT></TD>
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">是否提供居留证明</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.HVTWOHSFLG"
+					>
+					<OPTION value="1"
+						>否</OPTION>
+					<OPTION value="0"
+						>是</OPTION>
+
+
+
+				</SELECT></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">是否提供任职单位营业执照</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.HVCMPCHARTERFLG"
+					>
+					<OPTION value="1"
+						>否</OPTION>
+					<OPTION value="0"
+						>是</OPTION>
+				</SELECT></TD>
+			</TR>
+
+			<TR>
+			
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">家庭成员数</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMMEM"
+					type="text"
+					value=''
+					 alt="CCASNUMBER|jkrxx|bok" size="2"
+					maxlength="2">
+                          人*</TD>
+			
+			
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">供养人口数</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERHMPER"
+					type="text"
+					value=''
+					 alt="CCASNUMBER|jkrxx|boc" size="2"
+					maxlength="2">
+                          人</TD>
+                         
+			</TR>
+			<TR>
+			
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">消贷关联客户标记</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERGDCAD" >
+					<option value="0">开发商/经销商员工</option><option value="1">建筑企业员工</option><option value="2">开发商/经销商关联企业员工</option><option value="3">其他关联客户</option><option value="4">非关联人</option>
+				</SELECT></TD>
+			
+			
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">消贷客户来源</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERSOURC"
+					>
+					<option value="4">其他</option><option value="3">分行推荐客户</option><option value="2">理财客户</option><option value="1">VIP客户</option><option value="0">本行员工</option>
+				</SELECT></TD>
+			</TR>
+			
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">关联客户标识</TD>
+				<TD class="TB6-td2"><SELECT  name="CCAS_CCTPERTRN.PERRELFG" disabled >
+					<option value="9"   selected   >9</option><option value="1">是</option><option value="0">否</option>
+				</SELECT></TD>
+				
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">违法记录标志</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERCRMFG"
+					>
+					<option value="3">无违法记录</option><option value="1">其他犯罪</option><option value="0">刑事犯罪</option>
+				</SELECT></TD>
+			</TR>
+
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">工作合同类型</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.PERCONTY"
+					>
+					<option value="0">未知</option><option value="1">不定期合同</option><option value="2">定期合同</option><option value="3">无合同</option><option value="4">其它种类合同</option>
+				</SELECT>*</TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">个人保险号</TD>
+				<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.PERINSNO"
+					type="text"
+					value=''
+					 alt="CHARANDNUMBER|jkrxx|bok"
+					size="15" maxlength="15">*</TD>
+			</TR>
+
+
+		
+
+			<TR>
+		 		<TD width="18%" height="25" valign="middle" class="TB6-td2">有无房产证</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.HVHSID"
+					>
+					<OPTION value="0"
+						>有</OPTION>
+					<OPTION value="1"
+						>无</OPTION>
+				</SELECT><SPAN class="Start"> </SPAN></TD>
+		
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">楼 龄</TD>
+				<TD class="TB6-td2"><SPAN class="Start"><INPUT
+					name="CCAS_CCTPERTRN.HSAGE" type="text"
+					value=''
+					 alt="CCASNUMBER|jkrxx|bok" size="2"
+					maxlength="2">年*</SPAN></TD>
+			</TR>
+		
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">物业使用状况</TD>
+				<TD class="TB6-td2"><SPAN class="Start"><SELECT
+					name="CCAS_CCTPERTRN.HSUSESTATUS"
+					>
+					<option value="1">自用</option><option value="2">投资</option>
+				</SELECT> </SPAN></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">物业或现住房用途</TD>
+				<TD class="TB6-td2"><SPAN
+					class="Start"><SELECT name="HSUSE"
+					>
+					<option value="1">自用</option><option value="2">出租</option><option value="3">空置</option>
+				</SELECT> </SPAN></TD>
+			</TR>
+			
+		
+			<TR>
+
+			
+				<TD width="18%" height="25" valign="middle" class="TB6-td2">是否购买两套以上住房</TD>
+				<TD class="TB6-td2"><SELECT name="CCAS_CCTPERTRN.HVLIVEPRAVEFLG"
+					>
+					<OPTION value="1"
+						>否</OPTION>
+					<OPTION value="0"
+						>是</OPTION>
+
+				</SELECT></TD>
+				
+			</TR>
+			<TR>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2"></TD>
+				<TD class="TB6-td2"></TD>
+				<TD width="18%" height="25" valign="middle" class="TB6-td2"></TD>
+				<TD class="TB6-td2"></TD>
+			</TR>
+		</table></td></tr>
+<!-- table4: 杂项信息 -->
+		<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0"  >
+			<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0"  >
+
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">联系人姓名</TD>
+					<TD class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.LINKNM" type="text"
+						alt="CCASLESS2|jkrxx|bok"
+						value=''
+						 size="20" maxlength="40"><SPAN
+						class="Start"> </SPAN>*</TD>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">联系人联系电话</TD>
+					<TD class="TB6-td2"><INPUT
+						name="CCAS_CCTPERTRN.LINKHMTEL" type="text"
+						alt="ALLCHAR|jkrxx|bok"
+						value=''
+						 size="20" maxlength="22"><SPAN
+						class="Start"> </SPAN>*</TD>
+				</TR>
+			</table></td></tr>
+			<tr><td><table width="100%" border="0"  align="center" cellpadding="0" cellspacing="0"  >
+				<TR>
+					<TD width="18%" height="25" valign="middle" class="TB6-td2">联系人电子邮件</TD>
+					<TD width="82%" class="TB6-td2"><INPUT name="CCAS_CCTPERTRN.LINKEMAIL"
+						type="text" alt="CCASEMAIL|jkrxx|bok"
+						value=''
+						 size="30" maxlength="30">*</TD>
+				</TR>
+				<TR>
+					<TD height="25" valign="middle" class="TB6-td2"></TD>
+					<TD class="TB6-td2"></TD>
+			</table></td></tr>		
+	</table></td></tr>
+	</table></td></tr>
+</table>
+<!-- 新表结构结束 -->
+
+
+
+
+<script language="JavaScript">
+	endDiv(window);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script language="JavaScript">
+	beginDiv(window, "jyxx", 'jyxx', true, "check()");
+</script>
+
+<!--交易信息-->
+
+
+
+
+
+
+
+
+
+       
+      
+<table width="96%" height="170" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#99A8C8" class="TB6-td2">
+          <tr>
+            <td align="center" valign="top">&nbsp;
+		     <table width="98%" border="1"  align="center" cellpadding="0" cellspacing="0" bordercolor="#D6D2BE" >
+                      <tr>
+                        <td height="25" class="TB6-td2">楼盘编号</td>
+                        <td class="TB6-td2"><input name="CCAS_RETAILTRAN.HAFHOUID" readonly class='grayeditbak' type="text"  value="D3B00006"  size="8" maxlength="8" alt="CCASLESS2|jyxx|bok">
+                          <img src="images/search.gif"  style="cursor:hand" onClick="findprj()"width="20" height="20" > </td>
+                        <td class="TB6-td2">楼宇名称</td>
+                        <td class="TB6-td2"><input name="CCAS_RETAILTRAN.HAFHUSNA" readonly class='grayeditbak' type="text"  value="二手房2"  size="30" maxlength="60" alt="CCASLESS2|jyxx|bok"></td>
+                      </tr>
+					  <tr>
+                        <td height="25" class="TB6-td2">类型</td>
+                        <td class="TB6-td2"><select name="CCAS_RETAILTRAN.TYPE" >
+                        <option value="1">普通住宅</option>
+                        <option value="2">高档房</option>
+                        <option value="3">办公用房</option>
+                        <option value="4">临街商铺</option>
+                        <option value="5">其他商铺</option>
+                        <option value="6">车库</option>
+                        <option value="7">其他</option>
+
+
+                        </select></td>
+                        <td class="TB6-td2">物业状态</td>
+                        <td class="TB6-td2"><select name="CCAS_RETAILTRAN.RELREFLG" >
+                        <option value="1">现房(已确权)</option>
+                        <option value="2">现房(未确权)</option>
+                        <option value="3">期房</option>
+                        </select></td>
+                      </tr>
+					  <tr>
+                        <td height="25" class="TB6-td2">购房总价</td>
+                        <td class="TB6-td2"><input name="CCAS_RETAILTRAN.TOTPRICE" type="text"  value=""    size="16" maxlength="16" alt="CCASDEC15_2|jyxx|bok" onChange="calloanrate()" onBlur="calloanrate()">
+                          元 </td>
+                        <td class="TB6-td2">评估价</td>
+                        <td class="TB6-td2"><input name="CCAS_RETAILTRAN.PRICE" type="text" value=""  size="16" maxlength="16" alt="CCASDEC15_2|jyxx|bok" onClick="pgjg()"  onChange="calloanrate()" onBlur="calloanrate()">
+                          元 </td>
+                      </tr>
+					  <tr>
+                        <td height="25" class="TB6-td2">房号</td>
+                        <td class="TB6-td2"><input name="CCAS_RETAILTRAN.LCTBCTNO" type="text" value=""  size="20" maxlength="20" alt="CCASLESS2|jyxx|bok"></td>
+
+                      </tr>
+					  <tr>
+                        <td height="25" class="TB6-td2">面积</td>
+	
+                        <td class="TB6-td2"><input name="CCAS_RETAILTRAN.LCTBLDAR" type="text"  value=""  size="9" maxlength="9" alt="CCASDEC8_2|jyxx|bok">
+                          （平方米）</td>
+                        <td class="TB6-td2">购房单价</td>
+                        <td class="TB6-td2"><input name="tempgfdj" type="text" size="12" maxlength="12" readonly>
+                          <img src="images/calculator.gif"  style="cursor:hand" onClick="calgfdj()" width="20" height="20"></td>
+
+                      </tr>
+                      
+                      
+                      
+
+                      <tr>
+      <td width="25%" height="100" valign="middle" class="TB6-td2">项目要求</td>
+  		<td width="31%" height="100" colspan="3" valign="middle" class="TB6-td2"><textarea name="LOCATION" cols=85 rows=12 readonly  size="100" maxlength="1000" >中山路66号</textarea></td>
+</tr>
+
+                      
+                      
+                          
+                      
+                      
+					 </table>
+		    </td>
+          </tr>
+</table>
+
+   
+
+
+
+<script language="JavaScript">
+	endDiv(window);
+</script>
+
+
+<script language="JavaScript">
+	beginDiv(window, "dksqxx", 'dksqxx', true, "check()");
+</script>
+
+
+<!--贷款申请信息-->
+ 
+
+
+
+
+
+
+
+
+
+
+
+<SCRIPT language="JavaScript">
+
+//贷款期限、还款周期、还款方式的相应时间处理：计算还款期数 
+function calreqtm(){
+
+	var term_value = window.document.getElementById('CCAS_PLAATRN.LAFTERM').value;	//贷款期限
+	if(term_value.length == 0){
+		return;
+	}
+	
+	var term = parseInt(term_value);
+	
+	if(isNaN(term)){
+		return;
+	}	
+		
+	if(term < 0 || term > 360){
+		return;
+	}
+
+	//需要计算出到期日
+	//1、分次放款，需要用到期日的值判断放款计划中没笔到期日是否在合同期内
+	//2、额度用款，需要用到期日判断小于额度日期
+	
+	//如果是分次放款，合同到期日＝第一次放款日期＋合同期限
+			
+		var todat_value = "20100824";
+			
+	
+	window.document.getElementById('CCAS_PLAATRN.RATEXPDT').value = setTheDate_M(todat_value,term);
+	
+
+	
+
+	
+	var per =  window.document.getElementById('CCAS_PLAATRN.RETPER').value;		//还款周期
+	var intfreq =  window.document.getElementById('CCAS_PLAATRN.INTFREQ');		//罚息结息周期	
+	var num;
+	
+	
+	if(term > 0 && term <= 360){
+	
+		switch(per){
+			case '01':
+					num = term;
+					//intfreq.value = "1";
+					break;
+			case '03':
+					num = term / 3
+					//intfreq.value = "3";
+					break;
+			case '06':
+					num = term / 6;
+					//intfreq.value = "6";
+					break;	
+			case '12':
+					num = term / 12;
+					//intfreq.value = "12";
+					break;
+			case '14':
+					num = term * 2;
+					//intfreq.value = "14";
+					break;	
+			case '98':
+					num = 1;
+					break;
+			default:
+					num = 0;
+		}
+		
+   		var v_num = num % 1;
+   		
+   		if(v_num > 0){
+   			
+   			v_num = parseInt(num + 1);
+		}else{
+			v_num = num;
+		}
+   
+   		//还款方式
+   		var v_mod = window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value;	
+   		if(v_mod == '3' || v_mod == '4' || v_mod == '7' || v_mod == '8' )		//3=等额本息；4=等额本金；7=滞后等额本息；8=滞后等额本金
+       		window.document.getElementById('CCAS_PLAATRN.LAFREQTM').value = v_num;
+   
+   		if (v_mod == '5')														//5=规则还息灵活还本
+       		window.document.getElementById('CCAS_PLAATRN.LAFREQTM').value = "";
+   
+   		if(v_mod != '3' && v_mod != '4' && v_mod != '7' && v_mod != '8' && v_mod != '5')	//12=等额本金递减还款；2=规则还息，到期还本息；6=气球还款;
+       		window.document.getElementById('CCAS_PLAATRN.LAFREQTM').value = '1';	
+	}	
+	
+		
+		
+}
+
+
+
+
+//还款方式LAFRTMOD的事件响应处理
+function lhhk(){
+   
+		
+		window.document.getElementById('CCAS_PLAATRN.RETPER').disabled=false;
+		
+		//规则还息，灵活还本
+		if(window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="5"){
+		
+		      
+		       
+		       enableDiv(window,"hkjh");
+		       
+		       //规则还息，灵活还本，所以还款周期还是需要输入的
+		       //window.document.getElementById('CCAS_PLAATRN.RETPER').value='1';
+		       //window.document.getElementById('CCAS_PLAATRN.RETPER').disabled=true;
+		       
+		     
+		}else{
+		    disableDiv(window, "hkjh");
+		    //window.document.getElementById('CCAS_PLAATRN.RETPER').disabled=false;
+        }
+        
+        //利随本清还款方式
+        if(window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="1"){
+		    	window.document.getElementById('CCAS_PLAATRN.RETPER').value='98';
+		    	window.document.getElementById('CCAS_PLAATRN.RETPER').disabled=true;
+		    	
+
+		}else{
+		    	
+		    	//window.document.getElementById('CCAS_PLAATRN.RETPER').value='01';
+		    	//window.document.getElementById('CCAS_PLAATRN.RETPER').disabled=false;   
+			
+				//window.document.getElementById('CCAS_PLAATRN.RATEXPDT').value = '';
+			
+		}
+		
+		//气球还款方式
+		if(window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="6"){
+		
+		    	
+				window.document.getElementById('CCAS_PLAATRN.RESDIND').disabled = false;
+				window.document.getElementById('CCAS_PLAATRN.LAFENDAMT').disabled =false;		    	
+			
+		
+		}else{
+
+		    	window.document.getElementById('CCAS_PLAATRN.RESDIND').value = '';
+		    	window.document.getElementById('CCAS_PLAATRN.LAFENDAMT').value = '';
+		
+				window.document.getElementById('CCAS_PLAATRN.RESDIND').disabled = true;
+				window.document.getElementById('CCAS_PLAATRN.LAFENDAMT').disabled =true;
+		
+		}
+		
+		
+		
+		
+	//add by jiangy 20090416 beging
+	//对于还款方式为“F”、“G”的,允许修改提前还款后的重算方式,否则,不允许修改提前还款后的重算方式.
+	var bancscode=convertCode(window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value);
+  if(bancscode=='F'||bancscode=='G')
+  {
+  	window.document.getElementById('id_lafgbrty').innerHTML = '<select name="CCAS_PLAATRN.LAFGBRTY" >'
+  													+'<option value="R">减少还款期数，金额不变</option><option value="T">减少还款金额，期数不变</option>'
+  													+'</select>';
+  }                                                                                                  
+  else
+  {
+  	window.document.getElementById('id_lafgbrty').innerHTML ='<select name="CCAS_PLAATRN.LAFGBRTY"  disabled>'
+                        		+'<option value="N"   selected   >不重算</option><option value="R">减少还款期数，金额不变</option><option value="T">减少还款金额，期数不变</option>'                           
+                        	  +'</select>';
+  }
+	//add by jiangy 20090416 end	
+
+	//去掉只有国家教育助学才允许选择滞后还款的还款方式 20090605 hany
+	//retTypeValid();
+	//20090605
+	
+	calreqtm();
+
+}
+
+function hkrq(){
+	 if(window.document.getElementById('CCAS_PLAATRN.RETDTTYPE').value=="N"){
+	   window.document.getElementById('CCAS_PLAATRN.FIRRET').value='';
+	   window.document.getElementById('CCAS_PLAATRN.FIRRET').disabled=true;
+	 }else{
+	    window.document.getElementById('CCAS_PLAATRN.FIRRET').disabled=false;
+	
+	 }
+	 
+}
+ 
+
+//added by jiangy 20100303 帐号的可写性取决于借记卡卡号是否有值
+/**
+function changeActState(str)
+{
+	if(str=='1')//收款人借记卡卡号
+	{
+		if(window.document.getElementById('CCAS_PLAATRN.RECEIVEDEBITNO').value=='')
+			window.document.getElementById('CCAS_PLAATRN.RECEIVEACCNO').disabled=false;
+		else
+			window.document.getElementById('CCAS_PLAATRN.RECEIVEACCNO').disabled=true;
+	}
+	if(str=='2')//还款借记卡卡号
+	{
+		if(window.document.getElementById('CCAS_PLAATRN.LAFPDEBITNO').value=='')
+			window.document.getElementById('CCAS_PLAATRN.LAFPACT').disabled=false;
+		else
+			window.document.getElementById('CCAS_PLAATRN.LAFPACT').disabled=true;
+	}
+}
+*/
+//added by jiangy 20100303 end
+
+//add by jiangy 20090417 begin
+//convert code to bancscode
+function convertCode(str)
+{
+	var BANCSCODE='';
+	var code=str;
+	
+		if(code=='1')
+		{
+			BANCSCODE='B';
+		}
+			
+	
+		if(code=='11')
+		{
+			BANCSCODE='G';
+		}
+			
+	
+		if(code=='12')
+		{
+			BANCSCODE='G';
+		}
+			
+	
+		if(code=='2')
+		{
+			BANCSCODE='B';
+		}
+			
+	
+		if(code=='3')
+		{
+			BANCSCODE='F';
+		}
+			
+	
+		if(code=='4')
+		{
+			BANCSCODE='G';
+		}
+			
+	
+		if(code=='5')
+		{
+			BANCSCODE='N';
+		}
+			
+	
+		if(code=='6')
+		{
+			BANCSCODE='F';
+		}
+			
+	
+		if(code=='7')
+		{
+			BANCSCODE='F';
+		}
+			
+	
+		if(code=='8')
+		{
+			BANCSCODE='G';
+		}
+			
+	
+	return BANCSCODE;
+}
+//add by jiangy 20090417 end
+
+//对帐单周期STATREQ的事件响应处理
+function ldzd(){
+
+		window.document.getElementById('CCAS_PLAATRN.DPLCYCLE').disabled = false;	//对账单次数
+		window.document.getElementById('CCAS_PLAATRN.DPLDATE').disabled = false;	//对账单发送日
+   
+		
+		if(window.document.getElementById('CCAS_PLAATRN.STATREQ').value=='D'){
+			
+			//帐单周期STATREQ='D',对帐单次数=0，对账单发送日=0；
+			window.document.getElementById('CCAS_PLAATRN.DPLCYCLE').value="0";
+			window.document.getElementById('CCAS_PLAATRN.DPLDATE').value="0";
+			
+			window.document.getElementById('CCAS_PLAATRN.DPLCYCLE').disabled = true;									
+			window.document.getElementById('CCAS_PLAATRN.DPLDATE').disabled = true;									
+			
+		
+		
+		}else if (window.document.getElementById('CCAS_PLAATRN.STATREQ').value=='M'){
+		
+			//帐单周期STATREQ='M',对帐单次数=0；			
+			window.document.getElementById('CCAS_PLAATRN.DPLCYCLE').value="0";
+			window.document.getElementById('CCAS_PLAATRN.DPLCYCLE').disabled = true;
+												
+		}else if(window.document.getElementById('CCAS_PLAATRN.STATREQ').value=='Y'){
+		
+			//帐单周期STATREQ='Y',对帐单次数,对账单发送日都可以输入		
+			window.document.getElementById('CCAS_PLAATRN.DPLCYCLE').disabled = false;	//对账单次数
+			window.document.getElementById('CCAS_PLAATRN.DPLDATE').disabled = false;	//对账单发送日		
+			
+		}else {
+
+			//帐单周期STATREQ不输入，对帐单次数,对账单发送日都不可输入
+			
+			window.document.getElementById('CCAS_PLAATRN.DPLCYCLE').value="";
+			window.document.getElementById('CCAS_PLAATRN.DPLDATE').value="";			
+			
+			window.document.getElementById('CCAS_PLAATRN.DPLCYCLE').disabled = true;	//对账单次数
+			window.document.getElementById('CCAS_PLAATRN.DPLDATE').disabled = true;	//对账单发送日		
+		
+		}
+		
+}
+
+//modify by jiangy 20090625 begin
+function calpay(){
+   var bj=0;
+   
+      //Begin add zhujian 20070109
+   
+   //还款频率
+   var v_retper=window.document.getElementById('CCAS_PLAATRN.RETPER').value;
+   var v_percount=0;
+  
+   if(v_retper=="01")
+     v_percount=1;
+   
+   if(v_retper=="03")
+     v_percount=3;
+   
+   if(v_retper=="06")
+     v_percount=6;
+    
+   if(v_retper=="12")
+     v_percount=12;
+   
+   if(v_retper=="14")
+     v_percount=0.5;
+   
+   if(v_retper=="98")
+     v_percount=window.document.getElementById('CCAS_PLAATRN.LAFTERM').value;
+   
+   if(parseFloat(v_percount) > parseFloat(window.document.getElementById('CCAS_PLAATRN.LAFTERM').value) )
+   {
+       alert("还款频率不能大于申请借款期限");     
+       return false;
+   }
+   
+   //每次还款的利率=贷款利率 / 1000 * 还款间隔 (因为贷款利率是千分制,) ??为什么贷款利率不除以12,不是以年为单位吗?
+   //Modified By Michael 20091016
+   
+   var llfdbl = window.document.getElementById('CCAS_PLAATRN.FLRATESCA').value;
+   var llfdz =  window.document.getElementById('CCAS_PLAATRN.FLRATE').value;
+   var jzll = window.document.getElementById('CCAS_PLAATRN.LAFRATVL').value;
+
+   var ll=((1+llfdbl*1/100)*(jzll*1+llfdz*1)/1200)*v_percount;
+   
+   //还款次数=借款期限/还款频率
+   var qs=0;   
+   if(v_percount != 0)
+   {
+       qs=window.document.getElementById('CCAS_PLAATRN.LAFTERM').value/v_percount ;
+       var v_qs=qs%1 ;
+       if(v_qs > 0)
+       qs = parseInt(qs + 1 );
+          
+   }
+   
+   //还款方式
+   var v_mod = window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value;		
+   if(v_mod == '3' || v_mod == '4' || v_mod == '7' || v_mod == '8' )		//3=等额本息；4=等额本金；7=滞后等额本息；8=滞后等额本金
+       window.document.getElementById('CCAS_PLAATRN.LAFREQTM').value = qs;
+   
+   if (v_mod == '5')														//5=规则还息灵活还本
+       window.document.getElementById('CCAS_PLAATRN.LAFREQTM').value = "";
+   
+   if(v_mod != '3' && v_mod != '4' && v_mod != '7' && v_mod != '8' && v_mod != '5')	//12=等额本金递减还款；2=规则还息，到期还本息；6=气球还款;
+       window.document.getElementById('CCAS_PLAATRN.LAFREQTM').value = '1';
+       
+       
+   //End add zhujian 20070109
+   
+   var je=window.document.getElementById('CCAS_PLAATRN.LAFDRAMT').value ;
+   if((window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="3"||window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="7") && qs != 0 ){
+      window.document.getElementById('CCAS_PLAATRN.PAYMN').value=adv_format(caculate21(ll,qs,je),2);
+   }else if((window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="4"||window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="8") && qs != 0){
+      window.document.getElementById('CCAS_PLAATRN.PAYMN').value=adv_format(caculate22(ll, qs, je, bj),2);
+   }else if(window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="1"&& qs != 0){
+      //利随本清
+      window.document.getElementById('CCAS_PLAATRN.PAYMN').value=adv_format(je*(1+ll),2);
+   }else if(window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="2"&& qs != 0){
+      //规则还息，到期还本息
+      window.document.getElementById('CCAS_PLAATRN.PAYMN').value=adv_format(je*ll,2);
+   }else if((window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="11"||window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="12")&& qs != 0){
+      var d=window.document.getElementById('CCAS_PLAATRN.LAFCHAMT').value;
+      if(window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="11")//等额本金递增还款
+      {
+      	window.document.getElementById('CCAS_PLAATRN.PAYMN').value=adv_format((je/qs-(qs-1)*d/2)+je*ll,2);
+      }
+      else if(window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value=="12")//等额本金递减少还款
+      {
+      	window.document.getElementById('CCAS_PLAATRN.PAYMN').value=adv_format((je/qs+(qs-1)*d/2)+je*ll,2);
+      }
+   }else{
+      window.document.getElementById('CCAS_PLAATRN.PAYMN').value=0.00;
+   }
+   if(window.document.getElementById('CCAS_PLAATRN.PAYMN').value<=0)
+   {
+     window.document.getElementById('CCAS_PLAATRN.PAYMN').value=0;
+   }
+}
+//modify by jiangy 20090625 end
+
+//add by hai 20091109
+function findAct(actno,acttype){
+  var url = "/CCAS/CMain?action=QRYACTNO&command=ACTQuery&ACTNO="+actno+"&acttype="+acttype;
+  window.open(url,"account","width=400,height=200",true);
+}
+//end 20091109
+
+//added by jiangy 20100304 通过借记卡卡号查询相应的主帐号
+function findDebit(debitno){
+  var url = "/CCAS/CMain?action=QRYDEBITNO&command=DEBITQuery&DEBITNO="+debitno;
+  window.open(url,"account","width=400,height=200",true);
+}
+//added by jiangy end
+
+</SCRIPT>
+
+<!--
+<input name="CCAS_PLAATRN.LAFUSENO" type="hidden" value="">
+-->
+<input name="CCAS_PLAATRN.LAFLNUSE" type="hidden" value="1">
+<input name="CCAS_PLAATRN.LAFNEWCD" type="hidden" value="10380007">
+<input name="CCAS_PLAATRN.CBIRTID1" type="hidden" value="">
+<input name="CCAS_PLAATRN.ACTCUSNO" type="hidden" value="0079764671">
+<input name="CCAS_TASKLOG.CUSTNO" type="hidden" value="0079764671">
+<input name="CCAS_TASKLOG.REF_TASK_SEQNO" type="hidden" value="">
+<input name="CCAS_PLAATRN.LOANTIME" type="hidden" value="N" >
+<input name="BPDCONS" type="hidden" value="N" >
+
+
+
+<input name="CCAS_PLAATRN.LAFLONST" type="hidden" value="7131">
+<input name="CCAS_PLAATRN.LAFLONTP" type="hidden" value="10">
+<input name="CCAS_PLAATRN.LAFLONKD" type="hidden" value="010000">
+<input name="CCAS_PLAATRN.LAFEMPFG" type="hidden" value="">
+
+
+  
+<input name="CCAS_PLAATRN.LAFGTMD1" type="hidden" value="NO" >
+
+<input name="CCAS_PLAATRN.LAFGTMD2" type="hidden" value="NO" >
+<input name="CCAS_PLAATRN.LAFGTMD3" type="hidden" value="NO" >
+
+
+<table width="96%" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#99A8C8" class="TB6-td2">
+   <tr>
+     <td align="center" valign="middle">&nbsp;
+     	<table width="98%" border="1"  align="center" cellpadding="0" cellspacing="0" bordercolor="#D6D2BE" >
+     		
+			
+
+				<input name="CCAS_PLAATRN.LAFDRCCY" type="hidden" value="CNY">
+				<input name="LAFTERM_MAX" type="hidden" value="360">
+				<input name="LAFTERM_MIN" type="hidden" value="60"> 
+				<input name="BNSCURCY" type="hidden" value="CNY">
+				<input name="BNSIRTTY" type="hidden" value="B">
+				<input name="BNSIRTBS" type="hidden" value="01"> 
+				<input name="BNSIRTEP" type="hidden" value="07"> 
+				<input name="APTSIGN" type="hidden" value="N"> 
+				<input name="CCAS_PLAATRN.LAFCRTFG" type="hidden" value="">				
+				<input name="CCAS_PLAATRN.LAFRATFG" type="hidden" value="M">			
+     
+                <tr>
+                    <td colspan=4 height="25" class="TB6-td2">贷款基本信息:</td>
+                </tr>
+			                
+                <tr>
+                	<td width="19%" height="25" class="TB6-td2">已交首期款</td>
+                    <td width="29%" class="TB6-td2"><input name="CCAS_PLAATRN.LAFAPYAM"  type="text"     value=""  alt="CCASLESS|dksqxx|bok" size="16" maxlength="16" >元 </td>
+                          
+                    <td width="20%" height="25" class="TB6-td2">借款货币</td>
+                    <td width="32%" class="TB6-td2">
+                     	<select name="CCAS_PLAATRN.LAFDRCCYtemp"  disabled>
+                   			<option value="CNY"   selected   >人民币</option><option value="GBP">英镑</option><option value="HKD">港币</option><option value="USD">美元</option><option value="CHF">瑞士法郎</option><option value="SGD">新加坡元</option><option value="PKR">巴基斯坦卢比</option><option value="SEK">瑞典克朗</option><option value="DKK">丹麦克朗</option><option value="NOK">挪威克朗</option><option value="JPY">日元</option><option value="CAD">加拿大元</option><option value="AUD">澳大利亚元</option><option value="TZS">坦桑尼亚先令</option><option value="MYR">马来西亚林吉特</option><option value="EUR">欧元</option><option value="IRR">伊朗里亚尔</option><option value="NPR">尼泊尔卢比</option><option value="MOP">澳门币</option><option value="PHP">菲律宾比索</option><option value="THB">泰国铢</option><option value="INR">印度卢比</option><option value="NZD">新西兰元</option><option value="RUB">俄罗斯卢布（贸易）</option>
+                   		</select>
+                    </td>
+                </tr>
+                <tr>
+                    <td height="25" class="TB6-td2">申请借款金额</td>
+                    <td class="TB6-td2"><input name="CCAS_PLAATRN.LAFDRAMT" type="text"      value="" onChange="calloanrate()" onBlur="calloanrate()" alt="CCASLESS|dksqxx|bok"   size="16" maxlength="16" >元 </td> 
+
+                 
+                     <td class="TB6-td2">申请借款期限</td>
+                     <input name="CCAS_PLAATRN.RATEXPDT" type="hidden" value="" >
+                                                
+                    <td class="TB6-td2"><input name="CCAS_PLAATRN.LAFTERM" type="text"     value=""         alt="CCASNUMBER|dksqxx" size="4" maxlength="4"  onChange="calreqtm()" onBlur="calreqtm()" >月</td>
+                    
+          
+           		</tr>         
+                     
+                
+               	<tr> 
+              	                    
+                   	<td width="19%" height="25" class="TB6-td2">利率类型</td>
+                    <td width="29%" class="TB6-td2">
+                    	<select name="CCAS_PLAATRN.RATTYPE" disabled >
+                       		<option value="A">固定</option><option value="B"   selected   >周期浮动</option>   
+                        </select>
+                 	</td>
+                 	
+                    <td class="TB6-td2">基准利率值</td>
+                    
+							
+							<td class="TB6-td2" ><input name="CCAS_PLAATRN.LAFRATVL"  type="text"  class='grayeditbak' readonly  value="5.94" size="14" maxlength="8">%</td>                                                    	
+                    
+           		</tr>
+               	<tr>             	                    
+               	
+                    <td class="TB6-td2">利率浮动周期</td>
+                    
+                     	<td class="TB6-td2" >
+                     	<select name="CCAS_PLAATRN.LAFRATVD"   >
+							<option value="0">0</option><option value="12">12</option><option value="36">36</option><option value="60">60</option>
+                        </select>月
+                        </td>
+							
+                    
+					
+                   	<td width="19%" height="25" class="TB6-td2">&nbsp;</td>
+                   	<input name="CCAS_PLAATRN.LAFFRTDT" id="CCAS_PLAATRN.LAFFRTDT" type="hidden">
+                    <td width="29%" class="TB6-td2">&nbsp;</td>
+  					
+           		</tr>           		
+           		
+           		
+              	<tr>                 
+                           
+             
+              	<tr>
+					<td class="TB6-td2">利率浮动比例</td>
+                    <td class="TB6-td2"><input name="CCAS_PLAATRN.FLRATESCA" type="text"   value=""  alt="CCASLESS|dksqxx|bok" size="6" maxlength="6" ><span class="Start">%*</span></td>
+                
+                    <td height="25" class="TB6-td2">利率浮动值</td>
+		       		<td class="TB6-td2"><input name="CCAS_PLAATRN.FLRATE" type="text"  value=""  alt="CCASLESS|dksqxx|bok" size="9" maxlength="9">*</td>
+                        
+                      
+              	</tr>
+                
+  				
+              	<tr>
+              		<td height="25" class="TB6-td2">还款方式</td>
+                    <td class="TB6-td2">
+                    	<select name="CCAS_PLAATRN.LAFRTMOD"   onChange="lhhk()" onBlur='lhhk()'>
+							<option value="1">利随本清</option><option value="11">等额本金递增还款</option><option value="12">等额本金递减还款</option><option value="2">规则还息，到期还本息</option><option value="3">等额本息</option><option value="4">等额本金</option><option value="5">规则还息灵活还本</option><option value="6">气球还款</option><option value="7">滞后等额本息</option><option value="8">滞后等额本金</option>
+                        </select>
+                  	</td>
+
+                 	<td class="TB6-td2">还款周期</td>
+                   	<td class="TB6-td2">
+                   		<select name="CCAS_PLAATRN.RETPER"  onChange="calreqtm()" onBlur="calreqtm()" >
+                        	<option value="01">每月</option><option value="03">每季度</option><option value="06">每半年</option><option value="12">每年</option><option value="14">双周</option><option value="98">到期时</option> 
+                        </select>
+                   </td>
+				</tr>
+				
+				<tr>
+                    <td width="19%" height="25" class="TB6-td2">每期还本增减额</td>
+                    <td width="29%" class="TB6-td2"><input name="CCAS_PLAATRN.LAFCHAMT" type="text"   value="" alt="CCASLESS|dksqxx|bok" size="16" maxlength="16" >元*</td>
+				
+
+                   	<td height="25" class="TB6-td2">延迟还本期</td>
+                   	<td height="25" class="TB6-td2"><input name="CCAS_PLAATRN.DELAYRETPER" type="text"  value="" size="2" maxlength="2" alt="CCASNUMBER|dksqxx|bok">*</td>
+                                         
+               	</tr>	
+                <tr>
+
+                	<td class="TB6-td2">尾款</td>
+                    <td class="TB6-td2"><input name="CCAS_PLAATRN.LAFENDAMT" type="text"      value="" alt="CCASLESS|dksqxx|bok"          size="16" maxlength="16" >* </td> 
+
+                
+                    <td class="TB6-td2">尾款标志</td>
+                   	<td class="TB6-td2">
+                   		<select name="CCAS_PLAATRN.RESDIND"   >
+                   			<option value="">请选择</option>
+                        	<option value="2">仅包含本金</option>    
+                        </select>*
+                    </td>
+
+                          
+                </tr>      	
+				<tr>
+					<td width="19%" height="25" class="TB6-td2">还款期数</td>
+                    <td width="29%" class="TB6-td2"><input name="CCAS_PLAATRN.LAFREQTM" class='grayeditbak' type="text"  readonly value="" alt="CCASNUMBER|dksqxx|bok" size="4" maxlength="4" ></td>
+				
+ 
+                  	<td class="TB6-td2">首期供款额</td>
+                  	<td class="TB6-td2"><input name="CCAS_PLAATRN.PAYMN" class='grayeditbak' type="text" readonly  value=" " size="16" maxlength="16"> &nbsp; <img src="images/calculator.gif"  style="cursor:hand" onClick="calpay()" width="20" height="20"></td>
+  
+             	</tr>
+             	
+    			<tr>	                    
+                   <input name="CCAS_PLAATRN.RETDTTYPE" type="hidden" value="Y">
+                    <td height="25" class="TB6-td2">每期固定还款日</td>
+                    <td class="TB6-td2"><input type="text" name="CCAS_PLAATRN.FIRRET" value=""   size=2 maxlength=2 >日 *</td>                    
+		 </tr>
+		 				
+		 <tr>              
+                        <td colspan=1 height="25" class="TB6-td2">收款人</td>
+                        <td colspan=1 height="25" class="TB6-td2" colspan="3"><input name="CCAS_PLAATRN.RECEIVEPER" type="text"    value="市南支行安居宝" size="25" maxlength="40" alt="CCASLESS|dksqxx|bok"></td>
+         	</tr>
+         	<!--added by jiangy 20100303 增加收款人借记卡卡号-->
+         	<tr>
+         		        <td colspan=1 height="25" class="TB6-td2">收款人借记卡卡号</td>
+                        <td colspan=3 height="25" class="TB6-td2"><input name="CCAS_PLAATRN.RECEIVEDEBITNO" type="text"     alt="ALLCHAR|dksqxx|bok" value="" size="19" maxlength="19">    
+                        *<img src="images/search.gif"  style="cursor:hand" onClick="findDebit(window.document.getElementById('CCAS_PLAATRN.RECEIVEDEBITNO').value)" width="20" height="20" ></td> 		
+         	</tr>	  
+         	<!--added by jiangy 20100303 end-->
+         	<tr>
+         		        <td height="25" class="TB6-td2">收款人帐号</td>
+                        <td height="25" class="TB6-td2"><input name="CCAS_PLAATRN.RECEIVEACCNO" type="text"  disable='flase'   alt="ALLCHAR|dksqxx|bok" value="" size="17" maxlength="17">
+               			<td class="TB6-td2">收款子帐户类别</td>
+                        <td class="TB6-td2">
+                      <select name="CCAS_PLAATRN.AUTHTLID" >
+                          <option value="CNY0" selected >CNY0-人民币</option>
+                          <option value="    " > </option>
+                      </select>
+                                          
+                    <img src="images/search.gif"  style="cursor:hand" onClick="findAct(window.document.getElementById('CCAS_PLAATRN.RECEIVEACCNO').value,window.document.getElementById('CCAS_PLAATRN.AUTHTLID').value)"width="20" height="20" ></td>
+		    
+                    </td>       		
+         	 </tr>
+                  
+         		
+				<tr>              
+                        <td colspan=1 height="25" class="TB6-td2">放款MCA帐户产品类型</td>
+                        <td colspan=1 height="25" class="TB6-td2"><input name="CCAS_PLAATRN.APTRETTP" type="text"    value="" size="4" maxlength="4" alt="CCASNUMBER|dksqxx|bok">*</td>
+         		  
+         		        <td height="25" class="TB6-td2">放款MCA帐户产品子类型</td>
+                        <td height="25" class="TB6-td2"><input name="CCAS_PLAATRN.APTRTSTP" type="text"     alt="ALLCHAR|dksqxx|bok" value="" size="4" maxlength="4">*</td>
+         		  
+         		</tr>
+         		<!--added by jiangy 20100303 增加还款借记卡卡号-->
+         		<tr>
+                    <td colspan=1 class="TB6-td2">还款借记卡卡号</td>
+                    <td colspan=3 class="TB6-td2"><input name="CCAS_PLAATRN.LAFPDEBITNO" type="text" alt="ALLCHAR|dksqxx|bok"   value=""  size="19" maxlength="19">
+		    						*<img src="images/search.gif"  style="cursor:hand" onClick="findDebit(window.document.getElementById('CCAS_PLAATRN.LAFPDEBITNO').value)" width="20" height="20" ></td>
+		    		<!--added by jiangy 20100303 end-->
+         		<tr>
+                    <td class="TB6-td2">还款帐号</td>
+                    <td class="TB6-td2"><input name="CCAS_PLAATRN.LAFPACT" type="text" alt="ALLCHAR|dksqxx|bok"   value=""  size="17" maxlength="17">
+		    
+				
+				    <td class="TB6-td2">还款MCA子帐户类别</td>
+                    <td class="TB6-td2">
+                      <select name="CCAS_PLAATRN.APTRETFG" >
+                          <option value="CNY0" selected >CNY0-人民币</option>
+                          <option value="    " > </option>
+                      </select>
+                                          
+                    <img src="images/search.gif"  style="cursor:hand" onClick="findAct(window.document.getElementById('CCAS_PLAATRN.LAFPACT').value,window.document.getElementById('CCAS_PLAATRN.APTRETFG').value)"width="20" height="20" ></td>
+		    
+                    </td>
+            	   	
+         		</tr>
+                     		                      		
+         		<tr>
+                     <td width="19%" height="25" class="TB6-td2">应还款重算标识</td>
+                     <td width="29%" class="TB6-td2">
+                      	<select name="CCAS_PLAATRN.LAFRMHTY"   disabled  >
+                          	<option value="0">不重算</option><option value="1">立即重算</option><option value="2">下期重算</option> 
+                        </select>
+                    </td>
+                    
+                   <td height="25" class="TB6-td2">提前还款后的重算方式</td>
+                   <!--modify by jiangy 20090428 begin 1 增加id定义；2 对于"N"的情况只读，否则可选-->
+                   	<td height="25" class="TB6-td2" id='id_lafgbrty'>  
+                   		<!--               		
+                   		<select name="CCAS_PLAATRN.LAFGBRTY" disabled>
+                   		-->
+                   		
+                   			<select name="CCAS_PLAATRN.LAFGBRTY" disabled>
+                   			<option value="N"   selected   >不重算</option><option value="R">减少还款期数，金额不变</option><option value="T">减少还款金额，期数不变</option>
+                   		                           
+                      </select>
+                  	</td>
+                  	<!--modify by jiangy 20090428 end-->
+                    
+               <tr>
+               		<td width="19%" height="25" class="TB6-td2">自动扣款标识</td>
+                    <td width="29%" class="TB6-td2">
+                    	<!--   changed by chenrong 20100106 <select name="CCAS_PLAATRN.ATREPFLG"     >   -->
+                    	<select name="CCAS_PLAATRN.ATREPFLG"  disabled >
+                    	<!--   end of changed by chenrong 20100106 -->                    
+                             <option value="3">本息</option><option value="4">不自动扣还款</option>  
+                        </select>
+					</td>
+
+
+                    <td width="19%" height="25" class="TB6-td2">足额扣款标识</td>
+                    <td width="29%" class="TB6-td2">
+                    	<select name="CCAS_PLAATRN.ATREPTYP"  >
+                             <option value="1">足额扣款</option><option value="2">有多少扣多少</option>  
+                        </select>
+					</td>					
+
+                    	
+					
+				</tr>
+                <tr>
+                    <td colspan=1  height="25" class="TB6-td2">罚息结息周期</td>
+                    <td colspan=1  class="TB6-td2">
+                    	<select name="CCAS_PLAATRN.INTFREQ" disabled >
+                        	<option value="1">每月</option><option value="12">每年</option><option value="14">双周</option><option value="3">每季度</option><option value="6">每半年</option><option value="98">到期日</option><option value="99">每日</option>  
+                        </select>
+                    </td> 
+                                            
+                	<td width="19%" height="25" class="TB6-td2">是否自动扣逾期利息</td>
+                    <td width="29%" class="TB6-td2">
+                        <select name="CCAS_PLAATRN.AUTOVRID" disabled >
+                   			<option value="N">No</option><option value="Y">Yes</option>  
+                        </select>
+                    </td>
+               	</tr>  
+               	<tr>
+                	<td width="19%" height="25" class="TB6-td2">最小还款比例</td>
+                    <td width="29%" class="TB6-td2"><input name="CCAS_PLAATRN.MINREPAP" type="text"   value="" alt="CCASLESS|dksqxx|bok" size="6" maxlength="6" >%*</td>
+ 			
+ 				    <td class="TB6-td2">是否打印还款通知书</td>
+                    <td class="TB6-td2">
+                    	<select name="CCAS_PLAATRN.ACTNOTFG"  >
+                            <option value="Y">是</option>
+                            <option value="N">否</option>                            
+                          </select>*
+                    </td>
+               
+               </tr>
+				<tr>
+                	<td width="19%" height="25" class="TB6-td2">本金还款提前提示天</td>
+                    <td width="29%" class="TB6-td2"><input name="CCAS_PLAATRN.ACTCORRG" type="text"   value="" alt="NUMBER|dksqxx|bok" size="2" maxlength="2" >*</td>
+ 				
+                	<td width="19%" height="25" class="TB6-td2">利息还款提前提示天</td>
+                    <td width="29%" class="TB6-td2"><input name="CCAS_PLAATRN.ACTACRRG" type="text"   value="" alt="NUMBER|dksqxx|bok" size="2" maxlength="2" >*</td>
+				</tr>				
+	           <tr>
+                           
+                    <td colspan=1 height="25" class="TB6-td2">首次还款日标识</td>
+                    <td colspan=1 class="TB6-td2">
+                    	<select name="CCAS_PLAATRN.FSTREQFG"   >
+                          	<option value="0">第一个还款日还款(非整月后)</option><option value="1">一个整月后的还款日还款</option><option value="3">固定月(3,6,9,12)还款</option>  
+                        </select>
+                    </td>
+                
+                	<td width="19%" height="25" class="TB6-td2">最后还款日标识</td>
+                    <td width="29%" class="TB6-td2">
+                    	<select name="CCAS_PLAATRN.FINALFLG"   >
+                           <option value="0">到期前任意时点</option><option value="1">贷款到期日必须有一次还款</option>              
+                        </select>                          
+					</td>
+				</tr>
+	           <tr>
+                           
+                    <td colspan=1 height="25" class="TB6-td2">委托资金协议号</td>
+                     <td width="29%" class="TB6-td2"><input name="CCAS_PLAATRN.FAGNO" type="text"   value="" alt="NUMBER|dksqxx|bok" size="20" maxlength="20" >*</td>
+                     
+                    <td colspan=1 height="25" class="TB6-td2">委托贷款BGL帐号</td>
+                     <td width="29%" class="TB6-td2"><input name="CCAS_PLAATRN.CLIPERSN" type="text"   value="" alt="NUMBER|dksqxx|bok" size="18" maxlength="18" >*</td>
+                     
+				</tr>	
+ 
+
+
+				<input name="CCAS_PLAATRN.LAFSTRFG" type="hidden" value="N">
+				<input name="CCAS_PLAATRN.BGLRRHFC" type="hidden" value="">
+
+
+             
+                <tr>
+                    <td height="25" class="TB6-td2">贷款成数</td>
+                    <td height="25" class="TB6-td2"><input name="CCAS_PLAATRN.LOANRATE" class='grayeditbak' type="text" readonly value="" size="7" maxlength="7">%*</td>
+                    
+                    <td height="25" class="TB6-td2">&nbsp;</td>
+		      		<td height="25" class="TB6-td2">&nbsp;</td>
+		    	</tr>
+		      
+		    
+            
+               <tr>
+                   	<td colspan=4 height="25" class="TB6-td2">对帐单信息:</td>
+               	</tr>            				
+		    
+				<tr>
+					<td class="TB6-td2">对帐单周期</td>
+                    <td class="TB6-td2">
+                    	<select name="CCAS_PLAATRN.STATREQ"   onChange="ldzd()" onBlur='ldzd()'>
+                    		<option value=""> </option>
+                            <option value="Y">年</option>
+                            <option value="M">月</option>
+                            <option value="D">日</option>                            
+                          </select>*</td>                      
+
+			      	<td height="25" class="TB6-td2">对帐单次数</td>
+                    <td height="25" class="TB6-td2"><input name="CCAS_PLAATRN.DPLCYCLE" type="text"    alt="CCASNUMBER|dksqxx|bok" value="" size="2" maxlength="2">*</td>
+
+            	</tr>
+            	<tr>
+            		<td height="25" class="TB6-td2">对帐单发送日</td>
+                    <td height="25" class="TB6-td2"><input name="CCAS_PLAATRN.DPLDATE" type="text"   alt="CCASNUMBER|dksqxx|bok" value="" size="2" maxlength="2">*</td>
+			            
+			        <td height="25" class="TB6-td2">&nbsp;</td>
+                    <td height="25" class="TB6-td2">&nbsp;</td>
+           		</tr>		      
+		     
+             <!--add by jiangy 20090326 begin-->
+             
+          	
+                       	  
+           	
+			
+            
+                       		
+		    
+		    
+		    <!--added by jiangy 20100107 begin-->
+		    
+		    <!--added by jiangy 20100107 end-->
+		</table>
+     </td>
+   </tr>
+</table>
+
+
+
+
+
+
+<script language="JavaScript">
+	endDiv(window);
+</script>
+
+
+
+
+
+
+	
+<script language="JavaScript">
+
+
+	beginDiv(window, "hkjh", 'hkjh', false, "check()");
+
+</script>
+
+<!--还款计划信息-->
+
+
+
+
+
+
+
+
+
+<script language="javascript">
+
+
+
+
+     hkcounter=1;
+
+
+
+
+var beforehtmlhk = new Array();
+function addhk(str1,str2,str3){
+	var oldhtml = window.document.getElementById(str1).innerHTML ;
+	beforehtmlhk[hkcounter-1] = oldhtml ;
+	hkcounter++;
+	
+	//Added by liuxg on 20090505 控制还款计划最多只能输入15条
+	if(hkcounter>15)
+	{
+	    alert("最多只能建立15条还款计划");
+	    hkcounter--;
+	    return false;
+	}
+	//Added end
+
+	var html1="<table width=\"98%\"  border=\"1\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"><tr>   <td width=\"15%\" height=\"25\" class=\"TB6-td2\"><div align=\"center\">"+hkcounter+"</div></td>                        <td width=\"22%\" class=\"TB6-td2\"><div align=\"center\">                            <input name=\"CCAS_PLAATRN.HRTRETDA."+hkcounter+"\"  alt=\"CCASDATE|hkjh|bok\" id=\"CCAS_PLAATRN_HRTRETDA_"+hkcounter+"\"  type=\"text\" size=\"8\" maxlength=\"8\" value=\"\">                          </div></td>                        <td width=\"19%\" class=\"TB6-td2\"><div align=\"center\">                            <input name=\"CCAS_PLAATRN.RETNUM."+hkcounter+"\"  id=\"CCAS_PLAATRN_RETNUM_"+hkcounter+"\"  alt=\"CCASNUMBER|hkjh|bok\" type=\"text\" size=\"4\" maxlength=\"2\" value=\"\">                          </div></td>                        <td width=\"18%\" class=\"TB6-td2\"><div align=\"center\">             <select name=\"CCAS_PLAATRN.RETPER."+hkcounter+"\" value=\"01\" disabled>  <option value=\"01\">每月</option> <option value=\"03\">每季度</option> <option value=\"06\">每半年</option> <option value=\"12\">每年</option> <option value=\"15\">双周</option> <option value=\"98\">到期时</option>  </select>               </div></td>                        <td width=\"26%\" class=\"TB6-td2\"><div align=\"center\">                            <input name=\"CCAS_PLAATRN.RETAMT."+hkcounter+"\"  alt=\"CCASDEC15_2|hkjh|bok\" id=\"CCAS_PLAATRN_RETAMT_"+hkcounter+"\"  type=\"text\" size=\"16\" maxlength=\"16\" value=\"\">                          </div></td>                      </tr></table>";
+
+	window.document.getElementById(str1).innerHTML = oldhtml + html1 ;
+}
+function delhk(str1,str2,str3){
+
+	var todat_value = "20100824";
+
+	if(hkcounter == 1){
+	   alert("不能删除最后一条记录");
+	}else{
+	
+	//如果贷款过机、放款后再修改还款计划，则不允许删除日期小于当前日期的还款计划
+	
+	 hkcounter--;
+	 window.document.getElementById(str1).innerHTML = beforehtmlhk[hkcounter-1];
+	 
+	 
+	 
+	}
+}
+
+</script>
+	<table width="96%" height="100" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#99A8C8" class="TB6-td2">
+          
+          <tr>
+            <td align="center" valign="top">&nbsp;
+
+			<table width="98%"  border="1" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+
+                      <tr>
+                        <td width="15%" height="25" class="TB6-td2"><div align="center">顺序号<span class="Start"> *</span></div></td>
+                        <td width="22%" class="TB6-td2"><div align="center">起始日期<span class="Start">
+                            *</span></div></td>
+                        <td width="19%" class="TB6-td2"><div align="center">还款次数<span class="Start"> *</span></div></td>
+                        <td width="18%" class="TB6-td2"><div align="center">还款周期<span class="Start"> *</span></div></td>
+                        <td width="26%" class="TB6-td2"><div align="center">还款本金<span class="Start">
+                            (元)*</span></div></td>
+                      </tr>
+                      </table>
+                      <div id='hkjh_1'>
+	              <table width="98%"  border="1" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+                      
+                      <tr>
+                       
+                      
+                        <td width="15%" height="25" class="TB6-td2"><div align="center">
+                            1
+                         </div>
+                          </td>
+                        <td width="22%" class="TB6-td2"><div align="center">
+                            <input name="CCAS_PLAATRN.HRTRETDA.1"  id="CCAS_PLAATRN_HRTRETDA_1" alt="CCASDATE|hkjh|bok"   type="text" size="8" maxlength="8" value="">
+                         </div>
+                          </td>
+                        <td width="19%" class="TB6-td2"><div align="center">
+                            <input name="CCAS_PLAATRN.RETNUM.1"  id="CCAS_PLAATRN_RETNUM_1" alt="CCASNUMBER|hkjh|bok"    type="text" size="4" maxlength="2" value="">
+                         </div>
+                          </td>
+                        <td width="18%" class="TB6-td2"><div align="center">
+						 <select name="CCAS_PLAATRN.RETPER.1" id="CCAS_PLAATRN_RETPE_1" disabled >
+                                <option value="01"   selected   >每月</option><option value="03">每季度</option><option value="06">每半年</option><option value="12">每年</option><option value="14">双周</option><option value="98">到期时</option>
+                         </select>
+
+                         </div>
+                         </td>
+                        <td width="26%" class="TB6-td2"><div align="center">
+                            <input name="CCAS_PLAATRN.RETAMT.1" id="CCAS_PLAATRN_RETAMT_1" alt="CCASDEC15_2|hkjh|bok"    type="text" size="16" maxlength="16" value="">
+                        </div>
+                        </td>
+                      </tr>
+                      <script language="JavaScript">
+	                 beforehtmlhk[0] = window.document.getElementById('hkjh_1').innerHTML;
+                     </script>
+                      
+
+                    </table>
+                     </div>
+
+<table width="98%" height="35" border="0" align="center" cellpadding="0" cellspacing="0" bordercolor="#99A8C8" class="TB6-td2" dwcopytype="CopyTableRow">
+          <tr>
+            <td height="33" align="right" valign="middle">
+            <input name="addimp3334"      type="button"  class="BTN"   value="新增计划" onClick="addhk('hkjh_1',hkcounter,60)">
+            <input name="addimp2224"      type="button"  class="BTN"   value="删除计划" onClick="delhk('hkjh_1',hkcounter,60)">
+                  &nbsp; </td>
+          </tr>
+</table>
+
+
+			</td>
+          </tr>
+        </table>
+<script language="javascript">
+nodelcount = 0;
+</script>
+        
+        
+
+<script language="JavaScript">
+	endDiv(window);
+</script>
+
+
+<script language="JavaScript">
+
+
+	beginDiv(window, "fkjh", 'fkjh', false, "check()");
+
+</script>
+
+<!--放款计划信息-->
+
+
+
+
+
+
+
+
+
+<script language="javascript">
+
+
+
+     fkcounter=1;
+
+
+var beforehtmlfk = new Array();
+function addfk(str1,str2,str3){
+
+	var oldhtml = window.document.getElementById(str1).innerHTML ;
+	beforehtmlfk[fkcounter-1] = oldhtml ;
+	fkcounter++;
+
+	var str_APTRATTP;
+	var str_APTIRTBS;
+	var str_APTRATFG = "<option value=\"" + "\" selected>请选择</option>" + "" ;
+	var str_APTRETMD = "<option value=\"" + "\" selected>请选择</option>" + "<option value=\"1\">利随本清</option><option value=\"11\">等额本金递增还款</option><option value=\"12\">等额本金递减还款</option><option value=\"2\">规则还息，到期还本息</option><option value=\"3\">等额本息</option><option value=\"4\">等额本金</option><option value=\"5\">规则还息灵活还本</option><option value=\"6\">气球还款</option><option value=\"7\">滞后等额本息</option><option value=\"8\">滞后等额本金</option>" ;
+	var str_APTCYCLE = "<option value=\"" + "\" selected>请选择</option>" + "<option value=\"01\"   selected   >每月</option><option value=\"03\">每季度</option><option value=\"06\">每半年</option><option value=\"12\">每年</option><option value=\"14\">双周</option><option value=\"98\">到期时</option>" ;
+	var str_APTRATFG = "<option value=\"" + "\" selected>请选择</option>" + "<option value=\"D\">日</option><option value=\"M\">月</option>" ;
+	
+									
+	//var html2 = "<input name=\"CCAS_PLAATRN.APTPRDMD."+fkcounter+"\" type=\"hidden\" id=\"CCAS_PLAATRN_APTPRDMD_"+fkcounter+"\" >" + "<input name=\"CCAS_PLAATRN.APTPRDSD."+fkcounter+"\" type=\"hidden\" id=\"CCAS_PLAATRN_APTPRDSD_"+fkcounter+"\" >" + "<table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr> <td height=\"25\" class=\"TB6-td2\"><div align=\"left\"><B> 期 数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"Start\">- "+fkcounter+" -</span></B></div></td> </tr> </table> <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"><tr> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款利率类型</td> <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRATTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRATTP_"+fkcounter+"\" onblur=\"getirtbs_irtep("+fkcounter+")\" onChange=\"getirtbs_irtep("+fkcounter+")\" > "+str_APTRATTP+" </select> </td>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款利率基准</td>   <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTIRTBS."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTIRTBS_"+fkcounter+"\" onChange=\"cal_rtvl("+fkcounter+")\" > "+str_APTIRTBS+" </select> </td> </tr> </table>   <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\">    <tr> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款日期</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTDSDAT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTDSDAT_"+fkcounter+"\" type=\"text\" size=\"8\" maxlength=\"8\"> </td>    <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款期限</td>     <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTTERM."+fkcounter+"\"  onChange=\"cal_rtvl("+fkcounter+")\"  id=\"CCAS_PLAATRN_APTTERM_"+fkcounter+"\" alt=\"CCASLESS|bok\" type=\"text\" size=\"4\" maxlength=\"4\" > 月 </td> </tr> </table>  <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\">  <tr>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款金额</td>  <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTDSAMT."+fkcounter+"\" type=\"text\"  id=\"CCAS_PLAATRN_APTDSAMT_"+fkcounter+"\" alt=\"CCASLESS|bok\" size=\"17\" maxlength=\"17\" > 元 </td>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">固定利率值*</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTARTVL."+fkcounter+"\" type=\"text\"  id=\"CCAS_PLAATRN_APTARTVL_"+fkcounter+"\" alt=\"CCASLESS|bok\" size=\"14\" maxlength=\"14\" > </td> </tr> </table>   <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr>   <input name=\"CCAS_PLAATRN.APTRATFG."+fkcounter+"\" id=\"CCAS_PLAATRN_APTRATFG_"+fkcounter+"\" type=\"hidden\" value=\"M\"><td width=\"19%\" height=\"25\" class=\"TB6-td2\">利率浮动周期*</td>   <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRATVD."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRATVD_"+fkcounter+"\" alt=\"CCASLESS|bok\" type=\"text\" size=\"3\" maxlength=\"3\" > 月 </td></tr>  <tr>   <td width=\"19%\" height=\"25\" class=\"TB6-td2\">首次浮动日期*</td>   <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTFFDAT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTFFDAT_"+fkcounter+"\" type=\"text\" size=\"8\" maxlength=\"8\"> </td> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">浮动日期*</td>   <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTEXPDA."+fkcounter+"\" id=\"CCAS_PLAATRN_APTEXPDA_"+fkcounter+"\" type=\"text\" size=\"2\" maxlength=\"2\"> </td>   </tr> </table>    <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr>    <td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款方式</td>    <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRETMD."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETMD_"+fkcounter+"\"> "+str_APTRETMD+" </select> </td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款周期</td>      <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTCYCLE."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTCYCLE_"+fkcounter+"\" disabled> "+str_APTCYCLE+" </select> </td> </tr> </table> <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">滞后期数*</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETPER."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETPER_"+fkcounter+"\" alt=\"CCASLESS|bok\" type=\"text\" size=\"2\" maxlength=\"2\" ></td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">每期固定还款日*</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETDT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTRETDT_"+fkcounter+"\" type=\"text\" size=\"8\" maxlength=\"8\"> </td></tr></table><table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">收款账户</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRACTN."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRACTN_"+fkcounter+"\" type=\"text\" size=\"17\" maxlength=\"17\" ></td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">收款账户类型</td><td width=\"29%\" class=\"TB6-td2\"><input name=\"CCAS_PLAATRN.APTRETTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETTP_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" ></td></tr><tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">收款子账户类型</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRTSTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRTSTP_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" > </td> </tr> </table><table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"><tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款账户</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRACAC."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRACAC_"+fkcounter+"\" type=\"text\" size=\"17\" maxlength=\"17\" > </td> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款子账户标识</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETFG."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETFG_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" > </td> </tr> </table> ";
+	//var html2 = "<input name=\"CCAS_PLAATRN.APTPRDMD."+fkcounter+"\" type=\"hidden\" id=\"CCAS_PLAATRN_APTPRDMD_"+fkcounter+"\" >" + "<input name=\"CCAS_PLAATRN.APTPRDSD."+fkcounter+"\" type=\"hidden\" id=\"CCAS_PLAATRN_APTPRDSD_"+fkcounter+"\" >" + "<table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr> <td height=\"25\" class=\"TB6-td2\"><div align=\"left\"><B> 期 数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"Start\">- "+fkcounter+" -</span></B></div></td> </tr> </table> <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"><tr> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款利率类型</td> <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRATTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRATTP_"+fkcounter+"\" onblur=\"getirtbs_irtep("+fkcounter+")\" onChange=\"getirtbs_irtep("+fkcounter+")\" > "+str_APTRATTP+" </select> </td>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款利率基准</td>   <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTIRTBS."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTIRTBS_"+fkcounter+"\" onChange=\"cal_rtvl("+fkcounter+")\" > "+str_APTIRTBS+" </select> </td> </tr> </table>   <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\">    <tr> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款日期</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTDSDAT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTDSDAT_"+fkcounter+"\" type=\"text\" size=\"8\" maxlength=\"8\"> </td>    <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款期限</td>     <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTTERM."+fkcounter+"\"  onChange=\"cal_rtvl("+fkcounter+")\"  id=\"CCAS_PLAATRN_APTTERM_"+fkcounter+"\" alt=\"CCASLESS|bok\" type=\"text\" size=\"4\" maxlength=\"4\" > 月 </td> </tr> </table>  <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\">  <tr>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款金额</td>  <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTDSAMT."+fkcounter+"\" type=\"text\"  id=\"CCAS_PLAATRN_APTDSAMT_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" size=\"16\" maxlength=\"16\" > 元 </td>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">利率值</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTARTVL."+fkcounter+"\" type=\"text\"  id=\"CCAS_PLAATRN_APTARTVL_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" size=\"14\" maxlength=\"14\" > </td> </tr> </table>   <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr>   <input name=\"CCAS_PLAATRN.APTRATFG."+fkcounter+"\" id=\"CCAS_PLAATRN_APTRATFG_"+fkcounter+"\" type=\"hidden\" value=\"M\"><td width=\"19%\" height=\"25\" class=\"TB6-td2\">利率浮动周期</td>   <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRATVD."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRATVD_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" type=\"text\" size=\"3\" maxlength=\"3\" > 月*</td>   <td width=\"19%\" height=\"25\" class=\"TB6-td2\">首次浮动日</td>   <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTFFDAT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTFFDAT_"+fkcounter+"\" type=\"text\" size=\"10\" maxlength=\"8\">*</td>   </tr> </table>    <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr>    <td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款方式</td>    <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRETMD."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETMD_"+fkcounter+"\"> "+str_APTRETMD+" </select> </td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款周期</td>      <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTCYCLE."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTCYCLE_"+fkcounter+"\" disabled> "+str_APTCYCLE+" </select> </td> </tr> </table> <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">延迟还本期数</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETPER."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETPER_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" type=\"text\" size=\"2\" maxlength=\"2\" >*</td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">每期固定还款日</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETDT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTRETDT_"+fkcounter+"\" type=\"text\" size=\"2\" maxlength=\"2\"></td></tr></table><table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">收款账户</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRACTN."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRACTN_"+fkcounter+"\" type=\"text\" size=\"17\" maxlength=\"17\" ></td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款MCA帐户产品类型</td><td width=\"29%\" class=\"TB6-td2\"><input name=\"CCAS_PLAATRN.APTRETTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETTP_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" >*</td></tr><tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款MCA帐户产品子类型</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRTSTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRTSTP_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" >*</td> </tr> </table><table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"><tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款账户</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRACAC."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRACAC_"+fkcounter+"\" type=\"text\" size=\"17\" maxlength=\"17\" > </td> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款MCA帐户子帐户类型</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETFG."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETFG_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" >*</td> </tr> </table> ";
+	//var html2 = "<input name=\"CCAS_PLAATRN.APTPRDMD."+fkcounter+"\" type=\"hidden\" id=\"CCAS_PLAATRN_APTPRDMD_"+fkcounter+"\" >" + "<input name=\"CCAS_PLAATRN.APTPRDSD."+fkcounter+"\" type=\"hidden\" id=\"CCAS_PLAATRN_APTPRDSD_"+fkcounter+"\" >" + "<table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr> <td height=\"25\" class=\"TB6-td2\"><div align=\"left\"><B> 期 数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"Start\">- "+fkcounter+" -</span></B></div></td> </tr> </table> <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"><tr> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款利率类型</td> <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRATTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRATTP_"+fkcounter+"\" onblur=\"getirtbs_irtep("+fkcounter+")\" onChange=\"getirtbs_irtep("+fkcounter+")\" > "+str_APTRATTP+" </select> </td>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款利率基准</td>   <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTIRTBS."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTIRTBS_"+fkcounter+"\" onChange=\"cal_rtvl("+fkcounter+")\" > "+str_APTIRTBS+" </select> </td> </tr> </table>   <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\">    <tr> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款日期</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTDSDAT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTDSDAT_"+fkcounter+"\" type=\"text\" size=\"8\" maxlength=\"8\"> </td>    <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款期限</td>     <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTTERM."+fkcounter+"\"  onChange=\"cal_rtvl("+fkcounter+")\"  id=\"CCAS_PLAATRN_APTTERM_"+fkcounter+"\" alt=\"CCASLESS|bok\" type=\"text\" size=\"4\" maxlength=\"4\" > 月 </td> </tr> </table>  <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\">  <tr>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款金额</td>  <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTDSAMT."+fkcounter+"\" type=\"text\"  id=\"CCAS_PLAATRN_APTDSAMT_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" size=\"16\" maxlength=\"16\" > 元 </td>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">基准利率值</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTARTVL."+fkcounter+"\" type=\"text\"  id=\"CCAS_PLAATRN_APTARTVL_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" size=\"14\" maxlength=\"14\" >%</td> </tr> </table>   <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr>   <input name=\"CCAS_PLAATRN.APTRATFG."+fkcounter+"\" id=\"CCAS_PLAATRN_APTRATFG_"+fkcounter+"\" type=\"hidden\" value=\"M\"><td width=\"19%\" height=\"25\" class=\"TB6-td2\">利率浮动周期</td>   <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRATVD."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRATVD_"+fkcounter+"\" ></select>  月*</td>   <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贴息截至日</td>   <td width=\"29%\" class=\"TB6-td2\"><input name=\"CCAS_PLAATRN.APTFFDAT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTFFDAT_"+fkcounter+"\" type=\"text\" size=\"8\" maxlength=\"8\" ></td>   </tr> </table>    <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr>    <td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款方式</td>    <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRETMD."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETMD_"+fkcounter+"\"> "+str_APTRETMD+" </select> </td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款周期</td>      <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTCYCLE."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTCYCLE_"+fkcounter+"\" disabled> "+str_APTCYCLE+" </select> </td> </tr> </table> <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">延迟还本期数</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETPER."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETPER_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" type=\"text\" size=\"2\" maxlength=\"2\" >*</td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">每期固定还款日</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETDT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTRETDT_"+fkcounter+"\" type=\"text\" size=\"2\" maxlength=\"2\"></td></tr></table><table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">收款账户</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRACTN."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRACTN_"+fkcounter+"\" type=\"text\" size=\"17\" maxlength=\"17\" ></td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款MCA帐户产品类型</td><td width=\"29%\" class=\"TB6-td2\"><input name=\"CCAS_PLAATRN.APTRETTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETTP_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" >*</td></tr><tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款MCA帐户产品子类型</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRTSTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRTSTP_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" >*</td> </tr> </table><table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"><tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款账户</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRACAC."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRACAC_"+fkcounter+"\" type=\"text\" size=\"17\" maxlength=\"17\" > </td> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款MCA帐户子帐户类型</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETFG."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETFG_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" >*</td> </tr> </table> ";
+	var html2 = "<input name=\"CCAS_PLAATRN.APTPRDMD."+fkcounter+"\" type=\"hidden\" id=\"CCAS_PLAATRN_APTPRDMD_"+fkcounter+"\" >" + "<input name=\"CCAS_PLAATRN.APTPRDSD."+fkcounter+"\" type=\"hidden\" id=\"CCAS_PLAATRN_APTPRDSD_"+fkcounter+"\" >" + "<table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr> <td height=\"25\" class=\"TB6-td2\"><div align=\"left\"><B> 期 数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class=\"Start\">- "+fkcounter+" -</span></B></div></td> </tr> </table> <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"><tr> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款利率类型</td> <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRATTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRATTP_"+fkcounter+"\" onblur=\"getirtbs_irtep("+fkcounter+")\" onChange=\"getirtbs_irtep("+fkcounter+")\" > "+str_APTRATTP+" </select> </td>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款利率基准</td>   <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTIRTBS."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTIRTBS_"+fkcounter+"\" onChange=\"cal_rtvl("+fkcounter+")\" > "+str_APTIRTBS+" </select> </td> </tr> </table>   <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\">    <tr> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款日期</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTDSDAT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTDSDAT_"+fkcounter+"\" type=\"text\" size=\"8\" maxlength=\"8\"> </td>    <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款期限</td>     <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTTERM."+fkcounter+"\"  onChange=\"cal_rtvl("+fkcounter+")\"  id=\"CCAS_PLAATRN_APTTERM_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" type=\"text\" size=\"4\" maxlength=\"4\" > 月 </td> </tr> </table>  <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\">  <tr>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贷款金额</td>  <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTDSAMT."+fkcounter+"\" type=\"text\"  id=\"CCAS_PLAATRN_APTDSAMT_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" size=\"16\" maxlength=\"16\" > 元 </td>  <td width=\"19%\" height=\"25\" class=\"TB6-td2\">基准利率值</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTARTVL."+fkcounter+"\" type=\"text\"  id=\"CCAS_PLAATRN_APTARTVL_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" size=\"14\" maxlength=\"14\" >%</td> </tr> </table>   <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr>   <input name=\"CCAS_PLAATRN.APTRATFG."+fkcounter+"\" id=\"CCAS_PLAATRN_APTRATFG_"+fkcounter+"\" type=\"hidden\" value=\"M\"><td width=\"19%\" height=\"25\" class=\"TB6-td2\">利率浮动周期</td>   <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRATVD."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRATVD_"+fkcounter+"\" ></select>  月*</td>   <td width=\"19%\" height=\"25\" class=\"TB6-td2\">贴息截至日</td>   <td width=\"29%\" class=\"TB6-td2\"><input name=\"CCAS_PLAATRN.APTFFDAT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTFFDAT_"+fkcounter+"\" type=\"text\" size=\"8\" maxlength=\"8\" readonly class=\'grayeditbak\' ></td>   </tr> </table>    <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr>    <td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款方式</td>    <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTRETMD."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETMD_"+fkcounter+"\"> "+str_APTRETMD+" </select> </td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款周期</td>      <td width=\"29%\" class=\"TB6-td2\"> <select name=\"CCAS_PLAATRN.APTCYCLE."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTCYCLE_"+fkcounter+"\" disabled> "+str_APTCYCLE+" </select> </td> </tr> </table> <table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">延迟还本期数</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETPER."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETPER_"+fkcounter+"\" alt=\"CCASLESS|fkjh|bok\" type=\"text\" size=\"2\" maxlength=\"2\" >*</td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">每期固定还款日</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETDT."+fkcounter+"\" id=\"CCAS_PLAATRN_APTRETDT_"+fkcounter+"\" type=\"text\" size=\"2\" maxlength=\"2\" value=\"1\" readonly class=\"grayeditbak\"></td></tr></table><table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"> <tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">收款账户</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRACTN."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRACTN_"+fkcounter+"\" type=\"text\" size=\"17\" maxlength=\"17\" ></td><td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款MCA帐户产品类型</td><td width=\"29%\" class=\"TB6-td2\"><input name=\"CCAS_PLAATRN.APTRETTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETTP_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" >*</td></tr><tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">放款MCA帐户产品子类型</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRTSTP."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRTSTP_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" >*</td> </tr> </table><table width=\"98%\"  border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=\"#D6D2BE\"><tr><td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款账户</td><td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRACAC."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRACAC_"+fkcounter+"\" type=\"text\" size=\"17\" maxlength=\"17\" > </td> <td width=\"19%\" height=\"25\" class=\"TB6-td2\">还款MCA帐户子帐户类型</td> <td width=\"29%\" class=\"TB6-td2\"> <input name=\"CCAS_PLAATRN.APTRETFG."+fkcounter+"\"  id=\"CCAS_PLAATRN_APTRETFG_"+fkcounter+"\" type=\"text\" size=\"4\" maxlength=\"4\" >*</td> </tr> </table> ";
+	window.document.getElementById(str1).innerHTML = oldhtml + html2 ;
+	beforehtmlfk[fkcounter-1] = oldhtml ;
+	
+	//设置[贴息截至日]
+	setFFDAT();
+	
+}
+function delfk(str1,str2,str3){
+	if(fkcounter == 1){
+	   alert("不能删除最后一条记录");
+	}else{
+	 fkcounter--;
+	 window.document.getElementById(str1).innerHTML = beforehtmlfk[fkcounter-1];
+	}
+}
+function setFFDAT(){
+	var ffdat_val = window.document.getElementById('CCAS_PLAATRN.APTFFDAT.1').value ;
+	if(fkcounter > 1 && ffdat_val.length > 0 ){
+		
+		for(var j=2 ;j <= fkcounter; j++){
+			window.document.getElementById('CCAS_PLAATRN.APTFFDAT.'+ j).value = ffdat_val;
+		}
+
+	}
+}
+
+</script>
+	<table width="96%" height="275" border="1" align="center" cellpadding="0" cellspacing="0" bordercolor="#99A8C8" class="TB6-td2">
+		<tr>
+			<td align="center" valign="top">&nbsp;
+				<div id="fkjh_1">
+				
+
+					
+					<input name="CCAS_PLAATRN.APTPRDMD.1" type="hidden" id="CCAS_PLAATRN_APTPRDMD_1" value="">
+					<input name="CCAS_PLAATRN.APTPRDSD.1" type="hidden" id="CCAS_PLAATRN_APTPRDSD_1" value="">
+					
+					<table width="98%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+						<tr>
+							<td height="25" class="TB6-td2"><div align="left"><B> 期 数&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="Start">- 1 -</span></B></div></td>
+						</tr>
+					</table>
+										
+
+					
+					<table width="98%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+						<tr>
+							<td width="19%" height="25" class="TB6-td2">贷款利率类型</td>
+							<td width="29%" class="TB6-td2">
+								<select name="CCAS_PLAATRN.APTRATTP.1"  id="CCAS_PLAATRN_APTRATTP_1" onblur="getirtbs_irtep(1)" onChange="getirtbs_irtep(1)">
+									
+								</select>
+							</td>
+							<td width="19%" height="25" class="TB6-td2">贷款利率基准</td>
+							<td width="29%" class="TB6-td2">
+								<select name="CCAS_PLAATRN.APTIRTBS.1"  id="CCAS_PLAATRN_APTIRTBS_1" onChange="cal_rtvl(1)">
+									
+								</select>
+							</td>
+						</tr>
+					</table>
+
+					
+					<table width="98%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+						<tr>
+							<td width="19%" height="25" class="TB6-td2">放款日期</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTDSDAT.1" id="CCAS_PLAATRN_APTDSDAT_1"
+									type="text" value=''
+									 size="8" maxlength="8"  onChange="calreqtm()" onBlur="calreqtm()" >
+							</td>
+
+							<td width="19%" height="25" class="TB6-td2">贷款期限</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTTERM.1"  id="CCAS_PLAATRN_APTTERM_1"
+									alt="CCASLESS|fkjh|bok" type="text" size="4" maxlength="4" value="" onChange="cal_rtvl(1)">月
+							</td>
+						</tr>
+					</table>
+
+					
+					<table width="98%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+						<tr>
+							<td width="19%" height="25" class="TB6-td2">贷款金额</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTDSAMT.1" type="text"  id="CCAS_PLAATRN_APTDSAMT_1"
+									value="" alt="CCASLESS|fkjh|bok" size="16" maxlength="16" > 元
+							</td>
+
+							<td width="19%" height="25" class="TB6-td2">基准利率值</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTARTVL.1" type="text"  id="CCAS_PLAATRN_APTARTVL_1"
+									value=""  alt="CCASLESS|fkjh|bok" size="14" maxlength="14" >%
+							</td>
+						</tr>
+					</table>
+
+					
+					<table width="98%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+						<tr>
+							<input name="CCAS_PLAATRN.APTRATFG.1" id="CCAS_PLAATRN_APTRATFG_1" type="hidden" value="M">
+					
+					
+					
+					
+
+                    
+                     	
+                     	<td width="19%" height="25" class="TB6-td2">利率浮动周期</td>
+                     	<td width="29%" class="TB6-td2">
+                     	<select name="CCAS_PLAATRN.APTRATVD.1" id="CCAS_PLAATRN_APTRATVD_1"  >
+							
+                        </select>月*
+                        </td>
+							
+                    
+					
+                   	<td width="19%" height="25" class="TB6-td2">贴息截至日</td>
+                    <td width="29%" class="TB6-td2"><input name="CCAS_PLAATRN.APTFFDAT.1" id="CCAS_PLAATRN_APTFFDAT_1"  size='8' type="text" 
+                             value=""  maxlength="8"   onChange="setFFDAT()" onBlur="setFFDAT()" ></td>
+
+
+						</tr>
+					</table>
+
+					
+					<table width="98%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+						<tr>
+
+							<td width="19%" height="25" class="TB6-td2">还款方式</td>
+							<td width="29%" class="TB6-td2">
+								<select name="CCAS_PLAATRN.APTRETMD.1"  id="CCAS_PLAATRN_APTRETMD_1">
+									<option value="" selected>请选择</option>
+									<option value="1">利随本清</option><option value="11">等额本金递增还款</option><option value="12">等额本金递减还款</option><option value="2">规则还息，到期还本息</option><option value="3">等额本息</option><option value="4">等额本金</option><option value="5">规则还息灵活还本</option><option value="6">气球还款</option><option value="7">滞后等额本息</option><option value="8">滞后等额本金</option>
+								</select>
+							</td>
+							
+							<td width="19%" height="25" class="TB6-td2">还款周期</td>
+							<td width="29%" class="TB6-td2">
+								<select name="CCAS_PLAATRN.APTCYCLE.1"  id="CCAS_PLAATRN_APTCYCLE_1"  disabled>
+									<option value="" selected>请选择</option>
+									<option value="01"   selected   >每月</option><option value="03">每季度</option><option value="06">每半年</option><option value="12">每年</option><option value="14">双周</option><option value="98">到期时</option>
+								</select>
+							</td>
+							
+						</tr>
+					</table>
+
+					
+					<table width="98%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+						<tr>
+							<td width="19%" height="25" class="TB6-td2">延迟还本期数</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTRETPER.1"  id="CCAS_PLAATRN_APTRETPER_1"
+									alt="CCASLESS|fkjh|bok" type="text" size="2" maxlength="2" value="">*
+							</td>
+
+							<td width="19%" height="25" class="TB6-td2">每期固定还款日</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTRETDT.1" id="CCAS_PLAATRN_APTRETDT_1"
+									type="text" value='1' size="2" maxlength="2" readonly class='grayeditbak'>
+							</td>
+
+						</tr>
+					</table>
+
+					
+					<table width="98%"  border="0" cellspacing="0" cellpadding="0" bordercolor="#D6D2BE">
+						<tr>
+
+							<td width="19%" height="25" class="TB6-td2">收款账户</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTRACTN.1"  id="CCAS_PLAATRN_APTRACTN_1"
+									type="text" size="17" maxlength="17" value="">
+							</td>
+							
+							<td width="19%" height="25" class="TB6-td2">放款MCA帐户产品类型</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTRETTP.1"  id="CCAS_PLAATRN_APTRETTP_1"
+									type="text" size="4" maxlength="4" value="">*
+									                
+                <img src="images/search.gif"  style="cursor:hand" onClick="findAct(window.document.getElementById('CCAS_PLAATRN_APTRACTN_1').value)"width="20" height="20" >									                
+         		
+									
+							</td>
+						</tr>			
+						<tr>              
+							
+							<td width="19%" height="25" class="TB6-td2">放款MCA帐户产品子类型</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTRTSTP.1"  id="CCAS_PLAATRN_APTRTSTP_1"
+									type="text" size="4" maxlength="4" value="">*
+							</td>
+         				</tr>
+         				<tr>
+							
+							<td width="19%" height="25" class="TB6-td2">还款账户</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTRACAC.1"  id="CCAS_PLAATRN_APTRACAC_1"
+									type="text" size="17" maxlength="17" value="">
+							</td>
+							
+							<td width="19%" height="25" class="TB6-td2">还款MCA帐户子帐户类型</td>
+							<td width="29%" class="TB6-td2">
+								<input name="CCAS_PLAATRN.APTRETFG.1"  id="CCAS_PLAATRN_APTRETFG_1"
+									type="text" size="4" maxlength="4" value="">*
+
+									                
+                <img src="images/search.gif"  style="cursor:hand" onClick="findAct(window.document.getElementById('CCAS_PLAATRN_APTRACAC_1').value,window.document.getElementById('CCAS_PLAATRN_APTRETFG_1').value)"width="20" height="20" >									                
+         				
+							</td>         		
+         														
+						</tr>
+					</table>
+
+					<script language="JavaScript">
+						beforehtmlfk[0] = window.document.getElementById('fkjh_1').innerHTML;
+					</script>
+				
+				</div>
+
+
+<table width="98%" height="35" border="0" align="center" cellpadding="0" cellspacing="0" bordercolor="#99A8C8" class="TB6-td2" dwcopytype="CopyTableRow">
+          <tr>
+            <td height="33" align="right" valign="middle">
+            <input name="addimpfk"      type="button"  class="BTN"   value="新增放款计划" onClick="addfk('fkjh_1',fkcounter,60)">
+            <input name="delimpfk"      type="button"  class="BTN"   value="删除放款计划" onClick="delfk('fkjh_1',fkcounter,60)">
+                  &nbsp; </td>
+          </tr>
+</table>
+
+			</td>
+		</tr>
+	</table>
+
+
+<script language="JavaScript">
+	endDiv(window);
+</script>
+
+
+	</form>
+		<tr>
+			<td>&nbsp;</td>
+		</tr>
+	    
+		<tr>
+			<td><div align="center">
+				
+                <input name="Submit2"      type="button"  class="BTN"  value="保存" onClick="return(goSubmit('SAVE','N','N'))"> &nbsp;
+                
+
+				
+                
+                    <input name="Submit3"      type="submit"   class="BTN"  value="取消" onClick="goCancel()">
+                
+                </div></td>
+         </tr>
+		 
+    </table></td>
+  </tr>
+  <tr><td>&nbsp;</td></tr>
+</table>
+<script language="JavaScript">
+	endTabs(window);
+</script>
+<div id='addvar'>
+<script language="JavaScript">
+//对界面中的特定栏位赋初始值
+
+
+
+
+
+window.document.getElementById('CCAS_PLAATRN.LAFRATVD').value='0';
+
+
+
+
+
+
+
+
+</script>
+
+<!-- 初始化贷款申请信息的参数 -->
+<SCRIPT language="JavaScript">	
+
+   
+				//初始化界面参数
+				window.document.getElementById('CCAS_PLAATRN.LAFRTMOD').value = "3";
+				window.document.getElementById('CCAS_PLAATRN.RETPER').value = "01";
+				
+				//Modified By Michael 20090526
+				try{
+					lhhk(); //try一把，为了避免调用此方法的时候 "hkjh" div还没有初始化的情况(第一次)
+				}catch(e){}	
+				
+				calreqtm();
+				
+
+
+			//初始化对账单、帐单产生的次数、帐单产生的日期
+			// 对帐单周期，改成可以补上送 20090721			
+			//window.document.getElementById('CCAS_PLAATRN.STATREQ').value = "Y";
+			window.document.getElementById('CCAS_PLAATRN.STATREQ').value = "";
+			//end 20090721
+			ldzd();
+
+
+
+
+				//初始化“罚息结息周期”栏位 20090721 hanying
+				window.document.getElementById('CCAS_PLAATRN.INTFREQ').value = "99";	//罚息结息周期：每日
+				window.document.getElementById('CCAS_PLAATRN.LAFRMHTY').value = "1";	//应还款重算标识：立即
+				window.document.getElementById('CCAS_PLAATRN.ATREPTYP').value = "2";	//足额扣款标识：足额扣款	changed by chenrong 20100106, "1"-->"2"
+				window.document.getElementById('CCAS_PLAATRN.AUTOVRID').value = "Y";	//是否自动扣逾期利息：yes
+									
+				//end 20090721
+
+
+
+	
+
+
+
+					
+	
+</SCRIPT>
+
+
+
+</div>
+
+
+</body>
+</html>

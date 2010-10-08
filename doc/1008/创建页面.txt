@@ -1,0 +1,986 @@
+
+
+
+
+
+
+
+<SCRIPT language="JavaScript">
+function goPRDINFO(){
+	
+	var ccaspd = window.document.form1.CCASCD.value;
+	
+	var str_sel_bef = "<select name=\"PRDCD\" id=\"PRDCD\" onChange=\"goValid()\">";
+	var str_sel_def = "<option value =\"\">请选择产品类名称</option>"
+	var str_sel_info;
+	var str_sel_end = "<\select><input name=\"CCAS_PLAATRN.CUSOCCPA\" type=\"checkbox\" disabled id=\"CCAS_PLAATRN.CUSOCCPA\" value=\"Y\">预授信";	
+
+	
+	switch(ccaspd){
+	
+
+
+		case "PLAA" :
+				str_sel_info = "<option value=\"PLAA060007\" >企事业单位职工定向购房贷款</option><option value=\"PLAA060002\" >个人一手住房贷款（非循环）</option><option value=\"PLAA060001\" >个人一手住房贷款（循环）</option>";
+				break;
+
+
+		case "PLAB" :
+				str_sel_info = "<option value=\"PLAB060003\" >个人二手住房贷款（循环）</option><option value=\"PLAB060004\" >个人二手住房贷款（非循环）</option>";
+				break;
+
+
+		case "PLAC" :
+				str_sel_info = "<option value=\"PLAC100001\" >公积金委托贷款</option>";
+				break;
+
+
+		case "PLAE" :
+				str_sel_info = "<option value=\"PLAE060005\" >固定利率个人住房贷款</option><option value=\"PLAE060006\" >自建住房贷款</option>";
+				break;
+
+
+		case "PLBA" :
+				str_sel_info = "<option value=\"PLBA070001\" >个人一手汽车贷款</option>";
+				break;
+
+
+		case "PLBC" :
+				str_sel_info = "<option value=\"PLBC100002\" >汽车委托贷款</option>";
+				break;
+
+
+		case "PLBE" :
+				str_sel_info = "<option value=\"PLBE070002\" >个人二手汽车贷款</option>";
+				break;
+
+
+		case "PLCA" :
+				str_sel_info = "<option value=\"PLCA100003\" >个人委托贷款</option><option value=\"PLCA090005\" >下岗失业人员小额担保贷款</option><option value=\"PLCA090004\" >个人投资经营贷款</option>";
+				break;
+
+
+		case "PLCB" :
+				str_sel_info = "<option value=\"PLCB090001\" >个人一手商业用房贷款</option><option value=\"PLCB090002\" >个人二手商业用房贷款</option>";
+				break;
+
+
+		case "PLCC" :
+				str_sel_info = "<option value=\"PLCC090003\" >个人营运汽车贷款</option>";
+				break;
+
+
+		case "PLDA" :
+				str_sel_info = "<option value=\"PLDA080007\" >出国留学外汇贷款</option><option value=\"PLDA080002\" >商业性助学贷款</option>";
+				break;
+
+
+		case "PLDB" :
+				str_sel_info = "<option value=\"PLDB080001\" >国家教育助学贷款</option>";
+				break;
+
+
+		case "PLEA" :
+				str_sel_info = "<option value=\"PLEA080005\" >质押贷款</option>";
+				break;
+
+
+		case "PLFA" :
+				str_sel_info = "<option value=\"PLFA080004\" >抵（质）押授信额度用款</option>";
+				break;
+
+
+		case "PLFB" :
+				str_sel_info = "<option value=\"PLFBLM0002\" >个人信用循环贷款额度</option>";
+				break;
+
+
+		case "PLFC" :
+				str_sel_info = "<option value=\"PLFC080003\" >个人信用循环额度用款</option>";
+				break;
+
+
+		case "PLGA" :
+				str_sel_info = "<option value=\"PLGALM0001\" >个人抵质押循环贷款额度</option>";
+				break;
+	
+		default :
+				str_sel_info = "";
+	}
+	
+	window.document.getElementById("id_prd").innerHTML = str_sel_bef + str_sel_def + str_sel_info + str_sel_end;
+	
+	//增加产品码和交易信息的默认关联关系，但是可以由客户经理选择其他交易信息
+	//房屋类贷款PLAA、PLAB、PLAC、PLAE、PLCB对应“购置房产”；
+	//自营汽车类贷款PLBA、PLBE、PLCC对应“购置车辆”；
+	//汽车委托贷款PLBC对应“汽车委托贷款”；
+	//PLDA、PLDB对应“教育助学”；
+	//PLCA、PLEA、PLFA、PLFC对应“投资或其他”；
+	//PLFB、PLGA仍按目前设置，为无“交易信息类别”。
+	
+	var viewobj = document.form1.VIEWTYPE;
+	viewobj.value = "";
+	if(ccaspd == "PLAA" || ccaspd == "PLAB" || ccaspd == "PLAC" || ccaspd == "PLAE" || ccaspd == "PLCB"){
+		viewobj.value = "1";
+	}else if(ccaspd == "PLBA" || ccaspd == "PLBE" || ccaspd == "PLCC" ){
+		viewobj.value = "2";
+	}else if(ccaspd == "PLBC"){
+		viewobj.value = "5";
+	}else if(ccaspd == "PLDA" || ccaspd == "PLDB"){
+		viewobj.value = "3";
+	}else if(ccaspd == "PLCA" || ccaspd == "PLEA" || ccaspd == "PLFA" || ccaspd == "PLFC"){
+		viewobj.value = "4";
+	}else{
+		viewobj.value = "";
+	}	
+	
+	
+	goView();
+	
+	
+}
+
+
+//added by zhangshun 20071205
+//有分次放款的申请，无需选择“利率类型、利率基准、利率期限”
+
+function APT()
+{
+	var v_APTSIGN = window.document.form1.APTSIGN.value;
+	
+	if(v_APTSIGN == "Y"){
+	
+		try{
+			
+			
+			irtty.style.display = "none";
+			irtbs.style.display = "none";
+			irtep.style.display = "none";
+		
+		}catch(e){}	
+		
+		
+	}else{
+	
+		
+		try{
+			
+			
+			irtty.style.display = "";
+			irtbs.style.display = "";			
+			irtep.style.display = "";
+			
+		}catch(e){}	
+		
+	}
+}
+
+//end by zhangshun 20071205
+
+//显示额度号
+function GageFLG()
+{
+	var v_AMTSIGN = window.document.form1.AMTSIGN.value;
+	
+	if(v_AMTSIGN == "Y")
+	  	 cliperan.style.display = "";
+	else{
+		   cliperan.style.display = "none";
+		   window.document.getElementById('CCAS_PLAATRN.LAFUSENO').value = "";
+    }
+}
+
+function goSubmit(){
+
+	//对产品类名称的判断
+	if(window.document.form1.PRDCD.value==""){
+		alert("请选择产品类名称");
+		return false;
+	}
+
+	var v_PRDCD=window.document.form1.PRDCD.value.substring(0,4);
+	var v_PRDCD_BANCS=window.document.form1.PRDCD.value.substring(4,10);
+	
+	//判断交易信息的选择	
+	var v_view = "";
+    v_view=document.form1.VIEWTYPE.value;
+    
+	if(v_PRDCD != 'PLFB'  && v_PRDCD != 'PLGA' && v_PRDCD != 'PLXX'){
+		      
+		if(v_view == ""){
+			alert("请选择交易信息类别");
+			return false ; 		
+		}
+		
+		if(v_view == '1'){
+		
+			if(Trim(window.document.form1.PRJ_NO.value)==''){			
+				alert("请输入项目号");
+		    	return false ;
+			}	
+			
+				
+		}else{
+			
+			//如果交易信息不是购房，则将楼盘号去掉。 20090724 hanying
+			window.document.form1.PRJ_NO.value = '';
+		
+		}
+		
+		if(v_view == '5'){
+		    if(v_PRDCD != 'PLBC' && v_PRDCD != 'PLBD')
+		    {
+		       alert("该贷款的[交易信息类别]不能是'汽车委托贷款'");
+		       return false;
+		    }
+		}
+		
+		if(v_PRDCD == 'PLBC' || v_PRDCD == 'PLBD'){
+		    if(v_view != '5'){
+		       alert("该贷款的[交易信息类别'应选择'汽车委托贷款'");
+		       return false;
+		    }
+		}
+		
+	//额度贷款，交易类型不能选择购置房产，因为额度用款不能输入担保品，但是房产是风险额度，在使用的时候需要跟担保品关联		//modify by hanying 20090804
+	//因为贷款跟额度关联，所以即便有风险额度，没有担保品，只要有一搬额度关联，也是可以放款成功的。
+	/*	
+	if(v_PRDCD == 'PLFA' || v_PRDCD == 'PLFC'){		
+		    if(v_view == '1'){
+		       alert("该贷款品种的[交易信息类别]不能选择'购置房产'");
+		       return false;
+		    }
+		}				
+       */ 
+	//20090804
+     }	
+     
+     //对额度使用标示、额度号码的判断
+	var v_amt = window.document.getElementById('AMTSIGN');
+	if(v_amt.value=="Y"){
+		if(v_PRDCD=="PLFB" || v_PRDCD=="PLGA" ){ 
+			alert("额度申请贷款不能使用额度");
+			return false;
+		}
+		    
+		var validateObj =window.document.getElementById('CCAS_PLAATRN.LAFUSENO') ;
+		if(Trim(validateObj.value).length<=0){
+			alert("请输入[额度编号]!");
+		    return false;
+		}
+		
+		//增加对额度编号输入类型的判断，只能输入数字类型 20090624 hanying
+		if(checkformdata(validateObj,"CCASNUMBER|bok")==false)
+	    	return false;		
+	    //end
+		
+	}
+	
+	//证件类型、证件号码、客户号的判断
+	if(v_PRDCD=="PLAD" || v_PRDCD=="PLBB" || v_PRDCD=="PLBD" || v_PRDCD=="PLHA" || v_PRDCD=="PLHB" || v_PRDCD=="PLHC"){
+		
+		window.document.form1.CBICERTY.value=window.document.form1.CBICERTY1.value;
+		window.document.form1.CUSTP.value="02";
+		
+	}else{
+		window.document.form1.CBICERTY.value=window.document.form1.CBICERTY2.value;
+		window.document.form1.CUSTP.value="01";
+		
+	}	
+	window.document.form1.CERTP.value=window.document.form1.CBICERTY.value;
+	window.document.form1.CERNO.value=window.document.form1.CBICERNO.value;
+	if(window.document.form1.CBICUSTNO.value.length > 0){
+ 		window.document.form1.CUSNO.value=window.document.form1.CBICUSTNO.value;
+ 	}
+ 	
+	var v_certp = "";
+	var v_cerno = "";
+	var v_cusno = "";
+        
+	v_certp = window.document.form1.CERTP.value;
+	v_cerno = window.document.form1.CERNO.value;
+	v_cusno = window.document.form1.CUSNO.value;
+	var validateObj= window.document.form1.CBICERNO;
+        
+	//判断客户号的类型，只能输入整数 20090624 hanying
+	var validateObj_CUSNO= window.document.form1.CBICUSTNO;
+	if(checkformdata(validateObj_CUSNO,"CCASNUMBER|bok")==false)
+    	return false;
+	//end 20090624
+	
+	if(v_cusno.length ==0 && (v_cerno.length == 0 || v_certp.length == 0)){ 
+	
+		alert("请输入[证件类型]+[证件号码]组合或者[客户号]！");
+		return false;
+        
+ 	}else if(v_certp == '01' && v_cusno.length == 0){
+		
+		if(checkformdata(validateObj,"CCASCERTNO|bok")==false){
+			return false;
+		}		    
+	}	 
+	
+	//对加按贷款帐号的判断
+	if(v_PRDCD=="PLXX"){
+		if(window.document.form1.ACTNO.value==""){
+	   		alert("请输入[加按贷款帐号]!");
+	   	 	return false;
+		}
+	}	
+	
+	//对贷款货币、贷款利率类型、贷款利率基准、贷款利率期限的判断
+	if(v_PRDCD != "PLFB" && v_PRDCD != "PLGA" ){
+		if(window.document.form1.BNSCURCY.value==""){
+			alert("请选择[贷款货币]类型");
+			return false;
+		}
+		
+		if(!validBNSCPD()){
+	    	alert("该种产品没有相应的[贷款货币]+[贷款利率类型]+[贷款利率基准]+[贷款利率期限]，请重新选择！");
+		    return false;
+		}		
+
+	}
+	    
+
+	window.document.form1.lastcommand1.value="RetailCreditTRN";	
+	window.document.form1.lastcommand.value="RetailCreditTRN";
+    window.document.form1.command.value="CusQueList";
+	window.document.form1.bancstype.value= "RetailCreditPLAA";
+	if(v_PRDCD=="PLXX"){			
+		window.document.form1.bancstype.value="RetailCreditPLXX";	
+		window.document.form1.action.value="CHECK";	
+	}
+			
+    window.document.form1.ACTNO.disabled=false;
+	window.document.form1.PRJ_NO.disabled=false;	
+	window.document.form1.PRJ_NO.value=window.document.form1.PRJ_NO.value.toUpperCase();
+		
+	var validateObj =window.document.getElementById('CCAS_TASKLOG.REF_TASK_SEQNO') ;
+	if(Trim(validateObj.value).length>0){
+		
+		//增加对关联流水号的判断，只能输入数字类型 20090624 hanying	
+		if(checkformdata(validateObj,"CCASNUMBER|bok")==false)
+    		return false;
+    	//end		
+	
+		var refseqno="0000000000"+Trim(validateObj.value);
+		window.document.getElementById('CCAS_TASKLOG.REF_TASK_SEQNO').value=refseqno.substring(refseqno.length-10,refseqno.length);
+	}
+	
+//added by chenrong,20090507.当输入额度编号时，加满17位，左边补0
+validateObj =window.document.getElementById('CCAS_PLAATRN.LAFUSENO') ;
+	if(Trim(validateObj.value).length>0){
+		var refseqno="00000000000000000"+Trim(validateObj.value);
+		window.document.getElementById('CCAS_PLAATRN.LAFUSENO').value=refseqno.substring(refseqno.length-17,refseqno.length);
+	}
+
+	if(document.form1.AMTSIGN.value == "Y"){
+		document.form1.AMTSG.value="Y";
+	}
+	
+	
+
+	
+	
+	return true ;
+
+}// end of the function goSubmit
+
+var rateTypeNum=1;
+function validBNSCPD(){
+    var s_bnscurcy = window.document.getElementById('BNSCURCY').value;
+    var s_BNSIRTTY = window.document.getElementById('BNSIRTTY').value;
+    var s_BNSIRTBS = window.document.getElementById('BNSIRTBS').value;
+    var s_BNSIRTEP = window.document.getElementById('BNSIRTEP').value;            
+    rateTypeNum = window.document.getElementById('rateTypeNum').value;
+    
+    var s_APTSIGN = window.document.form1.APTSIGN.value;
+    if((s_APTSIGN=="Y"|| s_BNSIRTTY=="A") && rateTypeNum>0){
+    
+    	//window.document.getElementById('BNSIRTTY').value = "";
+    	window.document.getElementById('BNSIRTBS').value = "";
+    	window.document.getElementById('BNSIRTEP').value = "";    	    	
+    
+        return true; //分次放款或者固定利率，且在BNSCPD表中有记录的均可以申请
+    }    
+    
+    var ss;
+    for(var i=0;i<rateTypeNum;i++){
+        ss = window.document.getElementById('rateType.'+i).value;
+        //alert(ss);
+        //alert("======="+s_bnscurcy+s_BNSIRTTY+s_BNSIRTBS+s_BNSIRTEP);
+        if(ss==(s_bnscurcy+s_BNSIRTTY+s_BNSIRTBS+s_BNSIRTEP)){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+function goCancel(){
+
+window.document.form1.command.value="mainPage";
+return true ;
+
+}
+function setOptionText(selObj,the_array)
+{
+	selObj.options.length=the_array.length;
+	for (loop=0; loop < the_array.length; loop++) {
+		selObj.options[loop].text=the_array[loop][1];
+		selObj.options[loop].value=the_array[loop][0];
+	}
+	selObj.selectedIndex=0;
+}
+
+function goValid(){
+
+  	var v_prod="";
+   	v_prod=window.document.form1.PRDCD.value.substring(0,4);
+ 
+
+    //增加对当前栏位的处理，包括如下情况???
+    //1 选择不同的贷款，需要同步修改‘额度标示’，‘额度账号’，‘项目号’，‘证件类型’，‘组合公积金贷款相关流水’，‘个人征信/法人贷款查询情况’
+    //2 当选择使用额度时，需要同步修改‘额度账号’，‘组合公积金贷款相关流水’，
+    
+   	//对‘预售信’栏位的判断
+   	//--只有在个人二手住房贷款[PLAB]、个人住房（高档房）按揭贷款[PLAF]、个投/个人委托/柯达创业/下岗创业[PLCA]、商铺按揭/短期周转[PLCB]才有效。
+   	if(v_prod=="PLAB"||v_prod=="PLAF"||v_prod=="PLCA"||v_prod=="PLCB"){
+      	window.document.getElementById('CCAS_PLAATRN.CUSOCCPA').disabled = false;
+   	}else{
+      	window.document.getElementById('CCAS_PLAATRN.CUSOCCPA').checked  = false;
+      	window.document.getElementById('CCAS_PLAATRN.CUSOCCPA').disabled = true;  
+   	}
+   	
+  	//对组合公积金贷款帐号的选择
+  	//--只有在个人一手住房贷款[PLAA]、个人二手住房贷款[PLAB]、公积金委托贷款[PLAC]才显示组合公积金贷款帐号的输入
+  	if(window.document.form1.PRDCD.value.substring(0,4)=="PLAA" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAB" ||window.document.form1.PRDCD.value.substring(0,4)=="PLAC"){
+     	ref_task_seqno.style.display = "";
+  	}else{
+     	ref_task_seqno.style.display = "none";
+     	window.document.getElementById('CCAS_TASKLOG.REF_TASK_SEQNO').value="";
+   	}   	
+
+  	//证件类型实现的类别：对公贷款还是对个人贷款
+   	if(v_prod=="PLAD" || v_prod=="PLBB" || v_prod=="PLBD" || v_prod=="PLHA" || v_prod=="PLHB" || v_prod=="PLHC"){
+
+    	c2.style.display = "none";
+    	c1.style.display = "";
+
+  	}else{
+
+    	c2.style.display = "";
+    	c1.style.display = "none";
+
+   	}
+
+	//added by zhangshun 20071205
+  	//额度申请、额度用款 不显示 “有无分次放款”选项
+   	if(v_prod=="PLFB" || v_prod=="PLFC" || v_prod=="PLGA" || v_prod=="PLFA"){
+    	aptflg.style.display = "none";
+    	window.document.form1.APTSIGN.value = "N";
+  	}else{
+    	aptflg.style.display = "";
+   	}
+	//end by zhangshun 20071205
+	
+   	//对贷款货币、贷款利率类型、贷款利率基准、贷款利率期限的判断
+   	//--在个人信用循环贷款额度[PLFB]、抵质押循环贷款额度[PLGA]的情况下不需要输入
+	if(v_prod != "PLFB" && v_prod != "PLGA" && v_prod!=""){
+ 	    var v_BNSUSFPD="";
+     	v_BNSUSFPD = window.document.form1.PRDCD.value.substring(4,6);
+    	var v_BNSPRDTY="";
+   	    v_BNSPRDTY = window.document.form1.PRDCD.value.substring(6,10);
+    	showInfo(v_BNSUSFPD, v_BNSPRDTY);
+    	bnscpd_tab.style.display = "";		
+    	
+    	//还需要根据是否分次放款，进行初始化设置 20090812
+    	APT();
+    	//END 20090812
+    	
+	}else{
+        bnscpd_tab.style.display = "none";
+	}
+   	
+   	//对交易信息、项目编号、贷款帐号的判断  
+   	//--在个人信用循环贷款额度[PLFB]、个人抵质押循环贷款额度[PLGA]时，不显示交易信息、项目编号的输入	
+   	//--只有在加按的时候才可以需要贷款帐号的输入
+   	window.document.form1.ACTNO.disabled=true;
+    adv.style.display = "none";
+  	if(v_prod == "PLFB" || v_prod == "PLGA" ||v_prod=="PLXX"){
+   		
+   		view.style.display = "none";
+   		window.document.form1.VIEWTYPE.value = "";
+   		
+   		window.document.form1.PRJ_NO.disabled=true;
+   		prj_no1.style.display="none";  
+   		window.document.form1.PRJ_NO.value = "";
+  		if(v_prod=="PLXX"){
+     		window.document.form1.ACTNO.disabled=false;     	
+     		adv.style.display = "";
+
+ 		}		
+   		
+   	}else{
+   		view.style.display = "";
+   		
+	
+   	}   			   	
+
+	//对[使用额度标示]、额度编号的判断
+	//--在个人抵质押循环贷款额度用款[PLFA]、使用循环贷款额度用款[PLFC]时，[使用额度标示]置为使用，并且需要输入额度编号
+	//--非额度用款，不允许输入额度号，因为输入额度号需要跟担保品关联，但是ccas的流程中如果已经有额度号了，就不允许输入担保品。
+	amsg.style.display="";						//额度使用标示
+	if(v_prod == "PLFA" || v_prod == "PLFC"){
+  		document.form1.AMTSIGN.value="Y";
+  		document.form1.AMTSG.value="Y";
+  		document.form1.AMTSIGN.disabled=true;
+  		cliperan.style.display = "";			//额度编号
+  		
+	}else{
+  		document.form1.AMTSIGN.value="N";
+  		document.form1.AMTSG.value="N";  		
+  		cliperan.style.display = "none";
+  		window.document.getElementById('CCAS_PLAATRN.LAFUSENO').value = "";
+  		document.form1.AMTSIGN.disabled=true; 
+	      	
+	}
+	
+}
+
+
+function goView()
+{
+    var v_view = "";
+    v_view=document.form1.VIEWTYPE.value;
+    
+     prj_no1.style.display = "none";
+     window.document.form1.PRJ_NO.value = "";//如果交易类型不是购房，则将项目号置为空，避免后面设置贷款前提的时候报错 add by hai 20090224
+    
+    
+   if(v_view == '1')
+   {
+      prj_no1.style.display = "";
+   }
+   else
+   {
+     prj_no1.style.display = "none";
+     window.document.form1.PRJ_NO.value = "";//如果交易类型不是购房，则将项目号置为空，避免后面设置贷款前提的时候报错 add by hai 20090224
+   }
+   
+   
+}
+
+</SCRIPT>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK">
+<title>新增贷款</title>
+<style type="text/css">
+<!--
+body {
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+-->
+</style>
+<link href="css/font.css" rel="stylesheet" type="text/css">
+<script src="js/fValidate3_001.js" language="JavaScript" type="text/javascript"></script>
+<script src="js/showInfo.js" language="JavaScript" type="text/javascript"></script>
+</head>
+
+<body>
+<table width="780"  border="0" cellspacing="0" cellpadding="0">
+  <tr>
+
+    <td><iframe src="/CCAS/jsp/controls/topFrame.htm" width="775" height="70" scrolling="no" frameborder="0"></iframe></td>
+
+  </tr>
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td><table width="100%" height="100%"  border="0" cellpadding="0" cellspacing="0">
+              <tr>
+                <td valign="top"><table width="100%"  border="0" cellpadding="0" cellspacing="0">
+  <tr>
+    <td>&nbsp;</td>
+  </tr>
+</table>
+<table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                  <!--DWLayoutTable-->
+                  <tr>
+                    <td height="23" colspan="2"><img src="images/position.gif" width="116" height="20"> <span class="NAV">新增贷款 </span></td>
+                    <td width="398" colspan="2"><div align="center"><span class="NAV"><SPAN
+            class=TB1-TD1>柜员号：</SPAN>D3BS02/张冬</span></div></td>
+              </tr>
+                  <tr>
+                    <td height="25" colspan="2" class="H1"><img src="images/top_01.gif" width="306" height="18"></td>
+                    <td colspan="2" class="H1"><div align="left">新增贷款</div></td>
+              </tr>
+                  <tr>
+              </tr>
+                </table>
+                  <table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td><p>&nbsp;</p>
+                      <table width="90%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td><table width="100%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td background="images/dian.gif">&nbsp;</td>
+                            </tr>
+                            <tr>
+                              <td background="images/dian.gif"><table width="95%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                                <tr>
+                                  <td><form name="form1" method="post" action="/CCAS/CMain">
+								  <input type="hidden" name="command" value="">
+                                  <input type="hidden" name="lastcommand1" value="RetailCreditTRN">
+	                              <input type="hidden" name="action" value="NEW">
+                                  <input type="hidden" name="LASTACTION" value="">
+                                  <input type="hidden" name="CBICERTY" value="">
+								  
+								  
+						
+								  <input type="hidden" name="CUSNO" value="">
+								  <input type="hidden" name="CUSTP" value="">
+								  <input type="hidden" name="CERTP" value="">
+								  <input type="hidden" name="CERNO" value="">
+								  <input type="hidden" name="bancstype" value="">
+								  <input type="hidden" name="lastcommand" value="">
+								  <input type="hidden" name="AMTSG" value="">
+								  
+								  
+								  								  
+                                      <table width="100%"  border="0" align="center" cellpadding="0" cellspacing="0">
+                                        <tr> 
+                                          <td height="25" class="TB6-td2">零售信贷业务品种</td>
+                                          <td align="left" class="TB6-td2"><select name="CCASCD" id="CCASCD" onChange="goPRDINFO()">
+                                              <option value="" selected>请选择业务品种</option>
+                                              
+	<option value="PLAA" >一手房/职工定向[PLAA] </option>
+
+	<option value="PLAB" >个人住房散户贷款[PLAB] </option>
+
+	<option value="PLAC" >住房公积金贷款[PLAC] </option>
+
+	<option value="PLAE" >自建房/固定利率[PLAE] </option>
+
+	<option value="PLBA" >个人汽车贷款[PLBA] </option>
+
+	<option value="PLBC" >汽车金融公司个人委托贷款[PLBC] </option>
+
+	<option value="PLBE" >个人二手消费类汽车贷款[PLBE] </option>
+
+	<option value="PLCA" >个投/个人委托/柯达创业/下岗创业[PLCA] </option>
+
+	<option value="PLCB" >商铺按揭/短期周转[PLCB] </option>
+
+	<option value="PLCC" >工程运输车辆贷款[PLCC] </option>
+
+	<option value="PLDA" >商业助学/出国留学[PLDA] </option>
+
+	<option value="PLDB" >国家教育助学贷款[PLDB] </option>
+
+	<option value="PLEA" >质押/汇聚宝/国债/保单/黄金/存单[PLEA] </option>
+
+	<option value="PLFA" >个人抵质押循环贷款额度用款[PLFA] </option>
+
+	<option value="PLFB" >个人信用循环贷款额度[PLFB] </option>
+
+	<option value="PLFC" >个人信用循环贷款额度用款[PLFC] </option>
+
+	<option value="PLGA" >个人抵质押循环贷款额度[PLGA] </option>
+
+                                            </select>
+                                            </td>
+                                        </tr>                                     
+                                       <tr> 
+                                          <td height="25" class="TB6-td2">零售信贷产品类名称</td>
+                                          <td   id="id_prd" align="left" class="TB6-td2"><select name="PRDCD" id="PRDCD" onChange="goValid()">
+                                              <option value="" selected>请选择产品类名称</option> 
+                                            </select>
+                                            <input name="CCAS_PLAATRN.CUSOCCPA" type="checkbox" disabled id="CCAS_PLAATRN.CUSOCCPA" value="Y">
+                                            预授信</td>
+                                        </tr>
+                                  <tr id='view' style="DISPLAY:''">
+                                    <td height="25" valign="middle" class="TB6-td2">交易信息类别</td>
+                                    <td width="70%" class="TB6-td2"> <select name="VIEWTYPE" onChange="goView()">
+                                                                              <option value="" selected>请选择</option>
+                                                                              <option value="1" >购置房产</option>
+                                                                              <option value="2">购置车辆</option>
+                                                                              <option value="5">汽车委托贷款</option>
+                                                                              <option value="3">教育助学</option>
+                                                                              <option value="4">投资或其他</option> 
+                                                                                                                                                                                                                                         
+                                                                         </select>  
+                                  
+                                    </td>
+                                  </tr>
+                                  
+                                   <tr id='amsg' style="DISPLAY:''">
+                                       <td height="25" valign="middle" class="TB6-td2">使用额度标记</td>
+                                       <td width="70%" class="TB6-td2"> <select name="AMTSIGN" onChange="GageFLG()">
+                                                                              <option value="N" selected>否</option>
+                                                                              <option value="Y">是</option>
+                                                                         </select>     
+                                       </td>
+                                 
+                                   </tr>                    
+                                    
+                                    <tr id='cliperan' style="DISPLAY:none"> 
+                                          <td height="25" class="TB6-td2">额度编号</td>
+                                          <td class="TB6-td2"><input name="CCAS_PLAATRN.LAFUSENO" type="text"   size="20" maxlength="20"  value=""></td>
+                                    </tr>
+                                    
+                                    <tr id="c1" style="DISPLAY:none"> 
+                                          <td width="30%" height="25" class="TB6-td2">申请人证件类别</td>
+                                          <td width="70%" class="TB6-td2"><select name="CBICERTY1"  id="CBICERTY1"  >
+                                              
+                                              <option value="21"
+
+> 企业 企业法人营业执照 </option>
+                                              
+                                              <option value="22"
+
+> 企业 企业营业执照 </option>
+                                              
+                                              <option value="23"
+
+> 企业 政府人事部门或编制委员会的批文 </option>
+                                              
+                                              <option value="24"
+
+> 企业 事业单位法人登记证书 </option>
+                                              
+                                              <option value="25"
+
+> 企业 财政部门同意其开户的证明 </option>
+                                              
+                                              <option value="26"
+
+> 企业 社会团体登记证书 </option>
+                                              
+                                              <option value="27"
+
+> 企业 上级主管部门批文或证明 </option>
+                                              
+                                              <option value="28"
+
+> 企业 工会法人资格证书 </option>
+                                              
+                                              <option value="29"
+
+> 企业 民办非企业登记证书 </option>
+                                              
+                                              <option value="30"
+
+> 企业 驻华机构登记证 </option>
+                                              
+                                              <option value="31"
+
+> 企业 个体工商户营业执照 </option>
+                                              
+                                              <option value="32"
+
+> 企业 企业名称预先核准通知书 </option>
+                                              
+                                              <option value="33"
+
+> 企业 组织机构代码证 </option>
+                                              
+                                              <option value="34"
+
+> 企业 国税登记证 </option>
+                                              
+                                              <option value="35"
+
+> 企业 地税登记证 </option>
+                                              
+                                              <option value="36"
+
+> 企业 批准证书 </option>
+                                              
+                                              <option value="37"
+
+> 企业 进出口业务资格证书 </option>
+                                              
+                                              <option value="38"
+
+> 企业 对外贸易经营者备案登记表 </option>
+                                              
+                                              <option value="39"
+
+> 企业 金融许可证 </option>
+                                              
+                                              <option value="40"
+
+> 企业 外汇业务核准件 </option>
+                                              
+                                              <option value="41"
+
+> 企业 外汇登记证 </option>
+                                              
+                                              <option value="42"
+
+> 企业 开户许可证 </option>
+                                              
+                                              <option value="43"
+
+> 企业 办学许可证 </option>
+                                              
+                                              <option value="44"
+
+> 企业 其他 </option>
+                                              
+                                              <option value="45"
+
+> 企业 各驻华机构编号 </option>
+                                              
+                                              <option value="46"
+
+> 企业 宗教事务管理部门批文或证明 </option>
+                                              
+                                            </select></td>
+                                        </tr>
+                                        <tr id='c2' > 
+                                          <td width="30%" height="25" class="TB6-td2">申请人证件类别</td>
+                                          <td width="70%" class="TB6-td2"><select name="CBICERTY2"  id="CBICERTY2"  >
+                                              
+                                              <option value="01"
+
+> 个人 居民身份证 </option>
+                                              
+                                              <option value="02"
+
+> 个人 临时身份证 </option>
+                                              
+                                              <option value="03"
+
+> 个人 护照 </option>
+                                              
+                                              <option value="04"
+
+> 个人 户口簿 </option>
+                                              
+                                              <option value="05"
+
+> 个人 军人身份证 </option>
+                                              
+                                              <option value="06"
+
+> 个人 武装警察身份证 </option>
+                                              
+                                              <option value="07"
+
+> 个人 港澳台居民往来内地通行证 </option>
+                                              
+                                              <option value="08"
+
+> 个人 外交人员身份证 </option>
+                                              
+                                              <option value="09"
+
+> 个人 外国人居留许可证 </option>
+                                              
+                                              <option value="10"
+
+> 个人 边民出入境通行证 </option>
+                                              
+                                              <option value="11"
+
+> 个人 其他 </option>
+                                              
+                                            </select></td>
+                                        </tr>
+                                        <tr> 
+                                          <td height="25" class="TB6-td2">证件号码 
+                                          </td>
+                                          <td class="TB6-td2"><input name="CBICERNO" type="text" id="CBICERNO" size="25" maxlength="32" value=""></td>
+                                        </tr>
+   
+                                        <tr> 
+                                          <td height="25" class="TB6-td2">客户号</td>
+                                          <td class="TB6-td2"><input type="text" name="CBICUSTNO" size="10" maxlength="10" value=""></td>
+                                        </tr>
+                                        
+                                        <tr id=prj_no1 style="DISPLAY:''"> 
+                                          <td height="25" class="TB6-td2">项目号</td>
+                                          <td class="TB6-td2"><input name="PRJ_NO" type="text" size="8" maxlength="8" value=""></td>
+                                        </tr>
+                                        
+                                        
+                                                                                
+                                        
+                                        
+                                        
+										
+										
+                                        <tr id=adv style="DISPLAY:none"> 
+                                          <td height="25" class="TB6-td2">贷款帐号</td>
+                                          <td align="left" class="TB6-td2"><input name="ACTNO" type="text"    disabled id="ACTNO" size="18" maxlength="18"></td>
+                                        </tr>
+
+										<tr id='ref_task_seqno' style="DISPLAY:none"> 
+                                          <td height="25" class="TB6-td2">组合公积金贷款相关流水</td>
+                                          <td class="TB6-td2"><input name="CCAS_TASKLOG.REF_TASK_SEQNO" type="text"     size="10" maxlength="10" value=""></td>
+                                        </tr>
+                                        
+										<tr id='aptflg' style="DISPLAY:''">
+											<td height="25" valign="middle" class="TB6-td2" >有无分次放款</td>
+											<td width="70%" class="TB6-td2">
+                                       			<select name="APTSIGN" onChange="APT()">
+													<option value="N" selected>无</option>
+													<option value="Y">有</option>
+												</select>
+                                       		</td>
+                                  	 	</tr>
+                                        
+                                        <tr>
+                                           <td id="bnscpd_tab" colspan="2"><!-- 显示“贷款货币”、“贷款利率类型”、“贷款利率基准”和“贷款利率期限” --></td>
+                                        </tr>
+                                                                                                                                                                      
+					
+					
+					
+                                        <tr> 
+                                          <td height="25" colspan="2" class="TB6-td2"><div align="center"> 
+                                              <input name="Submit"  type="submit" class="BTN" value="确认" onClick="return(goSubmit())">
+                                              &nbsp;&nbsp;&nbsp; 
+                                              <input name="Submit2" type="submit" class="BTN" value="取消" onClick="return(goCancel())">
+                                            </div></td>
+                                        </tr>
+                                      </table>
+                                  </form></td>
+                                </tr>
+                              </table></td>
+                            </tr>
+                            <tr>
+                              <td background="images/dian.gif"></td>
+                            </tr>
+                          </table></td>
+                        </tr>
+                      </table></td>
+                    </tr>
+                  </table>
+                <p>&nbsp;</p></td>
+              </tr>
+            </table></td>
+  </tr>
+  <tr>
+    <td><iframe src="/CCAS/jsp/controls/endFrame.htm" width="775" height="16" scrolling="no" frameborder="0"></iframe></td>
+  </tr>
+</table>
+</body>
+<SCRIPT language="JavaScript">
+
+window.document.form1.PRDCD.value='';
+</SCRIPT>
+</html>
