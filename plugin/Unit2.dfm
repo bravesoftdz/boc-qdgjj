@@ -88,6 +88,7 @@ object frmplugin: Tfrmplugin
     OnClick = Edit1Click
   end
   object Timer1: TTimer
+    Interval = 15000
     OnTimer = Timer1Timer
     Left = 8
     Top = 128
