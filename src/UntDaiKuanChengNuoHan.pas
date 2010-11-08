@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, QRCtrls, QuickRpt, ExtCtrls, StdCtrls;
+  Dialogs, QRCtrls, QuickRpt, ExtCtrls, StdCtrls, untUtil;
 
 type
   TFrmDaiKuanChengNuoHan = class(TForm)
@@ -55,7 +55,7 @@ procedure TFrmDaiKuanChengNuoHan.QuickRep1NeedData(Sender: TObject;
   var MoreData: Boolean);
 begin
   try
-    LD.Caption := untMain.Changdx(FrmEdt.ADOQuery1.FieldByName('daikuanjine').AsCurrency*10000);
+    LD.Caption := Changdx(FrmEdt.ADOQuery1.FieldByName('daikuanjine').AsCurrency*10000);
     LD.Caption := StringReplace(LD.Caption,'ÔªÕû','',[]);
     LX.Caption := VartoStr(FrmEdt.ADOQuery1.FieldByName('daikuanjine').AsCurrency*10000);
   finally

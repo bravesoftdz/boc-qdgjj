@@ -1,6 +1,6 @@
 object FrmEdt: TFrmEdt
-  Left = 200
-  Top = 44
+  Left = 225
+  Top = 28
   Width = 1024
   Height = 668
   Caption = #32534#36753
@@ -19,11 +19,11 @@ object FrmEdt: TFrmEdt
   object PageControl1: TPageControl
     Left = 0
     Top = 0
-    Width = 1008
-    Height = 589
-    ActivePage = TabSheet1
+    Width = 1016
+    Height = 600
+    ActivePage = TabSheet2
     Align = alClient
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = #20511#27454#20154#20449#24687
@@ -679,14 +679,14 @@ object FrmEdt: TFrmEdt
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         ItemHeight = 13
         Items.Strings = (
-          #30805#22763#25110#20197#19978
-          #26412#31185
+          #30740#31350#29983
+          #22823#26412
           #22823#19987
           #20013#19987
+          #25216#26415#23398#26657
           #39640#20013
-          #21021#20013
-          #21021#20013#20197#19979
-          #26410#30693)
+          #23567#23398
+          #25991#30450#25110#21322#25991#30450)
         TabOrder = 10
       end
       object DBComboBox3: TDBComboBox
@@ -699,11 +699,14 @@ object FrmEdt: TFrmEdt
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         ItemHeight = 13
         Items.Strings = (
-          #24050#23130
           #26410#23130
-          #31163#24322
+          #24050#23130
+          #21021#23130
+          #20877#23130
+          #22797#23130
           #20007#20598
-          #26410#30693)
+          #31163#23130
+          #20854#23427)
         TabOrder = 9
       end
       object DBEdit7: TDBEdit
@@ -975,8 +978,14 @@ object FrmEdt: TFrmEdt
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         ItemHeight = 13
         Items.Strings = (
-          #33258#20303
-          #31199#20303)
+          #33258#32622
+          #25353#25581
+          #20146#23646#27004#23431
+          #38598#20307#23487#33293
+          #31199#25151
+          #20849#26377#20303#23429
+          #20854#20182
+          #26410#30693)
         TabOrder = 12
         Visible = False
       end
@@ -992,15 +1001,15 @@ object FrmEdt: TFrmEdt
         Items.Strings = (
           #26412#22320
           #26412#30465
-          #22806#30465
           #28207#28595#21488
+          #22806#30465
           #22806#31821)
         TabOrder = 31
       end
       object DBMemo1: TDBMemo
         Left = 87
         Top = 168
-        Width = 737
+        Width = 810
         Height = 39
         DataField = 'jiekuanrendanweijianyaoshuoming'
         DataSource = DataSource1
@@ -1010,7 +1019,7 @@ object FrmEdt: TFrmEdt
       object DBMemo2: TDBMemo
         Left = 87
         Top = 405
-        Width = 737
+        Width = 810
         Height = 39
         DataField = 'jiekuanrenpeioudanweijianyaoshuoming'
         DataSource = DataSource1
@@ -1099,6 +1108,7 @@ object FrmEdt: TFrmEdt
           #20146#23646#27004#23431
           #38598#20307#23487#33293
           #31199#25151
+          #20849#26377#20303#23429
           #20854#20182
           #26410#30693)
         TabOrder = 13
@@ -1264,7 +1274,7 @@ object FrmEdt: TFrmEdt
       object DBComboBox51: TDBComboBox
         Left = 797
         Top = 205
-        Width = 75
+        Width = 100
         Height = 21
         DataField = 'jiekuanrenjishuzige'
         DataSource = DataSource1
@@ -1288,27 +1298,35 @@ object FrmEdt: TFrmEdt
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         ItemHeight = 13
         Items.Strings = (
-          #39640#32423#31649#29702#32773
-          #19987#19994#20154#21592
-          #31649#29702#20154#21592
-          #21322#19987#19994#20154#21592
-          #21150#20844#23460#32844#21592
-          #20891#38431#8212#8212#20891#23448
-          #25216#26415#24037#20154
-          #24314#31569#36152#26131
-          #21496#26426
-          #24037#21378#24037#20154
-          #20445#23433
-          #20891#38431#8212#8212#24212#24449#20837#20237#30340#22763#20853
-          #38144#21806
-          #33258#30001#32844#19994#32773'/'#20010#20307#25143
-          #26381#21153#20154#21592
-          #38750#25216#26415#24037#20154
-          #36864#20241
-          #23478#24237#20027#22919
+          #20013#22269#20849#20135#20826#20013#22830#22996#21592#20250#21644#22320#26041#21508#32423#32452#32455#36127#36131#20154
+          #22269#23478#26426#20851#21450#20854#24037#20316#26426#26500#36127#36131#20154
+          #27665#20027#20826#27966#12289#31038#20250#22242#20307#21450#24037#20316#26426#26500#36127#36131#20154
+          #20107#19994#21333#20301#36127#36131#20154
+          #20225#19994#36127#36131#20154
+          #31185#23398#30740#31350#20154#21592
+          #24037#31243#25216#26415#65288#35745#31639#26426#65289#20154#21592
+          #20892#19994#25216#26415#20154#21592
+          #39134#34892#21644#33337#33334#25216#26415#31561#20154#21592
+          #21355#29983#19987#19994#25216#26415#20154#21592
+          #32463#27982#19994#21153#20154#21592
+          #37329#34701#19994#21153#20154#21592
+          #27861#24459#19987#19994#20154#21592
+          #25945#23398#20154#21592
+          #25991#23398#33402#26415#24037#20316#20154#21592
+          #20307#32946#24037#20316#20154#21592
+          #26032#38395#20986#29256#12289#25991#21270#24037#20316#20154#21592
+          #20854#20182#19987#19994#25216#26415#20154#21592
+          #34892#25919#21150#20844#20154#21592
+          #23433#20840#20445#21355#21644#28040#38450#24037#20316#20154#21592
+          #37038#25919#21644#30005#20449#19994#21153#20154#21592
+          #20854#20182#21150#20107#20154#21592#21644#26377#20851#20154#21592
+          #21830#19994#12289#26381#21153#19994#20154#21592
+          #20892#12289#26519#12289#29287#12289#28180#12289#27700#21033#19994#29983#20135#20154#21592
+          #29983#20135#12289#36816#36755#35774#22791#25805#20316#20154#21592#21450#26377#20851#20154#21592
+          #20891#20154
           #23398#29983
-          #24453#19994
-          #20854#20182)
+          #19981#20415#20998#31867#30340#20854#20182#20174#19994#20154#21592
+          #26080#32844#19994#27963#21160#20154#21592)
         TabOrder = 29
       end
       object DBComboBox53: TDBComboBox
@@ -1332,7 +1350,7 @@ object FrmEdt: TFrmEdt
       object DBComboBox54: TDBComboBox
         Left = 797
         Top = 228
-        Width = 76
+        Width = 100
         Height = 21
         DataField = 'jiekuanrenxinyongkashuliang'
         DataSource = DataSource1
@@ -5221,8 +5239,8 @@ object FrmEdt: TFrmEdt
   end
   object Panel1: TPanel
     Left = 0
-    Top = 589
-    Width = 1008
+    Top = 600
+    Width = 1016
     Height = 41
     Align = alBottom
     TabOrder = 1
@@ -5301,24 +5319,24 @@ object FrmEdt: TFrmEdt
     MasterFields = 'id'
     MasterSource = DataSource2
     TableName = 't_jiekuanren'
-    Left = 840
+    Left = 936
     Top = 152
   end
   object DataSource1: TDataSource
     DataSet = ATJieKuanRen
-    Left = 880
-    Top = 152
+    Left = 984
+    Top = 144
   end
   object ATMain: TADOTable
     Connection = FrmMain.ADOConnection1
     TableName = 't_main'
-    Left = 608
-    Top = 88
+    Left = 912
+    Top = 312
   end
   object DataSource2: TDataSource
     DataSet = ATMain
-    Left = 648
-    Top = 88
+    Left = 968
+    Top = 312
   end
   object ATFangWu: TADOTable
     Connection = FrmMain.ADOConnection1
@@ -5327,18 +5345,18 @@ object FrmEdt: TFrmEdt
     MasterFields = 'id'
     MasterSource = DataSource2
     TableName = 't_fangwu'
-    Left = 688
-    Top = 88
+    Left = 928
+    Top = 280
   end
   object DataSource3: TDataSource
     DataSet = ATFangWu
-    Left = 720
-    Top = 96
+    Left = 976
+    Top = 272
   end
   object DataSource4: TDataSource
     DataSet = ATDaiKuan
-    Left = 720
-    Top = 120
+    Left = 976
+    Top = 240
   end
   object ATDaiKuan: TADOTable
     Connection = FrmMain.ADOConnection1
@@ -5347,12 +5365,12 @@ object FrmEdt: TFrmEdt
     MasterFields = 'id'
     MasterSource = DataSource2
     TableName = 't_daikuan'
-    Left = 680
-    Top = 144
+    Left = 936
+    Top = 200
   end
   object PMOtherPrint: TPopupMenu
-    Left = 784
-    Top = 352
+    Left = 944
+    Top = 440
     object N6: TMenuItem
       Caption = #20511#27454#25269#25276#21512#21516
       OnClick = N6Click
@@ -5480,6 +5498,10 @@ object FrmEdt: TFrmEdt
       Caption = #35780#20272#25253#21578'('#26080#31456')'
       OnClick = N125Click
     end
+    object N129: TMenuItem
+      Caption = #25215#35834#21450#25480#26435#20070
+      OnClick = N129Click
+    end
     object N30: TMenuItem
       Caption = '-'
     end
@@ -5549,17 +5571,17 @@ object FrmEdt: TFrmEdt
     Connection = FrmMain.ADOConnection1
     CursorType = ctStatic
     Parameters = <>
-    Left = 840
-    Top = 80
+    Left = 928
+    Top = 72
   end
   object DataSource5: TDataSource
     DataSet = ADOQuery1
-    Left = 872
-    Top = 80
+    Left = 968
+    Top = 72
   end
   object PMOtherExport: TPopupMenu
-    Left = 816
-    Top = 352
+    Left = 976
+    Top = 440
     object MenuItem2: TMenuItem
       Caption = #20511#27454#25269#25276#21512#21516
       Enabled = False
@@ -5631,6 +5653,10 @@ object FrmEdt: TFrmEdt
     object N126: TMenuItem
       Caption = #35780#20272#25253#21578'('#26080#31456')'
       OnClick = N126Click
+    end
+    object N130: TMenuItem
+      Caption = #25215#35834#21450#25480#26435#20070
+      OnClick = N130Click
     end
     object N110: TMenuItem
       Caption = '-'
@@ -5807,20 +5833,20 @@ object FrmEdt: TFrmEdt
     GroupOptions.ClearContents = True
     GroupOptions.BorderRange = bsRow
     GroupOptions.IntervalFontSize = 2
-    Left = 328
-    Top = 584
+    Left = 976
+    Top = 560
   end
   object sd: TSaveDialog
     DefaultExt = 'xls'
     Filter = 'Excel '#25991#20214'|*.xls'
-    Left = 256
-    Top = 584
+    Left = 936
+    Top = 560
   end
   object sddoc: TSaveDialog
     DefaultExt = 'doc'
     Filter = 'Word '#25991#26723'|*.doc'
-    Left = 224
-    Top = 584
+    Left = 896
+    Top = 560
   end
   object ATZhengXin: TADOTable
     Connection = FrmMain.ADOConnection1
@@ -5828,18 +5854,18 @@ object FrmEdt: TFrmEdt
     MasterFields = 'id'
     MasterSource = DataSource2
     TableName = 't_zhengxin'
-    Left = 840
+    Left = 928
     Top = 112
   end
   object DSZhengXin: TDataSource
     DataSet = ATZhengXin
-    Left = 872
-    Top = 112
+    Left = 976
+    Top = 104
   end
   object DSLianMingKeHu: TDataSource
     DataSet = ATLianMingKeHu
-    Left = 632
-    Top = 136
+    Left = 976
+    Top = 344
   end
   object ATLianMingKeHu: TADOTable
     Connection = FrmMain.ADOConnection1
@@ -5847,8 +5873,8 @@ object FrmEdt: TFrmEdt
     MasterFields = 'id'
     MasterSource = DataSource2
     TableName = 't_lianmingkehu'
-    Left = 600
-    Top = 144
+    Left = 936
+    Top = 352
     object ATLianMingKeHuDSDesigner: TAutoIncField
       FieldName = #32534#21495
       ReadOnly = True
@@ -5919,8 +5945,8 @@ object FrmEdt: TFrmEdt
   end
   object DSDiYaWu: TDataSource
     DataSet = ATDiYaWu
-    Left = 720
-    Top = 144
+    Left = 984
+    Top = 200
   end
   object ATDiYaWu: TADOTable
     Connection = FrmMain.ADOConnection1
@@ -5929,8 +5955,8 @@ object FrmEdt: TFrmEdt
     MasterFields = 'id'
     MasterSource = DataSource2
     TableName = 't_diyawu'
-    Left = 688
-    Top = 120
+    Left = 928
+    Top = 248
     object ATDiYaWuDSDesigner: TAutoIncField
       FieldName = #32534#21495
       ReadOnly = True
@@ -5989,8 +6015,8 @@ object FrmEdt: TFrmEdt
     end
   end
   object PMRZBPrint: TPopupMenu
-    Left = 784
-    Top = 320
+    Left = 944
+    Top = 408
     object N68: TMenuItem
       Caption = #35843#26597#24847#35265#34920
       OnClick = N5Click
@@ -6091,10 +6117,14 @@ object FrmEdt: TFrmEdt
       Caption = #35780#20272#25253#21578'('#26080#31456')'
       OnClick = N123Click
     end
+    object N127: TMenuItem
+      Caption = #25215#35834#21450#25480#26435#20070
+      OnClick = N127Click
+    end
   end
   object PMRZBExport: TPopupMenu
-    Left = 816
-    Top = 320
+    Left = 976
+    Top = 408
     object N69: TMenuItem
       Caption = #35843#26597#24847#35265#34920
       OnClick = MenuItem9Click
@@ -6195,6 +6225,10 @@ object FrmEdt: TFrmEdt
       Caption = #35780#20272#25253#21578'('#26080#31456')'
       OnClick = N124Click
     end
+    object N128: TMenuItem
+      Caption = #25215#35834#21450#25480#26435#20070
+      OnClick = N128Click
+    end
     object N80: TMenuItem
       Caption = '-'
     end
@@ -6206,7 +6240,7 @@ object FrmEdt: TFrmEdt
   object AQExport: TADOQuery
     Connection = FrmMain.ADOConnection1
     Parameters = <>
-    Left = 816
-    Top = 384
+    Left = 976
+    Top = 472
   end
 end

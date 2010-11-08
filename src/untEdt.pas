@@ -741,6 +741,10 @@ type
     DBComboBox90: TDBComboBox;
     Label264: TLabel;
     DBComboBox91: TDBComboBox;
+    N127: TMenuItem;
+    N128: TMenuItem;
+    N129: TMenuItem;
+    N130: TMenuItem;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -880,6 +884,10 @@ type
     procedure N3Click1Click(Sender: TObject);
     procedure N94Click(Sender: TObject);
     procedure N65Click(Sender: TObject);
+    procedure N127Click(Sender: TObject);
+    procedure N129Click(Sender: TObject);
+    procedure N130Click(Sender: TObject);
+    procedure N128Click(Sender: TObject);
   private
     function getExcelFileTmp(filename, tmpfilename: String): String;
     function getDocFileTmp(filename, tmpfilename: String): String;
@@ -948,6 +956,7 @@ type
     procedure exportgongtongzhaiwurenchengnuohan(print, PrintPreview: boolean);
     procedure exportgerenxingyongchaxun(print, PrintPreview: boolean);
 
+    procedure exportchengnuonew(print, PrintPreview: boolean);
 
     function exportToXML(path: String):String;
     function getDataFromTable(table:TADOTable):String;
@@ -970,7 +979,7 @@ uses UntMain, UntShenPiXinXi1, UntFangWuChuZhiXieYiShu, UntShenPiXinXi2,
   UntDaiKuanShenQingShu2, untChaXunshouQuanShu, untHunYin2, wordtest,
   UntDaiKuanChengNuoHan, UntJuJieShu, UntDaiKuanShenPiBiao,
   UntWenJianYiJiaoQingDan_DB, untYaPinQieZhengZiLiaoShouJu, UntJieKuanJieJu,
-  UntLanCunZhengMing, UntShouQuanWeiTuoShu, UntHunYin3, UntUser;
+  UntLanCunZhengMing, UntShouQuanWeiTuoShu, UntHunYin3, UntUser, untUtil;
 
 {$R *.dfm}
 
@@ -1097,18 +1106,18 @@ var sqlstr, id:String;
 i:Integer;
 begin
   sqlstr := 'insert into t_main (inputdate, createUser) values('''+formatdatetime('yyyy-mm-dd hh:mm:ss',now)+''', ''' + FrmUser.user + ''')';
-  FrmMain.execsql(sqlstr);
+  execsql(sqlstr);
   sqlstr := 'select max(id) as maxid from t_main';
-  FrmMain.opensql(sqlstr, FrmMain.AQOpen);
+  opensql(sqlstr, FrmMain.AQOpen);
   id := FrmMain.AQOpen.FieldByName('maxid').AsString;
   sqlstr := 'insert into t_daikuan (mainid) values('''+id+''')';
-  FrmMain.execsql(sqlstr);
+  execsql(sqlstr);
   sqlstr := 'insert into t_fangwu (mainid) values('''+id+''')';
-  FrmMain.execsql(sqlstr);
+  execsql(sqlstr);
   sqlstr := 'insert into t_jiekuanren (mainid) values('''+id+''')';
-  FrmMain.execsql(sqlstr);
+  execsql(sqlstr);
   sqlstr := 'insert into t_zhengxin (mainid) values('''+id+''')';
-  FrmMain.execsql(sqlstr);
+  execsql(sqlstr);
 
   self.mainid := id;
   ATMain.Filter := 'id='+id;
@@ -1272,7 +1281,7 @@ procedure TFrmEdt.viewall(id:String);
 var sqlstr:String;
 begin
   sqlstr := ' select * from viewall where id='+id;
-  FrmMain.opensql(sqlstr, ADOQuery1);
+  opensql(sqlstr, ADOQuery1);
 end;
 
 procedure TFrmEdt.N12Click(Sender: TObject);
@@ -2029,7 +2038,7 @@ begin
 end;
 
 procedure TFrmEdt.exportdaikuanshenpibiao(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '个人住房贷款审批表.doc';
@@ -2725,8 +2734,49 @@ begin
   end;
 end;
 
+procedure TFrmEdt.exportchengnuonew(print, PrintPreview: boolean);
+var filename:String;
+begin
+  filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
+                          '承诺及授权书.doc';
+
+  if not (print or printPreview) then begin
+    sddoc.FileName := filename;
+    if sddoc.Execute then begin
+      filename := sddoc.FileName;
+
+    end else exit;
+  end else begin
+    filename := ExtractFilePath(Application.ExeName)+'\tmp\'+filename;
+  end;
+  try
+    getDocFileTmp('承诺及授权书', filename);
+    WordControlFrm.connect;
+    WordControlFrm.open(filename);
+
+    WordControlFrm.replace('%jiekuanrenxingming',ADOQuery1.FieldByName('jiekuanrenxingming').AsString);
+    WordControlFrm.replace('%jiekuanrenpeiouxingming',ADOQuery1.FieldByName('jiekuanrenpeiouxingming').AsString);
+    WordControlFrm.replace('%chanquanzhengbianhao',ADOQuery1.FieldByName('chanquanzhengbianhao').AsString);
+    WordControlFrm.replace('%fangwudiliweizhi',ADOQuery1.FieldByName('fangwudiliweizhi').AsString);
+    WordControlFrm.replace('%daikuanjine',ADOQuery1.FieldByName('daikuanjine').AsString);
+    WordControlFrm.replace('%jiekuanzhonglei',ADOQuery1.FieldByName('jiekuanzhonglei').AsString);
+    WordControlFrm.replace('%jiekuanyongtu',ADOQuery1.FieldByName('jiekuanyongtu').AsString);
+
+
+    if not (print or printPreview) then begin
+
+      showmessage('导出成功');
+    end else if printPreview then
+      WordControlFrm.PrintPreview
+    else
+      WordControlFrm.Print;
+  finally
+    WordControlFrm.saveAndClose;
+  end;
+end;
+
 procedure TFrmEdt.exportgerenxingyongchaxun(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '个人信用报告查询授权书.doc';
@@ -2764,7 +2814,7 @@ end;
 
 procedure TFrmEdt.exportgongtongzhaiwurenchengnuohan(print,
   PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '共同债务人承诺函.doc';
@@ -2808,7 +2858,7 @@ end;
 
 
 procedure TFrmEdt.exportbuchongxieyi(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '再交易住房贷款补充协议.doc';
@@ -2851,7 +2901,7 @@ end;
 
 
 procedure TFrmEdt.exportchuzhixieyishu(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '处置协议书.doc';
@@ -2929,7 +2979,6 @@ end;
 function TFrmEdt.exportToXML(path: String):String;
 var rootNode, node:IXMLNode;
   xmlDoc:IXMLDocument;
-  stream:TMemoryStream;
   sd:TSaveDialog;
   filename:String;
 begin
@@ -2938,8 +2987,9 @@ begin
     while FileExists(filename) do
       filename := copy(filename, 1, pos('.gjj', filename)-1)+'2.gjj';
   end else begin
+    sd := TSaveDialog.Create(nil);
     try
-      sd := TSaveDialog.Create(nil);
+
       sd.FileName := ATJieKuanRen.FieldByName('jiekuanrenxingming').AsString + '.gjj';
       if sd.Execute then begin
         filename := sd.FileName;
@@ -3029,7 +3079,7 @@ begin
 end;
 
 procedure TFrmEdt.exportzhiyahetong(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '零售贷款合作方项下保证金动产质押合同.doc';
@@ -3072,7 +3122,7 @@ begin
 end;
 
 procedure TFrmEdt.exportjiekuandiyahetong(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '二手房借款抵押合同.doc';
@@ -3250,7 +3300,7 @@ begin
 end;
 
 procedure TFrmEdt.exportbaozhenghetong(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '中国银行“融居宝”个人住房循环额度贷款保证合同.doc';
@@ -3293,7 +3343,7 @@ begin
 end;
 
 procedure TFrmEdt.exportzhufangmaimaihetong(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '住房买卖合同.doc';
@@ -3342,7 +3392,7 @@ end;
 
 procedure TFrmEdt.exportshoufukuanshoudaotiao(print,
   PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '首付款收到条.doc';
@@ -3382,7 +3432,7 @@ end;
 
 procedure TFrmEdt.exportdengjishenqingshu(print,
   PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '登记申请书.doc';
@@ -3421,7 +3471,7 @@ begin
 end;
 
 procedure TFrmEdt.exportdaikuanchengnuohan(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '贷款承诺函.doc';
@@ -3465,7 +3515,7 @@ end;
 
 
 procedure TFrmEdt.exportwudaikuanshengming(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '无贷款声明.doc';
@@ -3508,7 +3558,7 @@ end;
 
 
 procedure TFrmEdt.exportedubaogao(print, PrintPreview: boolean);
-var filename, lilvfudongbeli:String;
+var filename:String;
 begin
   filename := ADOQuery1.FieldByName('jiekuanrenxingming').AsString+
                           '“融居宝”额度调查报告.doc';
@@ -4426,6 +4476,117 @@ end;
 
 function TFrmEdt.getJinZhiZhuFang: String;
 begin
+  result := '省行个人金融部：'+#13#10 +
+          '    借款人'+ADOQuery1.FieldByName('jiekuanrenxingming').AsString+'向我行申请'+
+          ADOQuery1.FieldByName('daikuanjine').AsString+'万元';
+  if trim(ADOQuery1.FieldByName('gongjijindaikuanjine').AsString)<>'' then
+    result := result + ',公积金贷款金额'+ADOQuery1.FieldByName('gongjijindaikuanjine').AsString+
+          '万元';
+  result := result + ADOQuery1.FieldByName('jiekuanzhonglei').AsString+
+          '，现将贷前调查情况报告如下：'+#13#10+
+          '    一、 借款人基本情况'+#13#10+
+          '借款人'+ADOQuery1.FieldByName('jiekuanrenxingming').AsString+'，'+
+          ADOQuery1.FieldByName('jiekuanrenxingbie').AsString+'，'+
+          ADOQuery1.FieldByName('jiekuanrennianling').AsString+'岁，'+
+          ADOQuery1.FieldByName('jiekuanrenhunfou').AsString+'，学历：'+
+          ADOQuery1.FieldByName('jiekuanrenxueli').AsString+
+          '，身份证号'+ADOQuery1.FieldByName('jiekuanrenshenfenzhenghaoma').AsString+
+          '，现住'+ADOQuery1.FieldByName('jiekuanrenxianjuzhudizhi').AsString+
+          '，工作单位：'+ADOQuery1.FieldByName('jiekuanrengongzuodanwei').AsString+'，'+
+          ADOQuery1.FieldByName('jiekuanrengongzuogangwei').AsString+
+          '，月收入'+ADOQuery1.FieldByName('jiekuanrenyuegongzishouru').AsString+
+          '元，';
+  if trim(ADOQuery1.FieldByName('gongjijindaikuanjine').AsString)<>'' then
+    result := result + '月缴公积金额'+ADOQuery1.FieldByName('yuejiaogongjijine').AsString+
+          '元';
+
+  result := result +'配偶'+ADOQuery1.FieldByName('jiekuanrenpeiouxingming').AsString+'，'+
+          ADOQuery1.FieldByName('jiekuanrenpeiounianling').AsString+'岁，学历：'+
+          ADOQuery1.FieldByName('jiekuanrenpeiouxueli').AsString+'，身份证号：'+
+          ADOQuery1.FieldByName('jiekuanrenpeioushenfenzhenghaoma').AsString+'，工作单位：'+
+          ADOQuery1.FieldByName('jiekuanrenpeiougongzuodanwei').AsString+
+          ','+ADOQuery1.FieldByName('jiekuanrenpeiougongzuogangwei').AsString +
+          '，月收入'+ADOQuery1.FieldByName('jiekuanrenpeiouyuegongzishouru').AsString+
+          '元，家庭月总收入'+ADOQuery1.FieldByName('jiatingyuezongshouru').AsString+
+          '元。联系方式:'+ ADOQuery1.FieldByName('jiekuanrenshouji').AsString+
+          ',第一还款来源较为充分。'+#13#10+
+          '    经我行调查确认，该客户已办理我行信用卡、网上银行等其它业务，该客户为我行优质客户。'+
+          '与售房人'+ADOQuery1.FieldByName('shoufangrenxingming').AsString+'无关联关系。'+#13#10+
+          '    二、个人征信查询情况：'+#13#10+
+          '    经过查询个人征信系统，借款人及其配偶无其他贷款和不良记录。'+#13#10+
+          '    借款人获得本笔贷款后的月还款额是'+ADOQuery1.FieldByName('yunhuankuane').AsString+'元，';
+  if trim(ADOQuery1.FieldByName('gongjijindaikuanjine').AsString)<>'' then
+    result := result + '公积金月还款额'+ADOQuery1.FieldByName('gongjijinyuehuankuane').AsString+'元，';
+  result := result + '月还款额占家庭收入的'+ADOQuery1.FieldByName('yuehuankuanezhanyueshourubili').AsString+
+            ',符合我行规定。'+#13#10+
+            '    三、贷款交易信息说明'+#13#10+
+            '    借款人向我行申请贷款'+ADOQuery1.FieldByName('daikuanjine').AsString+'万元,用于购买位于'+
+          ADOQuery1.FieldByName('fangwudiliweizhi').AsString+'房屋，借款人将所购该房屋抵押给我行，该房屋由'+
+          ADOQuery1.FieldByName('pinggujigoumingcheng').AsString+'评估，土地为划拨地，该房屋建成年代'+
+          ADOQuery1.FieldByName('fangwujianchengniandai').AsString+ '年，建筑面积'+
+          ADOQuery1.FieldByName('fangwujianzhumianji').AsString+
+          '平方米，为'+ADOQuery1.FieldByName('fangwujiegou').AsString+'，'+
+           ADOQuery1.FieldByName('chaoxiang').AsString+'，'+
+          ADOQuery1.FieldByName('pingmianbuju').AsString+'，'+
+          ADOQuery1.FieldByName('peitaosheshi').AsString+'，评估价'+
+          ADOQuery1.FieldByName('pinggujiage2').AsString+'万元，单价'+
+          ADOQuery1.FieldByName('pinggujiage').AsString+'元/平方米，符合当地市场价值，抵押率'+
+          ADOQuery1.FieldByName('diyalv').AsString+',';
+  if trim(ADOQuery1.FieldByName('gongjijindaikuanjine').AsString)<>'' then
+    result := result + '(含公积金贷款'+ADOQuery1.FieldByName('gongjijindaikuanjine').AsString+'万元，'+
+          '抵押率'+ADOQuery1.FieldByName('gongjijindiyalv').AsString+'，我行贷款'+
+          ADOQuery1.FieldByName('daikuanjine').AsString+'万，抵押率'+
+          ADOQuery1.FieldByName('yinhangdiyalv').AsString+'。），';
+  result := result +'符合中国银行住房贷款政策。售房人'+ADOQuery1.FieldByName('shoufangrenxingming').AsString+'与配偶'+
+          ADOQuery1.FieldByName('fangchangongyourenxingming').AsString+'均同意出售此房，买卖双方交易真实有效。'+#13#10+
+          '    借款人已支付首付款'+ADOQuery1.FieldByName('shoufukuanjine').AsString+'万元，占房价的'+ADOQuery1.FieldByName('shoufukuanbili').AsString
+          +'，符合我行贷款条件，';
+  if trim(ADOQuery1.FieldByName('gongjijindaikuanjine').AsString)<>'' then
+    result := result + '已申请公积金贷款'+ADOQuery1.FieldByName('gongjijindaikuanjine').AsString+'万元，';
+  try
+    result := result +'现向我行申请'+ADOQuery1.FieldByName('daikuanjine').AsString+'元贷款，期限'+
+          VartoStr(ADOQuery1.FieldByName('qixian').AsInteger*12)+'个月，利率按月息'+
+          ADOQuery1.FieldByName('lilv').AsString+'执行。';
+  except
+    showmessage('贷款年限未正确设置。');
+  end;
+  if ADOQuery1.FieldByName('lilvfudongbeli').AsString <> '' then begin
+    if pos('-', ADOQuery1.FieldByName('lilvfudongbeli').AsString) >0 then
+      result := result+'（基准利率下浮'+ Stringreplace(ADOQuery1.FieldByName('lilvfudongbeli').AsString ,'-','',[])+'%）'
+    else
+      result := result+'（基准利率上浮'+ ADOQuery1.FieldByName('lilvfudongbeli').AsString +'%）';
+  end;
+  result := result+#13#10+
+            '    经面谈，面测和居访调查，已实地看房，已签署住房诚信保证书，该笔贷款符合我行第一套住房贷款政策。'+#13#10+
+            '    四、担保措施说明'+#13#10+
+            '    该抵押房屋位于'+ADOQuery1.FieldByName('fangwudiliweizhi').AsString+
+            '，周围交通便利，生活配套设施齐全，物业管理，是居住的理想场所，足以对在我行申请'+
+            ADOQuery1.FieldByName('daikuanjine').AsString+'万元贷款进行担保。该笔贷款借款人以所购房屋作抵押，抵押率'+
+            ADOQuery1.FieldByName('diyalv').AsString+',该住房所处地理位置较优越，'+
+            '变现能力较强，具备较强的担保能力。'+#13#10+
+            '    我行在办妥房屋产权过记、抵押登记手续后方可发放贷款后放款。'+#13#10+
+            '    五、结论'+#13#10+
+            '    经我行调查、上述融居宝贷款相关材料已与原件核对一致，符合我行客户准入资格和贷款条件，'+
+            '交易背景真实可信，借款人有良好的道德品质和较强的还款意愿，家庭收入较稳定，可靠，具有按时还贷款本息的能力。'+
+            '抵押物所处位置较理想，抵押物价值较充足，变现能力较强。我行同意为借款人'+
+            ADOQuery1.FieldByName('jiekuanrenxingming').AsString+'发放个人住房贷款'+ADOQuery1.FieldByName('daikuanjine').AsString+
+            '万元，期限'+VartoStr(ADOQuery1.FieldByName('qixian').AsInteger*12)+'个月，利率按月息'+
+          ADOQuery1.FieldByName('lilv').AsString+'执行';
+  if ADOQuery1.FieldByName('lilvfudongbeli').AsString <> '' then begin
+    if pos('-', ADOQuery1.FieldByName('lilvfudongbeli').AsString) >0 then
+      result := result+'（基准利率下浮'+ Stringreplace(ADOQuery1.FieldByName('lilvfudongbeli').AsString ,'-','',[])+'%）'
+    else
+      result := result+'（基准利率上浮'+ ADOQuery1.FieldByName('lilvfudongbeli').AsString +'%）';
+  end;
+  result := result +'，还款方式采用'+ ADOQuery1.FieldByName('huankuanfangshi').AsString+
+          '，贷款资金划入售房人'+ ADOQuery1.FieldByName('shoufangrenxingming').AsString+
+          '在我行开立的账户，贷款批准后，我行在办妥房屋产权过户，抵押登记手续后方可发放贷款后放款。'+#13#10+
+          '    特此报告，我行对上报材料及录入信息的真实性、完整性和一致性负责！'+#13#10 +
+          '                                                客户经理:'+ADOQuery1.FieldByName('dailiren').AsString+
+          '     手机号码:'+ADOQuery1.FieldByName('dailirendianhua').AsString+#13#10+
+          '                                                                                     '+ADOQuery1.FieldByName('jiekuanshijian').AsString;
+
+  {
   result := '借款人'+ADOQuery1.FieldByName('jiekuanrenxingming').AsString+'向我行申请办理'+
           ADOQuery1.FieldByName('jiekuanzhonglei').AsString+
           '，公积金贷款金额'+ADOQuery1.FieldByName('gongjijindaikuanjine').AsString+
@@ -4511,7 +4672,7 @@ begin
   result := result + '不影响我行日后处置。经实地查看该房屋，无任何异议。该客户为我行优质客户。' + #13#10 +
           '业务发起机构调查人:'+ADOQuery1.FieldByName('dailiren').AsString+ #13#10+
           '联系电话:'+ADOQuery1.FieldByName('dailirendianhua').AsString+#13#10+
-          ADOQuery1.FieldByName('jiekuanshijian').AsString;
+          ADOQuery1.FieldByName('jiekuanshijian').AsString;   }
 end;
 
 
@@ -5018,11 +5179,9 @@ procedure TFrmEdt.viewallforPrint(id: String);
 var sqlstr:String;
 begin
   sqlstr := ' select * from viewallforprint where id='+id;
-  FrmMain.opensql(sqlstr, ADOQuery1);
+  opensql(sqlstr, ADOQuery1);
 
 end;
-
-
 
 procedure TFrmEdt.N33Click(Sender: TObject);
 var FrmShouQuanWeiTuoShu:TFrmShouQuanWeiTuoShu;
@@ -5672,6 +5831,32 @@ end;
 procedure TFrmEdt.N65Click(Sender: TObject);
 begin
   self.exportgerenxingyongchaxun(false, false);
+end;
+
+procedure TFrmEdt.N127Click(Sender: TObject);
+begin
+  if cb.Checked then
+    self.exportchengnuonew(true, true)
+  else
+    self.exportchengnuonew(true, false);
+end;
+
+procedure TFrmEdt.N129Click(Sender: TObject);
+begin
+  if cb.Checked then
+    self.exportchengnuonew(true, true)
+  else
+    self.exportchengnuonew(true, false);
+end;
+
+procedure TFrmEdt.N130Click(Sender: TObject);
+begin
+  self.exportchengnuonew(false, false);
+end;
+
+procedure TFrmEdt.N128Click(Sender: TObject);
+begin
+  self.exportchengnuonew(false, false);
 end;
 
 end.

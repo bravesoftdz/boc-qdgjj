@@ -153,7 +153,7 @@ object FrmEmailData: TFrmEmailData
     Unattended = False
     UseUTF8 = False
     Verbose = False
-    Version = '1.9.0.0091'
+    Version = '1.9.0.0102'
     WriteOptions = []
     Left = 328
     Top = 104

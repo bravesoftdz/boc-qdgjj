@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls;
+  Dialogs, StdCtrls, UntUtil;
 
 type
   TFrmUser = class(TForm)
@@ -48,7 +48,7 @@ end;
 
 function TFrmUser.login(user, pass: String):boolean;
 begin
-  FrmMain.opensql('select * from t_user where user = '''+DBS(user)+''' and pass='''+DBS(MD5Print(MD5String(pass)))+'''', FrmMain.AQOpen);
+  opensql('select * from t_user where user = '''+DBS(user)+''' and pass='''+DBS(MD5Print(MD5String(pass)))+'''', FrmMain.AQOpen);
 
   logon := not (FrmMain.AQOpen.Eof and FrmMain.AQOpen.Bof);
   result := logon;
@@ -77,14 +77,14 @@ begin
     exit;
   end;
 
-  FrmMain.opensql('select * from t_user where user = '''+DBS(EdtUser.Text)+'''', FrmMain.AQOpen);
+  opensql('select * from t_user where user = '''+DBS(EdtUser.Text)+'''', FrmMain.AQOpen);
   if (not (FrmMain.AQOpen.eof and FrmMain.AQOpen.Bof)) then begin
     if Application.MessageBox('用户名已存在继续操作将重置用户密码，确定？', '提示', MB_ICONQUESTION+MB_YESNO) = IDNO then
       exit;
-    FrmMain.execsql('update t_user set [pass] = '''+DBS(MD5Print(MD5String(EdtPass.Text)))+''' where [user] ='''+ EdtUser.Text+'''');
+    execsql('update t_user set [pass] = '''+DBS(MD5Print(MD5String(EdtPass.Text)))+''' where [user] ='''+ EdtUser.Text+'''');
     showmessage('用户密码修改成功，现在将进入系统');
   end else begin
-    FrmMain.execsql('insert into t_user ([user], [pass] , [admin]) values('''+ EdtUser.Text+''', '''+DBS(MD5Print(MD5String(EdtPass.Text)))+''', 0)');
+    execsql('insert into t_user ([user], [pass] , [admin]) values('''+ EdtUser.Text+''', '''+DBS(MD5Print(MD5String(EdtPass.Text)))+''', 0)');
     showmessage('用户注册成功，现在将以新用户名进入系统');
   end;
 

@@ -140,8 +140,8 @@ begin
 
     if (pos(lowercase(webpage),lowercase(FIE.LocationURL))>0) and
       (FindWindow (nil, pChar(mainformname)) <> 0) then begin
-      EdtName.Text := getObjValue(FIE.document as IHtmlDocument2, 'CCAS_PLAATRN.CBICUSNM');
-      EdtShenFenZhengHao.Text := getObjValue(FIE.document as IHtmlDocument2, 'CCAS_PLAATRN.CBICERNO');
+      EdtName.Text := getObjValue(FIE.document as IHtmlDocument2, 'CCAS_CCTPERTRN.PERCUSNM');
+      EdtShenFenZhengHao.Text := getObjValue(FIE.document as IHtmlDocument2, 'CCAS_CCTPERTRN.CBICERNO');
       if not self.Showing then show;
     end else begin
       self.Hide;

@@ -41,7 +41,10 @@ uses
   UntUpload in 'UntUpload.pas' {FrmUpload},
   UntUser in 'UntUser.pas' {FrmUser},
   UntUserLogin in 'UntUserLogin.pas' {FrmUserLogin},
-  md5 in 'md5.pas';
+  md5 in 'md5.pas',
+  untUtil in 'untUtil.pas',
+  untUpdate in 'untUpdate.pas',
+  UntCCASImport in 'UntCCASImport.pas';
 
 {$R *.res}
 

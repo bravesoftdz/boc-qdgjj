@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, DB, ADODB, ZipMstr19;
+  Dialogs, StdCtrls, ComCtrls, DB, ADODB, ZipMstr19, untUtil;
 
 type
   TFrmEmailData = class(TForm)
@@ -45,7 +45,7 @@ uses UntMain, untEdt;
 procedure TFrmEmailData.FormShow(Sender: TObject);
 begin
   //显示上次导出时间
-  FrmMain.opensql('select lastExportTime from t_ver', FrmMain.AQOpen);
+  opensql('select lastExportTime from t_ver', FrmMain.AQOpen);
   if not (FrmMain.AQOpen.Bof and FrmMain.AQOpen.Eof) then begin
     if FrmMain.AQOpen.FieldByName('lastExportTime').AsString <> '' then begin
       Label4.Caption := FrmMain.AQOpen.FieldByName('lastExportTime').AsString;
@@ -80,9 +80,9 @@ begin
 
   //获取导出记录
   if cb.Checked then
-    FrmMain.opensql('select id from t_main where lastUpdateTime > ''' + formatDateTime('yyyy-mm-dd', dtpDate.DateTime)+' '+formatDateTime('hh:mm:ss', dtpTime.DateTime)+'''', AQExport)
+    opensql('select id from t_main where lastUpdateTime > ''' + formatDateTime('yyyy-mm-dd', dtpDate.DateTime)+' '+formatDateTime('hh:mm:ss', dtpTime.DateTime)+'''', AQExport)
   else
-    FrmMain.opensql('select id from t_main where lastUpdateTime > (select lastExportTime from t_ver) ', AQExport);
+    opensql('select id from t_main where lastUpdateTime > (select lastExportTime from t_ver) ', AQExport);
     
   ProgressBar1.Max := AQExport.RecordCount;
   if not (AQExport.Eof and AQExport.Bof) then begin
@@ -106,7 +106,7 @@ begin
   //if FrmMain.WinExecExW(PChar('"'+ExtractFilePath(Application.ExeName)+'rar.exe" a -ep "'+filename+'" "'+tmpdir+'"'), PChar(tmpdir), 0) <> 0 then begin
 
   //更新导出时间
-  FrmMain.execsql('update t_ver set lastExportTime = '''+formatDateTime('yyyy-mm-dd hh:mm:ss',now)+'''');
+  execsql('update t_ver set lastExportTime = '''+formatDateTime('yyyy-mm-dd hh:mm:ss',now)+'''');
   //删除缓存目录
   DelDirectory(tmpdir);
 

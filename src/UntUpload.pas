@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, ZipMstr19;
+  Dialogs, StdCtrls, ComCtrls, ZipMstr19, untUtil;
 
 type
   TFrmUpload = class(TForm)
@@ -34,7 +34,7 @@ var
 
 implementation
 
-uses UntMain;
+uses UntMain, untUpdate;
 
 {$R *.dfm}
 
@@ -74,7 +74,9 @@ begin
       copyFile(PChar(dbFile), PChar(tmpdir + '\data.mdb'), false);
       //连接，更新空数据库
       FrmMain.conn(tmpdir + '\data.mdb');
-      FrmMain.updateDB();
+
+      updateDB();
+
       ProgressBar1.Max := LBFileList.Count;
       for i:= 0 to LBFileList.Count -1 do begin
         opdir := tmpdir + '\' + IntToStr(i);

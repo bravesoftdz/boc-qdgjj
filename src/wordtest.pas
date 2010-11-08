@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, OleServer, Word2000, StdCtrls, comobj;
+  Dialogs, OleServer, Word2000, StdCtrls, comobj, untUtil;
 
 type
   TWordControlFrm = class(TForm)

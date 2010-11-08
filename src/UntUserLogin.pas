@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, pngimage, ExtCtrls;
+  Dialogs, StdCtrls, pngimage, ExtCtrls, untUtil;
 
 type
   TFrmUserLogin = class(TForm)
@@ -44,7 +44,7 @@ procedure TFrmUserLogin.initUserList;
 begin
   cbbUser.Items.Clear;
 
-  FrmMain.opensql('select * from t_user', FrmMain.AQOpen);
+  opensql('select * from t_user', FrmMain.AQOpen);
   while not FrmMain.AQOpen.Eof do begin
     cbbUser.Items.Add(FrmMain.AQOpen.FieldByName('user').AsString);
     FrmMain.AQOpen.Next;

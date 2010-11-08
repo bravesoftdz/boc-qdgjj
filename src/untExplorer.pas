@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, OleCtrls, SHDocVw, ExtCtrls, StdCtrls, MSHTML, DB, ADODB;
+  Dialogs, OleCtrls, SHDocVw, ExtCtrls, StdCtrls, MSHTML, DB, ADODB, untUtil;
 
 type
   TFrmExplorer = class(TForm)
@@ -174,7 +174,7 @@ procedure TFrmExplorer.enter(id: String);
 var sqlstr:String;
 begin
   sqlstr := ' select * from viewall where id='+id;
-  FrmMain.opensql(sqlstr, ADOQuery1);
+  opensql(sqlstr, ADOQuery1);
 end;
 
 procedure TFrmExplorer.FormClose(Sender: TObject;

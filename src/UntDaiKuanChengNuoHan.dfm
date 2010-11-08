@@ -1,6 +1,6 @@
 object FrmDaiKuanChengNuoHan: TFrmDaiKuanChengNuoHan
-  Left = 78
-  Top = -12
+  Left = 88
+  Top = 0
   Width = 883
   Height = 675
   Caption = 'FrmDaiKuanChengNuoHan'
