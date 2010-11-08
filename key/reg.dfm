@@ -1,12 +1,12 @@
 object RegFrm: TRegFrm
-  Left = 310
-  Top = 260
+  Left = 277
+  Top = 209
   Width = 437
-  Height = 154
+  Height = 146
   Caption = #27880#20876
   Color = clBtnFace
-  Constraints.MaxHeight = 708
-  Constraints.MaxWidth = 1024
+  Constraints.MaxHeight = 870
+  Constraints.MaxWidth = 1440
   Constraints.MinHeight = 50
   Constraints.MinWidth = 130
   Font.Charset = GB2312_CHARSET
@@ -24,7 +24,7 @@ object RegFrm: TRegFrm
     Left = 1
     Top = 0
     Width = 427
-    Height = 118
+    Height = 126
     UIStyle = MacOS
     BorderColor = 8355711
     BorderWidth = 1

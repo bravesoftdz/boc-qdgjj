@@ -1,6 +1,6 @@
 object FrmEdt: TFrmEdt
-  Left = 225
-  Top = 28
+  Left = 201
+  Top = 22
   Width = 1024
   Height = 668
   Caption = #32534#36753
