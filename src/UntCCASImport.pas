@@ -4,6 +4,7 @@ interface
 uses Classes, SysUtils, Forms, untUtil, UntMain, UntEdt, Variants, DateUtils;
 
 function find(name, shenfenzheng:String):String;
+function findpeiou(name, shenfenzheng:String):String;
 function import(msg:String):String;
 function importfind(name, shenfenzheng: String): String;
 function getCCASValue(name, value:String):String;
@@ -1043,7 +1044,7 @@ end;
 }
 
 function find(name, shenfenzheng:String):String;
-var sqlstr, msg, mainid:String;
+var sqlstr, msg, mainid, qu:String;
 msgs:TStrings;
 begin
   sqlstr := 'select mainid from t_jiekuanren where 1=1 ';
@@ -1062,14 +1063,22 @@ begin
     msgs.Add('import');
     FrmEdt := TFrmEdt.Create(nil);
     FrmEdt.edit(mainid, false);
-    //CCAS_CCTPERTRN.PERLSTNM 客户姓
+    //CCAS_CCTPERTRN.PERLSTNM 客户姓  CCAS_CCTPERTRN.PERLSTNM
     msgs.Add('CCAS_CCTPERTRN.PERLSTNM='+getLastName(FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxingming').AsString));
     //CCAS_CCTPERTRN.PERFSTNM 客户名
     msgs.Add('CCAS_CCTPERTRN.PERFSTNM='+getFirstName(FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxingming').AsString));
     //CCAS_CCTPERTRN.CBISEXID 性 别
     msgs.Add('CCAS_CCTPERTRN.CBISEXID='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxingbie').AsString);
+    //CCAS_CCTPERTRN.PERCERDT 证件到期日
+    try
+      msgs.Add('CCAS_CCTPERTRN.PERCERDT='+
+        formatdatetime('yyyymmdd',FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenzhengjiandaoqiri').AsDateTime));
+    except
+    end;
     //CCAS_CCTPERTRN.PERMRTST 婚姻状况
     msgs.Add('CCAS_CCTPERTRN.PERMRTST='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenhunfou').AsString);
+    //KYC风险等级 CCAS_CCTPERTRN.PERKYC
+    msgs.Add('CCAS_CCTPERTRN.PERKYC=低风险');
     //CCAS_CCTPERTRN.PERHMTEL 住宅电话
     msgs.Add('CCAS_CCTPERTRN.PERHMTEL='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenjiatingdianhua').AsString);
     //CCAS_CCTPERTRN.PERMBLNO 移动电话
@@ -1078,12 +1087,14 @@ begin
     msgs.Add('CCAS_CCTPERTRN.PERCMTEL='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrendanweidianhua').AsString);
     //CCAS_CCTPERTRN.PERHMAD1 家庭住址1
     msgs.Add('CCAS_CCTPERTRN.PERHMAD1='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxianjuzhudizhi').AsString);
+    qu := copy(FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxianjuzhudizhi').AsString, 1,
+          pos('区', FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxianjuzhudizhi').AsString)+1);
     //CCAS_CCTPERTRN.PERHMAD2 家庭住址2
-    msgs.Add('CCAS_CCTPERTRN.PERHMAD2=青岛');
+    msgs.Add('CCAS_CCTPERTRN.PERHMAD2='+qu);
     //CCAS_CCTPERTRN.PERHMAD3 家庭住址3
-    msgs.Add('CCAS_CCTPERTRN.PERHMAD3=山东');
+    msgs.Add('CCAS_CCTPERTRN.PERHMAD3=青岛');
     //CCAS_CCTPERTRN.PERHMAD4 家庭住址4
-    msgs.Add('CCAS_CCTPERTRN.PERHMAD4=中国');
+    msgs.Add('CCAS_CCTPERTRN.PERHMAD4=山东');
     //CCAS_CCTPERTRN.PERHOMZP 邮政编码
     msgs.Add('CCAS_CCTPERTRN.PERHOMZP='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenyoubian').AsString);
     //CCAS_CCTPERTRN.CBIBTHDA 出生日期 yyyymmdd
@@ -1104,6 +1115,8 @@ begin
     msgs.Add('CCAS_CCTPERTRN.PERTITLE='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenjishuzige').AsString);
     //CCAS_CCTPERTRN.PEREDUBK 文化程度
     msgs.Add('CCAS_CCTPERTRN.PEREDUBK='+getCCASValue('jiekuanrenxueli', FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxueli').AsString));
+    //CCAS_CCTPERTRN.PEREDULV 最高学位
+    msgs.Add('CCAS_CCTPERTRN.PEREDULV=其他');
     //CCAS_CCTPERTRN.PERCMPNM 现工作单位
     msgs.Add('CCAS_CCTPERTRN.PERCMPNM='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrengongzuodanwei').AsString);
     //CCAS_CCTPERTRN.WKIBUSTY 本单位行业
@@ -1117,8 +1130,7 @@ begin
     //CCAS_CCTPERTRN.WKIBEDAT 现工作日期
     try
       msgs.Add('CCAS_CCTPERTRN.WKIBEDAT='+
-        formatdatetime('yyyymmdd',IncYear(FrmEdt.ATJieKuanRen.FieldByName('jiekuanrengongzuonianxian').AsDateTime,
-        FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenrenxianzhinianxian').AsInteger*-1)));
+        formatdatetime('yyyymmdd',IncYear(now, FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenrenxianzhinianxian').AsInteger*-1)));
     except
     end;
     //CCAS_CCTPERTRN.PERNWKDA 现职工作年数
@@ -1135,18 +1147,39 @@ begin
     end;
     //CCAS_CCTPERTRN.LCLIVEYRLMT	现住址居住年限
     msgs.Add('CCAS_CCTPERTRN.LCLIVEYRLMT='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxianjuzhushijian').AsString);
-    //CCAS_CCTPERTRN.PERCMPAD 现单位地址      
+    //CCAS_CCTPERTRN.PERCMPAD 现单位地址
     msgs.Add('CCAS_CCTPERTRN.PERCMPAD='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrendanweidizhi').AsString);
+    //CCAS_CCTPERTRN.PERCMPAD2 现单位地址2
+    qu := copy(FrmEdt.ATJieKuanRen.FieldByName('jiekuanrendanweidizhi').AsString, 1,
+          pos('区', FrmEdt.ATJieKuanRen.FieldByName('jiekuanrendanweidizhi').AsString)+1);
+    msgs.Add('CCAS_CCTPERTRN.PERCMPAD2='+qu);
+    //CCAS_CCTPERTRN.PERCMPAD4 现单位地址3
+    msgs.Add('CCAS_CCTPERTRN.PERCMPAD3=青岛');
+    //CCAS_CCTPERTRN.PERCMPAD4 现单位地址4
+    msgs.Add('CCAS_CCTPERTRN.PERCMPAD4=山东');
+
+
     //CCAS_CCTPERTRN.PERCMPZP 工作单位邮编
     msgs.Add('CCAS_CCTPERTRN.PERCMPZP='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrendanweiyoubian').AsString);
     //CCAS_CCTPERTRN.WKIMONIN 主借款人月收入
     msgs.Add('CCAS_CCTPERTRN.WKIMONIN='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenyuegongzishouru').AsString);
     //CCAS_CCTPERTRN.FAMILYOTSALARY  家庭其他成员月收入
     msgs.Add('CCAS_CCTPERTRN.FAMILYOTSALARY='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiouyuegongzishouru').AsString);
+    //CCAS_CCTPERTRN.PERMTOTIN 家庭月总收入
+    msgs.Add('CCAS_CCTPERTRN.PERMTOTIN='+FrmEdt.ATJieKuanRen.FieldByName('jiatingyuezongshouru').AsString);
     //CCAS_CCTPERTRN.PERHMNCS 家庭月支出合计
     msgs.Add('CCAS_CCTPERTRN.PERHMNCS='+FrmEdt.ATJieKuanRen.FieldByName('jiatingyuezhichu').AsString);
+    //CCAS_CCTPERTRN.PERCRDPT 客户级别
+    msgs.Add('CCAS_CCTPERTRN.PERCRDPT=00');
+    //CCAS_CCTPERTRN.PERCRCLS 个人客户信用等级
+    msgs.Add('CCAS_CCTPERTRN.PERCRCLS=无评级');
     //CCAS_CCTPERTRN.PERHMPER 供养人口数
-    msgs.Add('CCAS_CCTPERTRN.PERHMPER='+FrmEdt.ATJieKuanRen.FieldByName('gongyangrenrenshu').AsString);
+    if (FrmEdt.ATJieKuanRen.FieldByName('gongyangrenrenshu').AsString='') then
+      msgs.Add('CCAS_CCTPERTRN.PERHMPER=0')
+    else
+      msgs.Add('CCAS_CCTPERTRN.PERHMPER='+FrmEdt.ATJieKuanRen.FieldByName('gongyangrenrenshu').AsString);
+    //CCAS_CCTPERTRN.PERGDCAD 消贷关联客户标记
+    msgs.Add('CCAS_CCTPERTRN.PERGDCAD=非关联人');
     //CCAS_CCTPERTRN.PERHMMEM 家庭成员数
     msgs.Add('CCAS_CCTPERTRN.PERHMMEM='+FrmEdt.ATJieKuanRen.FieldByName('jiatingrenkou').AsString);
 
@@ -1167,7 +1200,7 @@ begin
     //tempgfdj 购房单价
     msgs.Add('tempgfdj='+FrmEdt.ATFangWu.FieldByName('pinggujiage').AsString);
     //LOCATION 项目要求
-    msgs.Add('LOCATION='+FrmEdt.ATFangWu.FieldByName('fangwudiliweizhi').AsString);
+    //msgs.Add('LOCATION='+FrmEdt.ATFangWu.FieldByName('fangwudiliweizhi').AsString);
 
     //CCAS_PLAATRN.LAFAPYAM 已交首期款
     try
@@ -1189,9 +1222,239 @@ begin
       msgs.Add('CCAS_PLAATRN.LAFRTMOD=等额本息')
     else
       msgs.Add('CCAS_PLAATRN.LAFRTMOD=等额本金');
+    //CCAS_PLAATRN.FLRATESCA 利率浮动比例
+    msgs.Add('CCAS_PLAATRN.FLRATESCA='+FrmEdt.ATDaiKuan.FieldByName('lilvfudongbeli').AsString);
+    if length(FrmEdt.ATDaiKuan.FieldByName('jiekuanrencunzhezhanghao').AsString) > 12 then
+      //CCAS_PLAATRN.RECEIVEDEBITNO 还款借记卡卡号
+      msgs.Add('CCAS_PLAATRN.RECEIVEDEBITNO='+FrmEdt.ATDaiKuan.FieldByName('jiekuanrencunzhezhanghao').AsString)
+    else
+      //CCAS_PLAATRN.RECEIVEACCNO 还款帐号
+      msgs.Add('CCAS_PLAATRN.LAFPACT='+FrmEdt.ATDaiKuan.FieldByName('jiekuanrencunzhezhanghao').AsString);
+    //CCAS_PLAATRN.RECEIVEPER 收款人
+    msgs.Add('CCAS_PLAATRN.RECEIVEPER='+FrmEdt.ATFangWu.FieldByName('shoufangrenxingming').AsString);
+    if length(FrmEdt.ATDaiKuan.FieldByName('shoufangrencunzhezhanghao').AsString) > 12 then
+      //CCAS_PLAATRN.RECEIVEDEBITNO 收款人借记卡卡号
+      msgs.Add('CCAS_PLAATRN.RECEIVEDEBITNO='+FrmEdt.ATDaiKuan.FieldByName('shoufangrencunzhezhanghao').AsString)
+    else
+      //CCAS_PLAATRN.RECEIVEACCNO 收款人帐号
+      msgs.Add('CCAS_PLAATRN.RECEIVEACCNO='+FrmEdt.ATDaiKuan.FieldByName('shoufangrencunzhezhanghao').AsString);
+    //CCAS_PLAATRN.APTRETTP 放款MCA帐户产品类型
+    msgs.Add('CCAS_PLAATRN.APTRETTP=5502');
+    //CCAS_PLAATRN.APTRTSTP 放款MCA帐户产品子类型
+    msgs.Add('CCAS_PLAATRN.APTRTSTP=1001');
+    //CCAS_PLAATRN.LAFGBRTY 提前还款后的重算方式
+    msgs.Add('CCAS_PLAATRN.LAFGBRTY=减少还款金额，期数不变');
+    //CCAS_PLAATRN.FSTREQFG 首次还款日标识
+    msgs.Add('CCAS_PLAATRN.FSTREQFG=一个整月后的还款日还款');
+
+    msg := msgs.Text;
+    frmedt.Free;
+    msgs.Free;
+
+  end;
+  result := msg;
+end;
+
+function findpeiou(name, shenfenzheng:String):String;
+var sqlstr, msg, mainid, qu:String;
+msgs:TStrings;
+begin
+  sqlstr := 'select mainid from t_jiekuanren where 1=1 ';
+  if name <> '' then
+    sqlstr := sqlstr+' and  jiekuanrenxingming='''+DBS(name)+'''';
+  if shenfenzheng<> '' then
+    sqlstr := sqlstr+' and jiekuanrenshenfenzhenghaoma='''+DBS(shenfenzheng)+'''';
+  opensql(sqlstr , FrmMain.AQOpen);
+
+  if (FrmMain.AQOpen.eof and FrmMain.AQOpen.bof) then begin
+    msg := 'msg系统未找到此人数据。';
+  end else begin
+    mainid := FrmMain.AQOpen.FieldByName('mainid').AsString;
+
+    msgs := TStringList.Create;
+    msgs.Add('import');
+    FrmEdt := TFrmEdt.Create(nil);
+    FrmEdt.edit(mainid, false);
+    //CCAS_CCTPERTRN.PERLSTNM 客户姓
+    msgs.Add('CCAS_CCTPERTRN.PERLSTNM='+getLastName(FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiouxingming').AsString));
+    //CCAS_CCTPERTRN.PERFSTNM 客户名
+    msgs.Add('CCAS_CCTPERTRN.PERFSTNM='+getFirstName(FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiouxingming').AsString));
+    //CCAS_CCTPERTRN.CBISEXID 性 别
+    if FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxingbie').AsString = '男' then
+      msgs.Add('CCAS_CCTPERTRN.CBISEXID=女')
+    else
+      msgs.Add('CCAS_CCTPERTRN.CBISEXID=男');
+    //CCAS_CCTPERTRN.PERCERDT 证件到期日
+    try
+      msgs.Add('CCAS_CCTPERTRN.PERCERDT='+
+        formatdatetime('yyyymmdd',FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiouzhengjiandaoqiri').AsDateTime));
+    except
+    end;
+    //CCAS_CCTPERTRN.PERMRTST 婚姻状况
+    msgs.Add('CCAS_CCTPERTRN.PERMRTST=已婚');
+    //CCAS_CCTPERTRN.CBIBTHDA 出生日期 yyyymmdd
+    try
+      msgs.Add('CCAS_CCTPERTRN.CBIBTHDA='+
+        formatdatetime('yyyymmdd',FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiouchushengnianyue').AsDateTime));
+    except
+    end;
+
+    //KYC风险等级 CCAS_CCTPERTRN.PERKYC
+    msgs.Add('CCAS_CCTPERTRN.PERKYC=低风险');
+    //CCAS_CCTPERTRN.PERHMTEL 住宅电话
+    msgs.Add('CCAS_CCTPERTRN.PERHMTEL='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeioujiatingdianhua').AsString);
+    //CCAS_CCTPERTRN.PERMBLNO 移动电话
+    msgs.Add('CCAS_CCTPERTRN.PERMBLNO='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeioushouji').AsString);
+    //CCAS_CCTPERTRN.PERCMTEL 单位电话
+    msgs.Add('CCAS_CCTPERTRN.PERCMTEL='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeioudanweidianhua').AsString);
+    //CCAS_CCTPERTRN.PERHMAD1 家庭住址1
+    msgs.Add('CCAS_CCTPERTRN.PERHMAD1='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxianjuzhudizhi').AsString);
+    qu := copy(FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxianjuzhudizhi').AsString, 1,
+          pos('区', FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxianjuzhudizhi').AsString)+1);
+    //CCAS_CCTPERTRN.PERHMAD2 家庭住址2
+    msgs.Add('CCAS_CCTPERTRN.PERHMAD2='+qu);
+    //CCAS_CCTPERTRN.PERHMAD3 家庭住址3
+    msgs.Add('CCAS_CCTPERTRN.PERHMAD3=青岛');
+    //CCAS_CCTPERTRN.PERHMAD4 家庭住址4
+    msgs.Add('CCAS_CCTPERTRN.PERHMAD4=山东');
+    //CCAS_CCTPERTRN.PERHOMZP 邮政编码
+    msgs.Add('CCAS_CCTPERTRN.PERHOMZP='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenyoubian').AsString);
+
+    //CCAS_CCTPERTRN.DOMICILE 客户户籍
+    msgs.Add('CCAS_CCTPERTRN.DOMICILE='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenguoji').AsString);
+    //CCAS_CCTPERTRN.CUSDMCLR 户籍所在地
+    msgs.Add('CCAS_CCTPERTRN.CUSDMCLR='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiouhujisuozaidi').AsString);
+    //CCAS_CCTPERTRN.PEROCCPA 职 业
+    msgs.Add('CCAS_CCTPERTRN.PEROCCPA='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiougongzuogangwei').AsString);
+    //CCAS_CCTPERTRN.PERNTLNO 民 族
+    msgs.Add('CCAS_CCTPERTRN.PERNTLNO=汉族');
+    //CCAS_CCTPERTRN.PERTITLE 职 称
+    msgs.Add('CCAS_CCTPERTRN.PERTITLE='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiouzhicheng').AsString);
+    //CCAS_CCTPERTRN.PEREDUBK 文化程度
+    msgs.Add('CCAS_CCTPERTRN.PEREDUBK='+getCCASValue('jiekuanrenxueli', FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiouxueli').AsString));
+    //CCAS_CCTPERTRN.PEREDULV 最高学位
+    msgs.Add('CCAS_CCTPERTRN.PEREDULV=其他');
+    //CCAS_CCTPERTRN.PERCMPNM 现工作单位
+    msgs.Add('CCAS_CCTPERTRN.PERCMPNM='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiougongzuodanwei').AsString);
+    //CCAS_CCTPERTRN.WKIBUSTY 本单位行业
+    msgs.Add('CCAS_CCTPERTRN.WKIBUSTY='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiougongzuodanweisuoshuhangye').AsString);
+    //CCAS_CCTPERTRN.PERWOKDA 参加工作日期
+    try
+      msgs.Add('CCAS_CCTPERTRN.PERWOKDA='+
+        formatdatetime('yyyymmdd',FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiougongzuonianxian').AsDateTime));
+    except
+    end;
+    //CCAS_CCTPERTRN.WKIBEDAT 现工作日期
+    try
+      msgs.Add('CCAS_CCTPERTRN.WKIBEDAT='+
+        formatdatetime('yyyymmdd',IncYear(now,
+        FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiourenxianzhinianxian').AsInteger*-1)));
+    except
+    end;
+    //CCAS_CCTPERTRN.PERNWKDA 现职工作年数
+    msgs.Add('CCAS_CCTPERTRN.PERNWKDA='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenrenxianzhinianxian').AsString);
+    //CCAS_CCTPERTRN.PERRGCPT 单位注册资本
+    msgs.Add('CCAS_CCTPERTRN.PERRGCPT='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrengongzuodanweizhuceziben').AsString);
+    //CCAS_CCTPERTRN.PERHOMSO 现住房来源及居住状况
+    msgs.Add('CCAS_CCTPERTRN.PERHOMSO='+FrmEdt.ATDaiKuan.FieldByName('jiekuanrenxianzhufangquanshu').AsString);
+    //CCAS_CCTPERTRN.PERNLVDA 现住址时间
+    try
+      msgs.Add('CCAS_CCTPERTRN.PERNLVDA='+
+        formatdatetime('yyyymmdd',IncYear(now, FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxianjuzhushijian').AsInteger*-1)));
+    except
+    end;
+    //CCAS_CCTPERTRN.LCLIVEYRLMT	现住址居住年限
+    msgs.Add('CCAS_CCTPERTRN.LCLIVEYRLMT='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenxianjuzhushijian').AsString);
+    //CCAS_CCTPERTRN.PERCMPAD 现单位地址      
+    msgs.Add('CCAS_CCTPERTRN.PERCMPAD='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrendanweidizhi').AsString);
+    //CCAS_CCTPERTRN.PERCMPAD2 现单位地址2
+    qu := copy(FrmEdt.ATJieKuanRen.FieldByName('jiekuanrendanweidizhi').AsString, 1,
+          pos('区', FrmEdt.ATJieKuanRen.FieldByName('jiekuanrendanweidizhi').AsString)+1);
+    msgs.Add('CCAS_CCTPERTRN.PERCMPAD2='+qu);
+    //CCAS_CCTPERTRN.PERCMPAD4 现单位地址3
+    msgs.Add('CCAS_CCTPERTRN.PERCMPAD3=青岛');
+    //CCAS_CCTPERTRN.PERCMPAD4 现单位地址4
+    msgs.Add('CCAS_CCTPERTRN.PERCMPAD4=山东');
+    //CCAS_CCTPERTRN.PERCMPZP 工作单位邮编
+    msgs.Add('CCAS_CCTPERTRN.PERCMPZP='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrendanweiyoubian').AsString);
+    //CCAS_CCTPERTRN.WKIMONIN 主借款人月收入
+    msgs.Add('CCAS_CCTPERTRN.WKIMONIN='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenpeiouyuegongzishouru').AsString);
+    //CCAS_CCTPERTRN.FAMILYOTSALARY  家庭其他成员月收入
+    msgs.Add('CCAS_CCTPERTRN.FAMILYOTSALARY='+FrmEdt.ATJieKuanRen.FieldByName('jiekuanrenyuegongzishouru').AsString);
+    //CCAS_CCTPERTRN.PERMTOTIN 家庭月总收入
+    msgs.Add('CCAS_CCTPERTRN.PERMTOTIN='+FrmEdt.ATJieKuanRen.FieldByName('jiatingyuezongshouru').AsString);
+    //CCAS_CCTPERTRN.PERHMNCS 家庭月支出合计
+    msgs.Add('CCAS_CCTPERTRN.PERHMNCS='+FrmEdt.ATJieKuanRen.FieldByName('jiatingyuezhichu').AsString);
+    //CCAS_CCTPERTRN.PERCRDPT 客户级别
+    msgs.Add('CCAS_CCTPERTRN.PERCRDPT=00');
+    //CCAS_CCTPERTRN.PERCRCLS 个人客户信用等级
+    msgs.Add('CCAS_CCTPERTRN.PERCRCLS=未评级');
+    //CCAS_CCTPERTRN.PERHMPER 供养人口数
+    if (FrmEdt.ATJieKuanRen.FieldByName('gongyangrenrenshu').AsString='') then
+      msgs.Add('CCAS_CCTPERTRN.PERHMPER=0')
+    else
+      msgs.Add('CCAS_CCTPERTRN.PERHMPER='+FrmEdt.ATJieKuanRen.FieldByName('gongyangrenrenshu').AsString);
+    //CCAS_CCTPERTRN.PERGDCAD 消贷关联客户标记
+    msgs.Add('CCAS_CCTPERTRN.PERGDCAD=非关联人');
+    //CCAS_CCTPERTRN.PERHMMEM 家庭成员数
+    msgs.Add('CCAS_CCTPERTRN.PERHMMEM='+FrmEdt.ATJieKuanRen.FieldByName('jiatingrenkou').AsString);
+
+    //CCAS_RETAILTRAN.TOTPRICE 购房总价
+    try
+      msgs.Add('CCAS_RETAILTRAN.TOTPRICE='+VartoStr(FrmEdt.ATFangWu.FieldByName('pinggujiage2').AsCurrency*10000));
+    except
+    end;
+    //CCAS_RETAILTRAN.PRICE 评估价
+    try
+      msgs.Add('CCAS_RETAILTRAN.PRICE='+VartoStr(FrmEdt.ATFangWu.FieldByName('pinggujiage2').AsCurrency*10000));
+    except
+    end;
+    //CCAS_RETAILTRAN.LCTBCTNO 房号
+    msgs.Add('CCAS_RETAILTRAN.LCTBCTNO='+FrmEdt.ATFangWu.FieldByName('fangwufanghao').AsString);
+    //CCAS_RETAILTRAN.LCTBLDAR 面积
+    msgs.Add('CCAS_RETAILTRAN.LCTBLDAR='+FrmEdt.ATFangWu.FieldByName('fangwujianzhumianji').AsString);
+    //tempgfdj 购房单价
+    msgs.Add('tempgfdj='+FrmEdt.ATFangWu.FieldByName('pinggujiage').AsString);
+    //LOCATION 项目要求
+    //msgs.Add('LOCATION='+FrmEdt.ATFangWu.FieldByName('fangwudiliweizhi').AsString);
+
+    //CCAS_PLAATRN.LAFAPYAM 已交首期款
+    try
+      msgs.Add('CCAS_PLAATRN.LAFAPYAM='+VartoStr(FrmEdt.ATFangWu.FieldByName('shoufukuanjine').AsCurrency*10000));
+    except
+    end;
+    //CCAS_PLAATRN.LAFDRAMT 申请借款金额
+    try
+      msgs.Add('CCAS_PLAATRN.LAFDRAMT='+VartoStr(FrmEdt.ATDaiKuan.FieldByName('daikuanjine').AsCurrency*10000));
+    except
+    end;
+    //CCAS_PLAATRN.LAFTERM 申请借款期限
+    try
+      msgs.Add('CCAS_PLAATRN.LAFTERM='+VartoStr(FrmEdt.ATDaiKuan.FieldByName('qixian').AsInteger*12));
+    except
+    end;
+    //CCAS_PLAATRN.LAFRTMOD 还款方式
+    if FrmEdt.ATDaiKuan.FieldByName('huankuanfangshi').AsString = '等额还款法' then
+      msgs.Add('CCAS_PLAATRN.LAFRTMOD=等额本息')
+    else
+      msgs.Add('CCAS_PLAATRN.LAFRTMOD=等额本金');
+    //CCAS_PLAATRN.FLRATESCA 利率浮动比例
+    msgs.Add('CCAS_PLAATRN.FLRATESCA='+FrmEdt.ATDaiKuan.FieldByName('lilvfudongbeli').AsString);
 
     //CCAS_PLAATRN.LAFPACT 还款帐号
     msgs.Add('CCAS_PLAATRN.LAFPACT='+FrmEdt.ATDaiKuan.FieldByName('jiekuanrencunzhezhanghao').AsString);
+    //CCAS_PLAATRN.RECEIVEPER 收款人
+    msgs.Add('CCAS_PLAATRN.RECEIVEPER='+FrmEdt.ATFangWu.FieldByName('shoufangrenxingming').AsString);
+    //CCAS_PLAATRN.RECEIVEACCNO 收款人帐号
+    msgs.Add('CCAS_PLAATRN.RECEIVEACCNO='+FrmEdt.ATDaiKuan.FieldByName('shoufangrencunzhezhanghao').AsString);
+    //CCAS_PLAATRN.APTRETTP 放款MCA帐户产品类型
+    msgs.Add('CCAS_PLAATRN.APTRETTP=5502');
+    //CCAS_PLAATRN.APTRTSTP 放款MCA帐户产品子类型
+    msgs.Add('CCAS_PLAATRN.APTRTSTP=1001');
+    //CCAS_PLAATRN.LAFGBRTY 提前还款后的重算方式
+    msgs.Add('CCAS_PLAATRN.LAFGBRTY=减少还款金额，期数不变');
+    //CCAS_PLAATRN.FSTREQFG 首次还款日标识
+    msgs.Add('CCAS_PLAATRN.FSTREQFG=一个整月后的还款日还款');
 
     msg := msgs.Text;
     frmedt.Free;

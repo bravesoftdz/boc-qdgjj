@@ -156,3 +156,13 @@ INSERT INTO 语句包含下列未知的字段名： 'createUser'。确定键入的名称是正确的， 然
 字段 'proxy' 已经存在于表 't_main' 中。
 2010-05-11 20:58:57   [error:update]alter table t_ver add lastExportTime varchar(50) 
 字段 'lastExportTime' 已经存在于表 't_ver' 中。
+2010-11-18 20:52:22   [error:update]create table t_ccasvalue (id COUNTER CONSTRAINT PrimaryKey PRIMARY KEY, leixing varchar(255), svalue varchar(255), ccasvalue varchar(255))
+表 't_ccasvalue' 已存在。
+2010-11-18 20:53:58   [error:update]create table t_ccasvalue (id COUNTER CONSTRAINT PrimaryKey PRIMARY KEY, leixing varchar(255), svalue varchar(255), ccasvalue varchar(255))
+表 't_ccasvalue' 已存在。
+2010-11-18 20:55:16   [error:update]create table t_ccasvalue (id COUNTER CONSTRAINT PrimaryKey PRIMARY KEY, leixing varchar(255), svalue varchar(255), ccasvalue varchar(255))
+表 't_ccasvalue' 已存在。
+2010-11-18 22:21:07   [error:update]alter table t_jiekuanren add jiekuanrenzhengjiandaoqiri varchar(50) 
+字段 'jiekuanrenzhengjiandaoqiri' 已经存在于表 't_jiekuanren' 中。
+2010-11-18 22:21:08   [error:update]alter table t_jiekuanren add jiekuanrenpeiouzhengjiandaoqiri varchar(50) 
+字段 'jiekuanrenpeiouzhengjiandaoqiri' 已经存在于表 't_jiekuanren' 中。

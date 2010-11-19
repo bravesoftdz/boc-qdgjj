@@ -17,10 +17,14 @@ type
     Button2: TButton;
     Timer1: TTimer;
     Edit1: TEdit;
+    Button3: TButton;
+    cbAuto: TCheckBox;
     procedure Timer1Timer(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Edit1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure EdtNameClick(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
   private
 
     { Private declarations }
@@ -77,11 +81,17 @@ begin
     if frame_dispatch <> nil then
     begin
       frame_win := frame_dispatch as IHTMLWindow2;
-      frame_doc := frame_win.document;
+      try
+        frame_doc := frame_win.document;
+      except
+        //无法访问的
+        continue;
+      end;
       result := findObj(frame_doc, Objname);
       if assigned(result) then break;
     end;
   end;
+
 end;
 
 
@@ -90,21 +100,41 @@ var i:integer;
 frameindex: Olevariant;
 frame_dispatch: IDispatch;
 frame_win: IHTMLWindow2;
-
+excute:String;
+idname :String;
 begin
-  for i:=0 to doc.frames.length-1 do begin
-    frameindex := i;
-    frame_dispatch := doc.frames.Item(frameindex);
-    frame_win := frame_dispatch as IHTMLWindow2;
-    if frame_win.name=framename then
-    begin
-      if (pos('frame',trim(lowercase(frame_win.document.activeElement.tagName)))=0) then begin
-        result := frame_win.document;
-        break;
-      end else begin
-        result := getFrameDocument(frame_win.document, frame_win.document.activeElement.id);
-        break;
+  try
+    for i:=0 to doc.frames.length-1 do begin
+      frameindex := i;
+      excute := 'frame_dispatch := doc.frames.Item(frameindex);';
+      frame_dispatch := doc.frames.Item(frameindex);
+      excute := 'frame_win := frame_dispatch as IHTMLWindow2;';
+      frame_win := frame_dispatch as IHTMLWindow2;
+      excute := 'if frame_win.name=framename then';
+      try
+        frame_win.name
+      except
+        continue;
       end;
+      if frame_win.name = framename then
+      begin
+        excute := 'frame_win.document.activeElement.tagName';
+        if (pos('frame',trim(lowercase(frame_win.document.activeElement.tagName)))=0) then begin
+          result := frame_win.document;
+          break;
+        end else begin
+          excute := 'result := getFrameDocument(frame_win.document, frame_win.document.activeElement.id);';
+          idname := frame_win.document.activeElement.id;
+          if idname = '' then
+            idname := frame_win.document.activeElement.getAttribute('name',0);
+          result := getFrameDocument(frame_win.document, idname);
+          break;
+        end;
+      end;
+    end;
+  except
+    on e:Exception do begin
+      showmessage('getFrameDocument('+framename+') exception:'+excute+'['+e.Message+']');
     end;
   end;
 end;
@@ -137,7 +167,7 @@ begin
     self.Top := FIE.Height div 2;
     self.Left := FIE.Width-self.Width-50;
 
-
+    if cbAuto.Checked then
     if (pos(lowercase(webpage),lowercase(FIE.LocationURL))>0) and
       (FindWindow (nil, pChar(mainformname)) <> 0) then begin
       EdtName.Text := getObjValue(FIE.document as IHtmlDocument2, 'CCAS_CCTPERTRN.PERCUSNM');
@@ -288,9 +318,14 @@ begin
     frame_dispatch := doc.frames.Item(frameindex);
     if frame_dispatch <> nil then
     begin
-      frame_win := frame_dispatch as IHTMLWindow2;
-      frame_doc := frame_win.document;
-      result := findObj(frame_doc, Objname);
+      try
+        frame_win := frame_dispatch as IHTMLWindow2;
+        frame_doc := frame_win.document;
+      except
+        //无法访问
+        continue;
+      end;
+      result := findObjFrame(frame_doc, Objname);
       if assigned(result) then break;
     end;
   end;
@@ -392,13 +427,20 @@ var hdoc:IHtmlDocument2 ;
 begin
   try
     hdoc := FIE.document as IHtmlDocument2;
+    Edit1.Text := hdoc.activeElement.tagName;
     while pos('frame',trim(lowercase(hdoc.activeElement.tagName)))>0 do begin
       hdoc := getFrameDocument(hdoc, hdoc.activeElement.getAttribute('name', 0));
     end;
+    Edit1.Text := hdoc.activeElement.getAttribute('name',0);
+    {
     Edit1.Text := hdoc.activeElement.id;
     if Edit1.Text ='' then
       Edit1.Text := hdoc.activeElement.getAttribute('name',0);
+    }
   except
+    on E:Exception do begin
+      showmessage(e.Message);
+    end;
   end;
 end;
 
@@ -424,6 +466,18 @@ end;
 procedure Tfrmplugin.Button2Click(Sender: TObject);
 begin
   sendmsg('importfind:'+EdtName.Text+','+EdtShenFenZhengHao.Text);
+end;
+
+procedure Tfrmplugin.EdtNameClick(Sender: TObject);
+begin
+  if EdtName.Text = '' then begin
+    Timer1Timer(self);
+  end;
+end;
+
+procedure Tfrmplugin.Button3Click(Sender: TObject);
+begin
+  sendmsg('findpeiou:'+EdtName.Text+','+EdtShenFenZhengHao.Text);
 end;
 
 end.

@@ -745,6 +745,14 @@ type
     N128: TMenuItem;
     N129: TMenuItem;
     N130: TMenuItem;
+    DBDateTimeEditEh7: TDBDateTimeEditEh;
+    Label265: TLabel;
+    DBDateTimeEditEh8: TDBDateTimeEditEh;
+    Label266: TLabel;
+    DBComboBox92: TDBComboBox;
+    Label267: TLabel;
+    Label268: TLabel;
+    DBEdit121: TDBEdit;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);

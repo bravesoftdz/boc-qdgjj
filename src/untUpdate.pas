@@ -12,6 +12,7 @@ procedure updateDB20091221;
 procedure updateDB20091230;
 procedure updateDB20100509;
 procedure updateDB20101001;
+procedure updateDB20101118;
 
 implementation
 
@@ -46,6 +47,20 @@ begin
 
   //20101001
   if currentVer < '20101001' then updateDB20101001;
+
+  //20101118
+  if currentVer < '20101119' then updateDB20101118;
+end;
+
+procedure updateDB20101118;
+begin
+  execsql('alter table t_jiekuanren add jiekuanrenzhengjiandaoqiri varchar(50) ', false);
+  execsql('alter table t_jiekuanren add jiekuanrenpeiouzhengjiandaoqiri varchar(50) ', false);
+  execsql('alter table t_jiekuanren add jiekuanrenpeiougongzuodanweisuoshuhangye varchar(50) ', false);
+  execsql('alter table t_jiekuanren add jiekuanrenpeiouhujisuozaidi varchar(50) ', false);
+
+  //¸üÐÂ°æ±¾ºÅ           jiekuanrenzhengjiandaoqiri   jiekuanrenpeiouzhengjiandaoqiri
+  execsql('update t_ver set v = ''20101119''');
 end;
 
 procedure updateDB20101001;

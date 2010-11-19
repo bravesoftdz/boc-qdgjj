@@ -44,9 +44,11 @@ object frmplugin: Tfrmplugin
     Width = 137
     Height = 19
     Ctl3D = False
+    ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
     ParentCtl3D = False
     TabOrder = 1
     Text = 'EdtName'
+    OnClick = EdtNameClick
   end
   object EdtShenFenZhengHao: TEdit
     Left = 56
@@ -54,22 +56,23 @@ object frmplugin: Tfrmplugin
     Width = 137
     Height = 19
     Ctl3D = False
+    ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
     ParentCtl3D = False
     TabOrder = 2
     Text = '370205198208215012'
   end
   object Button1: TButton
     Left = 40
-    Top = 96
+    Top = 72
     Width = 121
     Height = 25
-    Caption = #20174#31995#32479#23548#20837#33267#32593#39029
+    Caption = #23548#20837#20511#27454#20154#20449#24687
     TabOrder = 3
     OnClick = Button1Click
   end
   object Button2: TButton
     Left = 40
-    Top = 128
+    Top = 121
     Width = 121
     Height = 25
     Caption = #20174#32593#39029#23548#20837#33267#31995#32479
@@ -79,18 +82,36 @@ object frmplugin: Tfrmplugin
   end
   object Edit1: TEdit
     Left = 8
-    Top = 72
+    Top = 144
     Width = 177
     Height = 21
+    ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
     TabOrder = 5
-    Text = 'Edit1'
-    Visible = False
     OnClick = Edit1Click
   end
+  object Button3: TButton
+    Left = 40
+    Top = 96
+    Width = 121
+    Height = 25
+    Caption = #23548#20837#37197#20598#20449#24687
+    TabOrder = 6
+    OnClick = Button3Click
+  end
+  object cbAuto: TCheckBox
+    Left = 24
+    Top = 122
+    Width = 153
+    Height = 17
+    Caption = #20174#32593#39029#33719#21462#22995#21517#36523#20221#35777
+    Checked = True
+    State = cbChecked
+    TabOrder = 7
+  end
   object Timer1: TTimer
-    Interval = 15000
+    Interval = 3000
     OnTimer = Timer1Timer
     Left = 8
-    Top = 128
+    Top = 80
   end
 end

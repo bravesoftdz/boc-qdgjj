@@ -1,6 +1,6 @@
 object FrmEdt: TFrmEdt
-  Left = 201
-  Top = 22
+  Left = 34
+  Top = 51
   Width = 1024
   Height = 668
   Caption = #32534#36753
@@ -20,10 +20,10 @@ object FrmEdt: TFrmEdt
     Left = 0
     Top = 0
     Width = 1016
-    Height = 600
-    ActivePage = TabSheet2
+    Height = 593
+    ActivePage = TabSheet1
     Align = alClient
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = #20511#27454#20154#20449#24687
@@ -569,7 +569,7 @@ object FrmEdt: TFrmEdt
         Caption = #20986#29983#26085#26399
       end
       object Label244: TLabel
-        Left = 743
+        Left = 753
         Top = 346
         Width = 26
         Height = 13
@@ -583,21 +583,21 @@ object FrmEdt: TFrmEdt
         Caption = #21333#20301#22320#22336
       end
       object Label246: TLabel
-        Left = 320
+        Left = 576
         Top = 388
         Width = 52
         Height = 13
         Caption = #21333#20301#24615#36136
       end
       object Label247: TLabel
-        Left = 514
+        Left = 719
         Top = 387
         Width = 52
         Height = 13
         Caption = #21333#20301#37038#32534
       end
       object Label248: TLabel
-        Left = 338
+        Left = 322
         Top = 447
         Width = 33
         Height = 13
@@ -623,6 +623,34 @@ object FrmEdt: TFrmEdt
         Width = 26
         Height = 13
         Caption = #25163#26426
+      end
+      object Label265: TLabel
+        Left = 723
+        Top = 32
+        Width = 39
+        Height = 13
+        Caption = #21040#26399#26085
+      end
+      object Label266: TLabel
+        Left = 739
+        Top = 323
+        Width = 39
+        Height = 13
+        Caption = #21040#26399#26085
+      end
+      object Label267: TLabel
+        Left = 293
+        Top = 387
+        Width = 78
+        Height = 13
+        Caption = #21333#20301#25152#23646#34892#19994
+      end
+      object Label268: TLabel
+        Left = 155
+        Top = 324
+        Width = 65
+        Height = 13
+        Caption = #25143#31821#25152#22312#22320
       end
       object DBComboBox1: TDBComboBox
         Left = 222
@@ -656,7 +684,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrennianling'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 8
+        TabOrder = 9
       end
       object DBEdit4: TDBEdit
         Left = 572
@@ -687,7 +715,7 @@ object FrmEdt: TFrmEdt
           #39640#20013
           #23567#23398
           #25991#30450#25110#21322#25991#30450)
-        TabOrder = 10
+        TabOrder = 11
       end
       object DBComboBox3: TDBComboBox
         Left = 350
@@ -707,7 +735,7 @@ object FrmEdt: TFrmEdt
           #20007#20598
           #31163#23130
           #20854#23427)
-        TabOrder = 9
+        TabOrder = 10
       end
       object DBEdit7: TDBEdit
         Left = 87
@@ -717,7 +745,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenxianjuzhudizhi'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 11
+        TabOrder = 12
       end
       object DBEdit8: TDBEdit
         Left = 576
@@ -727,7 +755,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenrenxianzhinianxian'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 21
+        TabOrder = 22
       end
       object DBEdit11: TDBEdit
         Left = 773
@@ -737,7 +765,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenyoubian'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 18
+        TabOrder = 19
       end
       object DBEdit12: TDBEdit
         Left = 87
@@ -747,7 +775,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrendanweidizhi'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 23
+        TabOrder = 24
       end
       object DBEdit13: TDBEdit
         Left = 87
@@ -757,7 +785,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrengongzuodanwei'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 19
+        TabOrder = 20
       end
       object DBComboBox4: TDBComboBox
         Left = 119
@@ -768,7 +796,7 @@ object FrmEdt: TFrmEdt
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         ItemHeight = 13
-        TabOrder = 69
+        TabOrder = 73
       end
       object DBComboBox5: TDBComboBox
         Tag = 1
@@ -782,7 +810,7 @@ object FrmEdt: TFrmEdt
         ItemHeight = 13
         Items.Strings = (
           #32463#35843#26597','#20511#27454#20154#21450#20854#37197#20598#25910#20837#30495#23454#21512#29702#21487#20449'.')
-        TabOrder = 70
+        TabOrder = 74
       end
       object DBComboBox6: TDBComboBox
         Left = 461
@@ -793,7 +821,7 @@ object FrmEdt: TFrmEdt
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         ItemHeight = 13
-        TabOrder = 66
+        TabOrder = 70
       end
       object DBEdit16: TDBEdit
         Left = 565
@@ -803,7 +831,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenyuegongzishouru'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 33
+        TabOrder = 34
         OnExit = DBEdit16Exit
       end
       object DBEdit17: TDBEdit
@@ -814,7 +842,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenpeiougongzuodanwei'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 51
+        TabOrder = 54
       end
       object DBEdit18: TDBEdit
         Left = 232
@@ -824,27 +852,27 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenpeiounianling'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 47
+        TabOrder = 50
       end
       object DBEdit21: TDBEdit
         Left = 87
         Top = 320
-        Width = 114
+        Width = 66
         Height = 21
         DataField = 'jiekuanrenpeiouxingming'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 44
+        TabOrder = 45
       end
       object DBEdit22: TDBEdit
         Left = 771
         Top = 362
-        Width = 124
+        Width = 126
         Height = 21
         DataField = 'jiekuanrenpeioudanweidianhua'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 54
+        TabOrder = 57
       end
       object DBEdit24: TDBEdit
         Left = 567
@@ -854,7 +882,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenpeiourenxianzhinianxian'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 53
+        TabOrder = 56
       end
       object DBEdit25: TDBEdit
         Left = 566
@@ -864,7 +892,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenpeioujiatingdianhua'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 49
+        TabOrder = 52
       end
       object DBEdit26: TDBEdit
         Left = 567
@@ -874,7 +902,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenpeiouyuegongzishouru'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 61
+        TabOrder = 65
         OnExit = DBEdit16Exit
       end
       object DBEdit27: TDBEdit
@@ -885,7 +913,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenpeioushenfenzhenghaoma'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 46
+        TabOrder = 48
         OnExit = DBEdit27Exit
       end
       object DBEdit29: TDBEdit
@@ -896,7 +924,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenjiatingdianhua'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 16
+        TabOrder = 17
       end
       object DBEdit30: TDBEdit
         Left = 774
@@ -906,7 +934,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrendanweiyoubian'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 22
+        TabOrder = 23
       end
       object DBEdit31: TDBEdit
         Left = 774
@@ -916,7 +944,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrendanweidianhua'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 25
+        TabOrder = 26
       end
       object DBComboBox12: TDBComboBox
         Left = 350
@@ -928,15 +956,16 @@ object FrmEdt: TFrmEdt
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         ItemHeight = 13
         Items.Strings = (
-          #30805#22763#25110#20197#19978
-          #26412#31185
+          #30740#31350#29983
+          #22823#26412
           #22823#19987
           #20013#19987
+          #25216#26415#23398#26657
           #39640#20013
-          #21021#20013
-          #21021#20013#20197#19979
-          #26410#30693)
-        TabOrder = 48
+          #23567#23398
+          #25991#30450#25110#21322#25991#30450
+          '')
+        TabOrder = 51
       end
       object DBEdit32: TDBEdit
         Left = 87
@@ -946,7 +975,7 @@ object FrmEdt: TFrmEdt
         DataField = 'yinghangcunkuan'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 65
+        TabOrder = 69
       end
       object DBEdit33: TDBEdit
         Left = 87
@@ -956,7 +985,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiatingyuezongshouru'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 67
+        TabOrder = 71
       end
       object DBEdit34: TDBEdit
         Left = 461
@@ -966,7 +995,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiatingyuezhichu'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 68
+        TabOrder = 72
       end
       object DBComboBox16: TDBComboBox
         Left = 230
@@ -986,7 +1015,7 @@ object FrmEdt: TFrmEdt
           #20849#26377#20303#23429
           #20854#20182
           #26410#30693)
-        TabOrder = 12
+        TabOrder = 13
         Visible = False
       end
       object DBComboBox22: TDBComboBox
@@ -1004,7 +1033,7 @@ object FrmEdt: TFrmEdt
           #28207#28595#21488
           #22806#30465
           #22806#31821)
-        TabOrder = 31
+        TabOrder = 32
       end
       object DBMemo1: TDBMemo
         Left = 87
@@ -1014,7 +1043,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrendanweijianyaoshuoming'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 26
+        TabOrder = 27
       end
       object DBMemo2: TDBMemo
         Left = 87
@@ -1024,7 +1053,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenpeioudanweijianyaoshuoming'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 58
+        TabOrder = 62
       end
       object DBComboBox40: TDBComboBox
         Left = 87
@@ -1041,7 +1070,7 @@ object FrmEdt: TFrmEdt
           #32929#20221#21046
           #21512#36164
           #22806#36164)
-        TabOrder = 27
+        TabOrder = 28
       end
       object DBEdit42: TDBEdit
         Left = 575
@@ -1051,7 +1080,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenshouji'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 17
+        TabOrder = 18
       end
       object DBComboBox44: TDBComboBox
         Left = 87
@@ -1071,7 +1100,7 @@ object FrmEdt: TFrmEdt
           #20799#23376#23567#23398
           #20799#23376#20013#23398
           #20799#23376#22823#23398)
-        TabOrder = 62
+        TabOrder = 66
       end
       object DBEdit54: TDBEdit
         Left = 373
@@ -1081,7 +1110,7 @@ object FrmEdt: TFrmEdt
         DataField = 'gongyangrenrenshu'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 63
+        TabOrder = 67
       end
       object DBEdit49: TDBEdit
         Left = 567
@@ -1091,7 +1120,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiatingrenkou'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 64
+        TabOrder = 68
       end
       object DBComboBox38: TDBComboBox
         Left = 349
@@ -1111,7 +1140,7 @@ object FrmEdt: TFrmEdt
           #20849#26377#20303#23429
           #20854#20182
           #26410#30693)
-        TabOrder = 13
+        TabOrder = 14
       end
       object DBComboBox41: TDBComboBox
         Left = 86
@@ -1142,7 +1171,7 @@ object FrmEdt: TFrmEdt
           '370203197511162016'
           '37020219741202181X'
           '370202710615392')
-        TabOrder = 71
+        TabOrder = 75
         TabStop = False
       end
       object DBEdit83: TDBEdit
@@ -1153,7 +1182,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenxianjuzhushijian'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 14
+        TabOrder = 15
       end
       object DBEdit84: TDBEdit
         Left = 87
@@ -1163,7 +1192,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenhujisuozaidi'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 15
+        TabOrder = 16
       end
       object DBComboBox48: TDBComboBox
         Tag = 1
@@ -1200,7 +1229,7 @@ object FrmEdt: TFrmEdt
         EditButtons = <>
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         Kind = dtkDateEh
-        TabOrder = 7
+        TabOrder = 8
         Visible = True
       end
       object DBDateTimeEditEh1: TDBDateTimeEditEh
@@ -1212,7 +1241,7 @@ object FrmEdt: TFrmEdt
         DataSource = DataSource1
         EditButtons = <>
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 20
+        TabOrder = 21
         Visible = True
         EditFormat = 'YYYY-MM-DD'
       end
@@ -1253,7 +1282,7 @@ object FrmEdt: TFrmEdt
           #22269#38469#24615#32452#32455
           #24453#19994
           #20854#20182)
-        TabOrder = 24
+        TabOrder = 25
       end
       object DBComboBox50: TDBComboBox
         Left = 377
@@ -1269,7 +1298,7 @@ object FrmEdt: TFrmEdt
           '100-1000'#19975#20803#20043#38388
           '100'#19975#20803#20197#19979
           #26080)
-        TabOrder = 28
+        TabOrder = 29
       end
       object DBComboBox51: TDBComboBox
         Left = 797
@@ -1286,7 +1315,7 @@ object FrmEdt: TFrmEdt
           #20013#32423
           #21021#32423
           #26410#30693)
-        TabOrder = 30
+        TabOrder = 31
       end
       object DBComboBox52: TDBComboBox
         Left = 564
@@ -1327,7 +1356,7 @@ object FrmEdt: TFrmEdt
           #23398#29983
           #19981#20415#20998#31867#30340#20854#20182#20174#19994#20154#21592
           #26080#32844#19994#27963#21160#20154#21592)
-        TabOrder = 29
+        TabOrder = 30
       end
       object DBComboBox53: TDBComboBox
         Left = 377
@@ -1345,7 +1374,7 @@ object FrmEdt: TFrmEdt
           #20013#34892#25480#20449#21333#20301#20013#23618#20197#19978#39046#23548
           #25919#24220#21508#32423#39046#23548
           #20854#20182)
-        TabOrder = 32
+        TabOrder = 33
       end
       object DBComboBox54: TDBComboBox
         Left = 797
@@ -1362,7 +1391,7 @@ object FrmEdt: TFrmEdt
           '2-3'
           '4'#20197#19978
           #26410#30693)
-        TabOrder = 34
+        TabOrder = 35
       end
       object DBComboBox55: TDBComboBox
         Tag = 1
@@ -1381,7 +1410,7 @@ object FrmEdt: TFrmEdt
           '3-4'#24180
           '5'#24180#25110#20197#19978
           #26410#30693)
-        TabOrder = 35
+        TabOrder = 36
       end
       object DBComboBox56: TDBComboBox
         Tag = 1
@@ -1398,7 +1427,7 @@ object FrmEdt: TFrmEdt
           #20165#26377#24037#36164#21345
           #20165#26377#23450#26399#23384#27454
           #26410#30693)
-        TabOrder = 36
+        TabOrder = 37
       end
       object DBComboBox57: TDBComboBox
         Tag = 1
@@ -1413,7 +1442,7 @@ object FrmEdt: TFrmEdt
         Items.Strings = (
           #21542
           #26159)
-        TabOrder = 39
+        TabOrder = 40
       end
       object DBComboBox58: TDBComboBox
         Tag = 1
@@ -1428,7 +1457,7 @@ object FrmEdt: TFrmEdt
         Items.Strings = (
           #21542
           #26159)
-        TabOrder = 40
+        TabOrder = 41
       end
       object DBComboBox59: TDBComboBox
         Tag = 5
@@ -1446,7 +1475,7 @@ object FrmEdt: TFrmEdt
           #29702#36130#23458#25143
           #20998#34892#25512#33616#23458#25143
           #20854#20182)
-        TabOrder = 37
+        TabOrder = 38
       end
       object DBComboBox60: TDBComboBox
         Tag = 1
@@ -1461,7 +1490,7 @@ object FrmEdt: TFrmEdt
         Items.Strings = (
           #21542
           #26159)
-        TabOrder = 41
+        TabOrder = 42
       end
       object DBComboBox61: TDBComboBox
         Tag = 5
@@ -1479,7 +1508,7 @@ object FrmEdt: TFrmEdt
           #24320#21457#21830#12289#32463#38144#21830#20851#32852#20225#19994#21592#24037
           #20854#20182#20851#32852#23458#25143
           #38750#20851#32852#20154)
-        TabOrder = 38
+        TabOrder = 39
       end
       object DBComboBox62: TDBComboBox
         Tag = 3
@@ -1495,7 +1524,7 @@ object FrmEdt: TFrmEdt
           #21009#20107#29359#32618
           #20854#20182#29359#32618
           #26080#36829#27861#35760#24405)
-        TabOrder = 42
+        TabOrder = 43
       end
       object DBComboBox63: TDBComboBox
         Left = 350
@@ -1518,7 +1547,7 @@ object FrmEdt: TFrmEdt
           #35686#23448#35777
           #27861#20154#20195#30721
           #23458#25143#20195#30721)
-        TabOrder = 45
+        TabOrder = 47
       end
       object DBDateTimeEditEh2: TDBDateTimeEditEh
         Left = 375
@@ -1529,7 +1558,7 @@ object FrmEdt: TFrmEdt
         DataSource = DataSource1
         EditButtons = <>
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 52
+        TabOrder = 55
         Visible = True
         EditFormat = 'YYYY-MM-DD'
       end
@@ -1543,28 +1572,36 @@ object FrmEdt: TFrmEdt
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         ItemHeight = 13
         Items.Strings = (
-          #39640#32423#31649#29702#32773
-          #19987#19994#20154#21592
-          #31649#29702#20154#21592
-          #21322#19987#19994#20154#21592
-          #21150#20844#23460#32844#21592
-          #20891#38431#8212#8212#20891#23448
-          #25216#26415#24037#20154
-          #24314#31569#36152#26131
-          #21496#26426
-          #24037#21378#24037#20154
-          #20445#23433
-          #20891#38431#8212#8212#24212#24449#20837#20237#30340#22763#20853
-          #38144#21806
-          #33258#30001#32844#19994#32773'/'#20010#20307#25143
-          #26381#21153#20154#21592
-          #38750#25216#26415#24037#20154
-          #36864#20241
-          #23478#24237#20027#22919
+          #20013#22269#20849#20135#20826#20013#22830#22996#21592#20250#21644#22320#26041#21508#32423#32452#32455#36127#36131#20154
+          #22269#23478#26426#20851#21450#20854#24037#20316#26426#26500#36127#36131#20154
+          #27665#20027#20826#27966#12289#31038#20250#22242#20307#21450#24037#20316#26426#26500#36127#36131#20154
+          #20107#19994#21333#20301#36127#36131#20154
+          #20225#19994#36127#36131#20154
+          #31185#23398#30740#31350#20154#21592
+          #24037#31243#25216#26415#65288#35745#31639#26426#65289#20154#21592
+          #20892#19994#25216#26415#20154#21592
+          #39134#34892#21644#33337#33334#25216#26415#31561#20154#21592
+          #21355#29983#19987#19994#25216#26415#20154#21592
+          #32463#27982#19994#21153#20154#21592
+          #37329#34701#19994#21153#20154#21592
+          #27861#24459#19987#19994#20154#21592
+          #25945#23398#20154#21592
+          #25991#23398#33402#26415#24037#20316#20154#21592
+          #20307#32946#24037#20316#20154#21592
+          #26032#38395#20986#29256#12289#25991#21270#24037#20316#20154#21592
+          #20854#20182#19987#19994#25216#26415#20154#21592
+          #34892#25919#21150#20844#20154#21592
+          #23433#20840#20445#21355#21644#28040#38450#24037#20316#20154#21592
+          #37038#25919#21644#30005#20449#19994#21153#20154#21592
+          #20854#20182#21150#20107#20154#21592#21644#26377#20851#20154#21592
+          #21830#19994#12289#26381#21153#19994#20154#21592
+          #20892#12289#26519#12289#29287#12289#28180#12289#27700#21033#19994#29983#20135#20154#21592
+          #29983#20135#12289#36816#36755#35774#22791#25805#20316#20154#21592#21450#26377#20851#20154#21592
+          #20891#20154
           #23398#29983
-          #24453#19994
-          #20854#20182)
-        TabOrder = 59
+          #19981#20415#20998#31867#30340#20854#20182#20174#19994#20154#21592
+          #26080#32844#19994#27963#21160#20154#21592)
+        TabOrder = 63
       end
       object DBDateTimeEditEh3: TDBDateTimeEditEh
         Left = 87
@@ -1577,18 +1614,18 @@ object FrmEdt: TFrmEdt
         EditButtons = <>
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
         Kind = dtkDateEh
-        TabOrder = 72
+        TabOrder = 76
         Visible = True
       end
       object DBEdit76: TDBEdit
-        Left = 771
+        Left = 779
         Top = 342
-        Width = 124
+        Width = 117
         Height = 21
         DataField = 'jiekuanrenpeioushouji'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 50
+        TabOrder = 53
       end
       object DBEdit80: TDBEdit
         Left = 87
@@ -1598,12 +1635,12 @@ object FrmEdt: TFrmEdt
         DataField = 'jiekuanrenpeioudanweidizhi'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 55
+        TabOrder = 58
       end
       object DBComboBox80: TDBComboBox
-        Left = 375
+        Left = 636
         Top = 384
-        Width = 133
+        Width = 81
         Height = 21
         DataField = 'jiekuanrenpeioudanweixingzhi'
         DataSource = DataSource1
@@ -1615,22 +1652,22 @@ object FrmEdt: TFrmEdt
           #32929#20221#21046
           #21512#36164
           #22806#36164)
-        TabOrder = 56
+        TabOrder = 60
       end
       object DBEdit81: TDBEdit
-        Left = 567
+        Left = 772
         Top = 383
-        Width = 171
+        Width = 125
         Height = 21
         DataField = 'jiekuanrenpeioudanweiyoubian'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 57
+        TabOrder = 61
       end
       object DBComboBox81: TDBComboBox
-        Left = 373
+        Left = 357
         Top = 443
-        Width = 133
+        Width = 148
         Height = 21
         DataField = 'jiekuanrenpeiouzhicheng'
         DataSource = DataSource1
@@ -1642,7 +1679,7 @@ object FrmEdt: TFrmEdt
           #20013#32423
           #21021#32423
           #26410#30693)
-        TabOrder = 60
+        TabOrder = 64
       end
       object DBEdit113: TDBEdit
         Left = 87
@@ -1652,7 +1689,7 @@ object FrmEdt: TFrmEdt
         DataField = 'jiatingrenkehuliushuihao'
         DataSource = DataSource1
         ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
-        TabOrder = 43
+        TabOrder = 44
       end
       object DBComboBox84: TDBComboBox
         Left = 763
@@ -1684,6 +1721,82 @@ object FrmEdt: TFrmEdt
           '370202710615392')
         TabOrder = 1
         TabStop = False
+      end
+      object DBDateTimeEditEh7: TDBDateTimeEditEh
+        Left = 763
+        Top = 29
+        Width = 148
+        Height = 21
+        DataField = 'jiekuanrenzhengjiandaoqiri'
+        DataSource = DataSource1
+        EditButtons = <>
+        ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
+        Kind = dtkDateEh
+        TabOrder = 7
+        Visible = True
+      end
+      object DBDateTimeEditEh8: TDBDateTimeEditEh
+        Left = 779
+        Top = 320
+        Width = 118
+        Height = 21
+        DataField = 'jiekuanrenpeiouzhengjiandaoqiri'
+        DataSource = DataSource1
+        EditButtons = <>
+        ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
+        Kind = dtkDateEh
+        TabOrder = 49
+        Visible = True
+      end
+      object DBComboBox92: TDBComboBox
+        Left = 375
+        Top = 383
+        Width = 194
+        Height = 21
+        DataField = 'jiekuanrenpeiougongzuodanweisuoshuhangye'
+        DataSource = DataSource1
+        ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
+        ItemHeight = 13
+        Items.Strings = (
+          #21307#38498
+          #25945#32946
+          #37329#34701'/'#20445#38505
+          #20844#20849#31649#29702#19982#31038#20250#32452#32455
+          #31185#23398#30740#31350#65292#25216#26415#26381#21153#19994#21644#22320#36136#21208#23519#19994
+          #20449#24687#20256#36755#12289#35745#31639#26426#26381#21153#12289#36719#20214#21644#25216#26415#26381#21153#19994
+          #20020#26102#24037
+          #36864#20241
+          #23478#24237#22919#22899
+          #23398#29983
+          #20892#19994#12289#26519#19994#12289#29287#19994#12289#28180#19994
+          #37319#25496#19994
+          #21046#36896#19994
+          #30005#21147#65292#29123#27668#21450#27700#30340#29983#20135#21450#20379#24212#19994
+          #24314#31569#19994
+          #20132#36890#36816#36755#65292#20179#20648#21644#37038#25919#19994
+          #25209#21457#21644#38646#21806#19994
+          #20303#23487#21644#39184#39278#19994
+          #25151#22320#20135#19994
+          #31199#36161#21450#21830#19994
+          #27700#21033#12289#29615#22659#19982#20844#20849#35774#26045#31649#29702#34892#19994
+          #23621#27665#26381#21153#20197#21450#20854#20182#26381#21153#34892#19994
+          #25991#21270#65292#20307#32946#21644#23089#20048#19994
+          #24037#21830#26381#21153#19994
+          #22269#38469#24615#32452#32455
+          #24453#19994
+          #20854#20182)
+        PopupMenu = FrmMain.PMExportEmpty
+        TabOrder = 59
+      end
+      object DBEdit121: TDBEdit
+        Left = 222
+        Top = 320
+        Width = 74
+        Height = 21
+        DataField = 'jiekuanrenpeiouhujisuozaidi'
+        DataSource = DataSource1
+        ImeName = #20013#25991' ('#31616#20307') - '#25628#29399#25340#38899#36755#20837#27861
+        TabOrder = 46
       end
     end
     object TabSheet7: TTabSheet
@@ -5239,7 +5352,7 @@ object FrmEdt: TFrmEdt
   end
   object Panel1: TPanel
     Left = 0
-    Top = 600
+    Top = 593
     Width = 1016
     Height = 41
     Align = alBottom

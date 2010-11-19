@@ -511,7 +511,10 @@ begin
   clienthandle := t.From;
   //memo1.lines.add(trim(StrPas(t.CopyDataStruct^.lpData)));
   msg := trim(StrPas(t.CopyDataStruct^.lpData));
-  if copy(msg,1,4)='find' then begin
+  if copy(msg,1,9)='findpeiou' then begin
+    msg := findpeiou(copy(msg,pos(':',msg)+1,pos(',',msg)-pos(':',msg)-1),
+                copy(msg,pos(',',msg)+1,length(msg)));
+  end else if copy(msg,1,4)='find' then begin
     msg := find(copy(msg,pos(':',msg)+1,pos(',',msg)-pos(':',msg)-1),
                 copy(msg,pos(',',msg)+1,length(msg)));
   end else if copy(msg,1,10)='importfind' then begin
